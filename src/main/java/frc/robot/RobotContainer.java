@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -77,6 +78,17 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        // point forward
+        joystick.povRight().onTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(tempAngle))
+        ));
+        joystick.povLeft().whileTrue(drivetrain.applyRequest(() ->
+            drive.withVelocityX(0) // Drive forward with negative Y (forward)
+            .withVelocityY(0) // Drive left with negative X (left)
+            .withRotationalRate(tempAngle * 0.1 * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        ));
+        SmartDashboard.putNumber("Angle", tempAngle);
+        SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
