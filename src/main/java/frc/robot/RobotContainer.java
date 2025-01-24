@@ -29,6 +29,8 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.SysIdSwerveTranslation goForward = new SwerveRequest.SysIdSwerveTranslation();
+    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -77,10 +79,29 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+        // prefixed movement in +/- X-direction
+        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(0.5).withVelocityY(0))
+        );
+        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
+            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+        );
+
+        // let's try rotation
+        joystick.pov(90).onTrue(drivetrain.sysIdRotate(Direction.kForward));
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        // some autonomous sequence
+        Command autoCommand = Commands.sequence(
+            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1.),
+            //drivetrain.applyRequest(() -> brake),
+            Commands.waitSeconds(3.0),
+            drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(1.)
+        );
+        return autoCommand;
+        //return Commands.print("No autonomous command configured");
     }
 }
