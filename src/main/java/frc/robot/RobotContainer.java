@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -42,7 +42,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final Pigeon2 pigeon2 = drivetrain.getPigeon2();
-    public final Pigeon2GyroSubsystem pigeonSubsystem = new Pigeon2GyroSubsystem(pigeon2);
+    public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
 
     public RobotContainer() {
         configureBindings();
@@ -111,6 +111,9 @@ public class RobotContainer {
         ));
         SmartDashboard.putNumber("Angle", tempAngle);
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
+
+        joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
