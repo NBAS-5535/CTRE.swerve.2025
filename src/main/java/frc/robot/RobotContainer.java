@@ -72,7 +72,7 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(2));
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
@@ -81,15 +81,19 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // prefixed movement in +/- X-direction
+        /*
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
         joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
+        */
 
         // let's try rotation
-        joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward));
+        //joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward));
+        //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
+        joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
 
         // point forward
         joystick.povRight().onTrue(drivetrain.applyRequest(() ->
@@ -108,10 +112,14 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // some autonomous sequence
         Command autoCommand = Commands.sequence(
-            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1.),
+            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5),
             //drivetrain.applyRequest(() -> brake),
             Commands.waitSeconds(3.0),
-            drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(1.)
+            drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.34),
+            Commands.waitSeconds(1.),
+            drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.68),
+            Commands.waitSeconds(2.),
+            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5)
         );
         return autoCommand;
         //return Commands.print("No autonomous command configured");
