@@ -9,8 +9,10 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,10 +45,15 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    /* Path follower */
+    private final SendableChooser<Command> autoChooser;
+
     public final Pigeon2 pigeon2 = drivetrain.getPigeon2();
     public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
 
     public RobotContainer() {
+        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        SmartDashboard.putData("Auto Mode", autoChooser);
         configureBindings();
     }
 
@@ -145,10 +152,15 @@ public class RobotContainer {
             case "auto":
                 autoCommand = Autos.moveRotateRestRepeat(drivetrain);
                 break;
+            case "path":
+                /* Run the path selected from the auto chooser */
+                autoCommand = autoChooser.getSelected();
+                break;
             default:
                 autoCommand = Commands.print("No autonomous command configured");
         }
         return autoCommand;
 
     }
+
 }
