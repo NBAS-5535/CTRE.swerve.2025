@@ -4,14 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,6 +15,8 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
   /** Creates a new Pigen2GyroSubsystem. */
   private final Pigeon2 m_pigeon2;
   private final Pigeon2SimState m_pigeon2SimState; 
+
+  private double m_initialAngle = 0.;
 
   public Pigeon2GyroSubsystem(Pigeon2 pigeon2) {
     this.m_pigeon2 = pigeon2;
@@ -44,5 +42,15 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
 
   public Rotation2d getGyroAngle(){
     return m_pigeon2.getRotation2d();
+  }
+
+  public void setAngleMarker(){
+    m_initialAngle = getHeading();
+  }
+
+  public boolean isAngleDiffReached() {
+    double currentAngle = getHeading();
+    SmartDashboard.putNumber("Current Angle", currentAngle);
+    return Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
   }
 }

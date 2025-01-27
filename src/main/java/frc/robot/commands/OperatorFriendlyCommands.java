@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -14,32 +15,40 @@ import frc.robot.subsystems.Pigeon2GyroSubsystem;
 public class OperatorFriendlyCommands extends Command {
   /** Creates a new OperatorFriendlyCommands. */
   private double m_initialAngle;
-  private double continousAngle;
+  private double currentAngle;
 
   private final CommandSwerveDrivetrain m_swerve;
   private final Pigeon2GyroSubsystem m_pidgy;
 
-  public OperatorFriendlyCommands(CommandSwerveDrivetrain swerve, Pigeon2GyroSubsystem pigeon) {
+  private String m_commandType;
+
+  public OperatorFriendlyCommands(CommandSwerveDrivetrain swerve, Pigeon2GyroSubsystem pigeon, String commandString) {
     this.m_swerve = swerve;
     this.m_pidgy = pigeon;
+    this.m_commandType = commandString;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
+    addRequirements(swerve, pigeon);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_initialAngle = m_pidgy.getHeading();
+    //( new m_swerve.sysIdRotate(Direction.kForward).withTimeout(10));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerve.sysIdRotate(Direction.kForward).withTimeout(10);
-    continousAngle = m_pidgy.getHeading();
-    SmartDashboard.putNumber("Current Angle", continousAngle);
-    SmartDashboard.putNumber("Diff Angle", continousAngle - m_initialAngle);
+    switch (m_commandType) {
+      case "rotate":
+        currentAngle = m_pidgy.getHeading();
+        SmartDashboard.putNumber("Current Angle", currentAngle);
+        SmartDashboard.putNumber("Diff Angle", currentAngle - m_initialAngle);
+        break;
+      default:
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -49,10 +58,10 @@ public class OperatorFriendlyCommands extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return angleDiffReached();
+    return false;
   }
   
   private Boolean angleDiffReached() {
-    return Math.abs(continousAngle) - Math.abs(m_initialAngle) >= 90.;
+    return Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
   }
 }

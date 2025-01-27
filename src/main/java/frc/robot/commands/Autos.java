@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Autos extends Command {
@@ -29,5 +32,18 @@ public class Autos extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public static Command moveRotateRestRepeat(CommandSwerveDrivetrain swerve){
+    Command autoCommand = Commands.sequence(
+      swerve.sysIdDynamic(Direction.kForward).withTimeout(1),
+            Commands.waitSeconds(3.0),
+            swerve.sysIdRotate(Direction.kForward).withTimeout(0.666), // for 90deg, rotate for 0.333s at pi rad/s
+            Commands.waitSeconds(1.),
+            swerve.sysIdRotate(Direction.kForward).withTimeout(0.666),
+            Commands.waitSeconds(2.),
+            swerve.sysIdDynamic(Direction.kReverse).withTimeout(1)
+        );
+    return autoCommand;
   }
 }

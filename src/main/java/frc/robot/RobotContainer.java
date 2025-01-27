@@ -14,8 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Autos;
 import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -112,24 +114,41 @@ public class RobotContainer {
         SmartDashboard.putNumber("Angle", tempAngle);
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
-        joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
+        //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
+        //pigeon2Subsystem.setAngleMarker();
+        //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
+        joystick.povDown().whileTrue(Commands.sequence(
+            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
+            drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
+            );
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-        // some autonomous sequence
-        Command autoCommand = Commands.sequence(
-            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5),
-            //drivetrain.applyRequest(() -> brake),
-            Commands.waitSeconds(3.0),
-            drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.34),
-            Commands.waitSeconds(1.),
-            drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.68),
-            Commands.waitSeconds(2.),
-            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5)
-        );
+        // some autonomous sequences
+        String caseType = "manual";
+        Command autoCommand = null;
+        switch (caseType) {
+            case "manual":
+                autoCommand = Commands.sequence(
+                    drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5),
+                    //drivetrain.applyRequest(() -> brake),
+                    Commands.waitSeconds(3.0),
+                    drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.34),
+                    Commands.waitSeconds(1.),
+                    drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.68),
+                    Commands.waitSeconds(2.),
+                    drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5)
+                );
+                break;
+            case "auto":
+                autoCommand = Autos.moveRotateRestRepeat(drivetrain);
+                break;
+            default:
+                autoCommand = Commands.print("No autonomous command configured");
+        }
         return autoCommand;
-        //return Commands.print("No autonomous command configured");
+
     }
 }
