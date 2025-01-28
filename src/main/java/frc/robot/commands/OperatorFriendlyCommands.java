@@ -35,7 +35,9 @@ public class OperatorFriendlyCommands extends Command {
   @Override
   public void initialize() {
     m_initialAngle = m_pidgy.getHeading();
+    //SmartDashboard.putNumber("Initial Angle", m_initialAngle);
     //( new m_swerve.sysIdRotate(Direction.kForward).withTimeout(10));
+    m_pidgy.setAngleMarker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,8 +46,9 @@ public class OperatorFriendlyCommands extends Command {
     switch (m_commandType) {
       case "rotate":
         currentAngle = m_pidgy.getHeading();
-        SmartDashboard.putNumber("Current Angle", currentAngle);
-        SmartDashboard.putNumber("Diff Angle", currentAngle - m_initialAngle);
+        //SmartDashboard.putNumber("Current Angle", currentAngle);
+        //SmartDashboard.putNumber("Diff Angle", currentAngle - m_initialAngle);
+        //System.out.println(getName() + String.valueOf(currentAngle) + "  " + String.valueOf(m_initialAngle));
         break;
       default:
     }
@@ -58,7 +61,11 @@ public class OperatorFriendlyCommands extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    Boolean stopIt = false;
+    if (m_commandType == "rotate"){
+      stopIt = true;
+    }
+    return stopIt;
   }
   
   private Boolean angleDiffReached() {
