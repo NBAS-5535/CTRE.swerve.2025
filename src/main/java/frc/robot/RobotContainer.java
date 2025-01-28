@@ -52,7 +52,7 @@ public class RobotContainer {
     public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        autoChooser = AutoBuilder.buildAutoChooser("TestPath");
         SmartDashboard.putData("Auto Mode", autoChooser);
         configureBindings();
     }
