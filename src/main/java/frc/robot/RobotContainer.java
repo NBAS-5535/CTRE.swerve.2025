@@ -124,8 +124,9 @@ public class RobotContainer {
         //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
         //pigeon2Subsystem.setAngleMarker();
         //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
-        joystick.povDown().whileTrue(Commands.sequence(
+        joystick.povDown().onTrue(new SequentialCommandGroup(
             new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
+            //Commands.print("Reset the angles"),
             drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
             );
 
@@ -134,7 +135,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // some autonomous sequences
-        String caseType = "manual";
+        String caseType = "auto"; //"manual";
         Command autoCommand = null;
         switch (caseType) {
             case "manual":

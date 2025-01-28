@@ -201,6 +201,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         configureAutoBuilder();
     }
 
+    /**
+     * Configures PathPlanner.
+     *
+     * @param none
+     * @return void
+     */
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
