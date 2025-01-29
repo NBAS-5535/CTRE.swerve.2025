@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,6 +21,8 @@ public class OperatorFriendlyCommands extends Command {
   private final CommandSwerveDrivetrain m_swerve;
   private final Pigeon2GyroSubsystem m_pidgy;
 
+  private Pose2d m_initialPose;
+  private Pose2d currentPose;
   private String m_commandType;
 
   public OperatorFriendlyCommands(CommandSwerveDrivetrain swerve, Pigeon2GyroSubsystem pigeon, String commandString) {
@@ -38,6 +41,10 @@ public class OperatorFriendlyCommands extends Command {
     //SmartDashboard.putNumber("Initial Angle", m_initialAngle);
     //( new m_swerve.sysIdRotate(Direction.kForward).withTimeout(10));
     m_pidgy.setAngleMarker();
+
+    m_initialPose = m_swerve.getCurrentPose();
+    SmartDashboard.putNumber("Initial X", m_initialPose.getX());
+    SmartDashboard.putNumber("Initial Y", m_initialPose.getY());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,7 +57,13 @@ public class OperatorFriendlyCommands extends Command {
         //SmartDashboard.putNumber("Diff Angle", currentAngle - m_initialAngle);
         //System.out.println(getName() + String.valueOf(currentAngle) + "  " + String.valueOf(m_initialAngle));
         break;
+      case "pose":
+        currentPose = m_swerve.getCurrentPose();
+        SmartDashboard.putNumber("Current X", currentPose.getX());
+        SmartDashboard.putNumber("Current Y", currentPose.getY());
+        break;
       default:
+        System.out.println(getName() + " Unknowm/Unimplemented commandType");
     }
   }
 
@@ -71,4 +84,5 @@ public class OperatorFriendlyCommands extends Command {
   private Boolean angleDiffReached() {
     return Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
   }
+  
 }

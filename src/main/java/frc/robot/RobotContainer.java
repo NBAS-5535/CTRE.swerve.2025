@@ -110,9 +110,11 @@ public class RobotContainer {
         joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
 
         // point forward
+        /*
         joystick.povRight().onTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(tempAngle))
         ));
+        */
         joystick.povLeft().whileTrue(drivetrain.applyRequest(() ->
             drive.withVelocityX(0) // Drive forward with negative Y (forward)
             .withVelocityY(0) // Drive left with negative X (left)
@@ -124,11 +126,19 @@ public class RobotContainer {
         //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
         //pigeon2Subsystem.setAngleMarker();
         //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
+        /* rotate robot "gradually" until ~90deg is reached*/
         joystick.povDown().onTrue(new SequentialCommandGroup(
             new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
             //Commands.print("Reset the angles"),
             drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
             );
+
+        /* get robot Pode/location info */
+        joystick.povRight().onTrue(new SequentialCommandGroup(
+            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose"),
+            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1),
+            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose")
+        ));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
