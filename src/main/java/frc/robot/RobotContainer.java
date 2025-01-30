@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -52,8 +53,10 @@ public class RobotContainer {
     public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("TestPath");
+        //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
+        autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
+        
         configureBindings();
     }
 
@@ -165,7 +168,7 @@ public class RobotContainer {
                 break;
             case "path":
                 /* Run the path selected from the auto chooser */
-                autoCommand = autoChooser.getSelected();
+                autoCommand = new PathPlannerAuto("TestPath"); //autoChooser.getSelected();
                 break;
             default:
                 autoCommand = Commands.print("No autonomous command configured");
