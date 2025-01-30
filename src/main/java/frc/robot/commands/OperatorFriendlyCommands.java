@@ -23,7 +23,7 @@ public class OperatorFriendlyCommands extends Command {
 
   private Pose2d m_initialPose;
   private Pose2d currentPose;
-  private String m_commandType;
+  private String m_commandType = null;
 
   public OperatorFriendlyCommands(CommandSwerveDrivetrain swerve, Pigeon2GyroSubsystem pigeon, String commandString) {
     this.m_swerve = swerve;
@@ -75,14 +75,20 @@ public class OperatorFriendlyCommands extends Command {
   @Override
   public boolean isFinished() {
     Boolean stopIt = false;
-    if (m_commandType == "rotate"){
+    /*
+    if (m_commandType == "rotate" || m_commandType == "pose"){
+      stopIt = true;
+    }
+      */
+    if ( m_commandType != null) {
       stopIt = true;
     }
     return stopIt;
   }
-  
+  /*
   private Boolean angleDiffReached() {
     return Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
   }
+    */
   
 }
