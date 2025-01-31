@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Autos;
+import frc.robot.commands.InstantCommandMarkGyroAngle;
+import frc.robot.commands.InstantCommandMarkGyroPose;
 import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -131,16 +133,25 @@ public class RobotContainer {
         //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
         /* rotate robot "gradually" until ~90deg is reached*/
         joystick.povDown().onTrue(new SequentialCommandGroup(
-            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
+            new InstantCommandMarkGyroAngle(pigeon2Subsystem),
+            //new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
             //Commands.print("Reset the angles"),
             drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
             );
 
         /* get robot Pode/location info */
+        /* pedantic way */
+        /*
         joystick.povRight().onTrue(new SequentialCommandGroup(
             new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose"),
             drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1),
             new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose")
+        ));
+        */
+        /* fancy way */
+        joystick.povRight().onTrue(new SequentialCommandGroup(
+            new InstantCommandMarkGyroPose(drivetrain),
+            drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(1.))
         ));
 
         drivetrain.registerTelemetry(logger::telemeterize);

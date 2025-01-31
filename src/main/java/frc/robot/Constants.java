@@ -18,6 +18,8 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  /* Some tolerance settings */
+  public static final double distanceEpsilon = 0.01;
 
   public static final class CoralSubsystemConstants {
     public static final int kElevatorMotorCanId = 4;

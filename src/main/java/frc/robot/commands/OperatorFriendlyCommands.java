@@ -15,8 +15,8 @@ import frc.robot.subsystems.Pigeon2GyroSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class OperatorFriendlyCommands extends Command {
   /** Creates a new OperatorFriendlyCommands. */
-  private double m_initialAngle;
-  private double currentAngle;
+  //private double m_initialAngle;
+  //private double currentAngle;
 
   private final CommandSwerveDrivetrain m_swerve;
   private final Pigeon2GyroSubsystem m_pidgy;
@@ -37,7 +37,7 @@ public class OperatorFriendlyCommands extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_initialAngle = m_pidgy.getHeading();
+    //m_initialAngle = m_pidgy.getHeading();
     //SmartDashboard.putNumber("Initial Angle", m_initialAngle);
     //( new m_swerve.sysIdRotate(Direction.kForward).withTimeout(10));
     m_pidgy.setAngleMarker();
@@ -52,7 +52,7 @@ public class OperatorFriendlyCommands extends Command {
   public void execute() {
     switch (m_commandType) {
       case "rotate":
-        currentAngle = m_pidgy.getHeading();
+        //currentAngle = m_pidgy.getHeading();
         //SmartDashboard.putNumber("Current Angle", currentAngle);
         //SmartDashboard.putNumber("Diff Angle", currentAngle - m_initialAngle);
         //System.out.println(getName() + String.valueOf(currentAngle) + "  " + String.valueOf(m_initialAngle));

@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -61,6 +61,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    /* user command-related markers */
+    private Pose2d m_initialPose = this.getState().Pose;
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -323,4 +326,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Pose2d getCurrentPose() {
         return getState().Pose;
     } 
+
+    /* store the current Pose */
+    public void setCurrentPose() {
+        m_initialPose = getState().Pose;
+        SmartDashboard.putNumber("Initial X", m_initialPose.getX());
+        SmartDashboard.putNumber("Initial Y", m_initialPose.getY());
+    }
+
+    /* check if the desired Pose is reached */
+    public Boolean isDesiredPoseReached(double distance){
+        Pose2d currentPose = getState().Pose;
+        SmartDashboard.putNumber("Current X", currentPose.getX());
+        SmartDashboard.putNumber("Current Y", currentPose.getY());
+        double currentDistanceInX = Math.abs(currentPose.getX()) - Math.abs(m_initialPose.getX());
+        double currentDistanceInY = Math.abs(currentPose.getY()) - Math.abs(m_initialPose.getY());
+        double actualDistance = Math.sqrt(currentDistanceInX * currentDistanceInX + currentDistanceInY * currentDistanceInY);
+        return actualDistance > distance ? true : false;
+    }
 }

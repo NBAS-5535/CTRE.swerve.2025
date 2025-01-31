@@ -17,6 +17,7 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
   private final Pigeon2SimState m_pigeon2SimState; 
 
   private double m_initialAngle = 0.;
+  private double m_initialPose;
 
   public Pigeon2GyroSubsystem(Pigeon2 pigeon2) {
     this.m_pigeon2 = pigeon2;
