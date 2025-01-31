@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "RotateInPlace"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 2.0
