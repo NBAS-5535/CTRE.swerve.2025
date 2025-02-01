@@ -152,8 +152,9 @@ public class RobotContainer {
         */
         /* fancy way */
         joystick.povRight().onTrue(new SequentialCommandGroup(
-            new InstantCommandMarkGyroPose(drivetrain),
-            drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(1.))
+            //new InstantCommandMarkGyroPose(drivetrain),
+            new InstantCommand(() -> drivetrain.setCurrentPose()),
+            drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
         ));
 
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -181,7 +182,8 @@ public class RobotContainer {
                 break;
             case "path":
                 /* Run the path selected from the auto chooser */
-                autoCommand = new PathPlannerAuto("TestPath"); //autoChooser.getSelected();
+                autoCommand = new PathPlannerAuto("FancyAutoPath"); //
+                //autoCommand = autoChooser.getSelected();
                 break;
             default:
                 autoCommand = Commands.print("No autonomous command configured");
