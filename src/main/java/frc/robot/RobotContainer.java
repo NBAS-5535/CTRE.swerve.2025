@@ -11,8 +11,10 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -182,8 +184,18 @@ public class RobotContainer {
                 break;
             case "path":
                 /* Run the path selected from the auto chooser */
-                autoCommand = new PathPlannerAuto("FancyAutoPath"); //
+                //autoCommand = new PathPlannerAuto("FancyAutoPath"); //
                 //autoCommand = autoChooser.getSelected();
+                try{
+                    // Load the path you want to follow using its name in the GUI
+                    PathPlannerPath path = PathPlannerPath.fromPathFile("FancyAutoPath");
+
+                    // Create a path following command using AutoBuilder. This will also trigger event markers.
+                    autoCommand = AutoBuilder.followPath(path);
+                } catch (Exception e) {
+                    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+                    autoCommand =  Commands.none();
+                }
                 break;
             default:
                 autoCommand = Commands.print("No autonomous command configured");

@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -16,8 +18,27 @@ public class VisionSubsystem extends SubsystemBase {
 
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  public boolean hasTarget() {
+        return m_table.getEntry("tv").getDouble(0) == 1;
+    }
+
+    public double getTx() {
+        return m_table.getEntry("tx").getDouble(0);
+    }
+
+    public double getTy() {
+        return m_table.getEntry("ty").getDouble(0);
+    }
+
+    public double getTa() {
+        return m_table.getEntry("ta").getDouble(0);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Limelight Has Target", hasTarget());
+        SmartDashboard.putNumber("Limelight X Offset", getTx());
+        SmartDashboard.putNumber("Limelight Y Offset", getTy());
+        SmartDashboard.putNumber("Limelight Area", getTa());
+    }
 }
