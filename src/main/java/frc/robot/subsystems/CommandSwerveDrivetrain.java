@@ -335,13 +335,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /* check if the desired Pose is reached */
-    public Boolean isDesiredPoseReached(double distance){
+    public Boolean isDesiredPoseReached(double distanceToGo){
         Pose2d currentPose = getState().Pose;
         SmartDashboard.putNumber("Current X", currentPose.getX());
         SmartDashboard.putNumber("Current Y", currentPose.getY());
         double currentDistanceInX = Math.abs(currentPose.getX()) - Math.abs(m_initialPose.getX());
         double currentDistanceInY = Math.abs(currentPose.getY()) - Math.abs(m_initialPose.getY());
         double actualDistance = Math.sqrt(currentDistanceInX * currentDistanceInX + currentDistanceInY * currentDistanceInY);
-        return actualDistance > distance ? true : false;
+        return actualDistance > distanceToGo ? true : false;
     }
 }
