@@ -7,17 +7,29 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.commands.Autos;
+import frc.robot.commands.InstantCommandMarkGyroAngle;
+import frc.robot.commands.InstantCommandMarkGyroPose;
+import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Pigeon2GyroSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -39,7 +51,17 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    /* Path follower */
+    private final SendableChooser<Command> autoChooser;
+
+    public final Pigeon2 pigeon2 = drivetrain.getPigeon2();
+    public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
+
     public RobotContainer() {
+        //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Mode", autoChooser);
+        
         configureBindings();
     }
 
@@ -72,7 +94,7 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(2));
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
@@ -81,20 +103,26 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // prefixed movement in +/- X-direction
+        /*
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
         joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(-0.5).withVelocityY(0))
         );
+        */
 
         // let's try rotation
-        joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward));
+        //joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward));
+        //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
+        joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
 
         // point forward
+        /*
         joystick.povRight().onTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(tempAngle))
         ));
+        */
         joystick.povLeft().whileTrue(drivetrain.applyRequest(() ->
             drive.withVelocityX(0) // Drive forward with negative Y (forward)
             .withVelocityY(0) // Drive left with negative X (left)
@@ -102,18 +130,78 @@ public class RobotContainer {
         ));
         SmartDashboard.putNumber("Angle", tempAngle);
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
+
+        //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
+        //pigeon2Subsystem.setAngleMarker();
+        //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
+        /* rotate robot "gradually" until ~90deg is reached*/
+        joystick.povDown().onTrue(new SequentialCommandGroup(
+            //new InstantCommandMarkGyroAngle(pigeon2Subsystem),
+            new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
+            //new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
+            //Commands.print("Reset the angles"),
+            drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
+            );
+
+        /* get robot Pode/location info */
+        /* pedantic way */
+        /*
+        joystick.povRight().onTrue(new SequentialCommandGroup(
+            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose"),
+            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1),
+            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose")
+        ));
+        */
+        /* fancy way */
+        joystick.povRight().onTrue(new SequentialCommandGroup(
+            //new InstantCommandMarkGyroPose(drivetrain),
+            new InstantCommand(() -> drivetrain.setCurrentPose()),
+            drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
+        ));
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-        // some autonomous sequence
-        Command autoCommand = Commands.sequence(
-            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1.),
-            //drivetrain.applyRequest(() -> brake),
-            Commands.waitSeconds(3.0),
-            drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(1.)
-        );
+        // some autonomous sequences
+        String caseType = "auto"; //"manual";
+        Command autoCommand = null;
+        switch (caseType) {
+            case "manual":
+                autoCommand = Commands.sequence(
+                    drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5),
+                    //drivetrain.applyRequest(() -> brake),
+                    Commands.waitSeconds(3.0),
+                    drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.34),
+                    Commands.waitSeconds(1.),
+                    drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.68),
+                    Commands.waitSeconds(2.),
+                    drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5)
+                );
+                break;
+            case "auto":
+                autoCommand = Autos.moveRotateRestRepeat(drivetrain);
+                break;
+            case "path":
+                /* Run the path selected from the auto chooser */
+                //autoCommand = new PathPlannerAuto("FancyAutoPath"); //
+                //autoCommand = autoChooser.getSelected();
+                try{
+                    // Load the path you want to follow using its name in the GUI
+                    PathPlannerPath path = PathPlannerPath.fromPathFile("FancyAutoPath");
+
+                    // Create a path following command using AutoBuilder. This will also trigger event markers.
+                    autoCommand = AutoBuilder.followPath(path);
+                } catch (Exception e) {
+                    DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+                    autoCommand =  Commands.none();
+                }
+                break;
+            default:
+                autoCommand = Commands.print("No autonomous command configured");
+        }
         return autoCommand;
-        //return Commands.print("No autonomous command configured");
+
     }
+
 }
