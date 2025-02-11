@@ -30,6 +30,7 @@ import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -54,8 +55,12 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    /* gyro */
     public final Pigeon2 pigeon2 = drivetrain.getPigeon2();
     public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
+
+    /* Limelight */
+    public final VisionSubsystem limelight = new VisionSubsystem();
 
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
@@ -84,9 +89,7 @@ public class RobotContainer {
 
         // Rotate by a specific angle
         double tempAngle = Math.PI / 2.;
-        joystick.x().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(tempAngle))
-        ));
+        //joystick.x().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(tempAngle))));
 
 
         // drive at a constant speed
@@ -159,6 +162,9 @@ public class RobotContainer {
             drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
         ));
 
+        // get vision-based distance
+        joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
+        
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 

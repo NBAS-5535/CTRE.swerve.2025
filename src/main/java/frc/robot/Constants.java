@@ -174,4 +174,14 @@ public final class Constants {
     public static final double kIntakeLongBarLength = 0.3048;
     public static final double kIntakeBarAngleRads = Units.degreesToRadians(-60);
   }
+
+  public static final class VisionConstants {
+    // height of the center of the Limelight lens from the floor (inches)
+    public static final double limelightLensHeightInches = 20.0;
+    // height of the target from the floor (inches)
+    public static final double targetHeightInches = 60.;
+
+    // calibration distance for correct mount angle
+    public static final double knownDistance = 10.;
+  }
 }
