@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Second;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -183,5 +188,23 @@ public final class Constants {
 
     // calibration distance for correct mount angle
     public static final double knownDistance = 10.;
+  }
+
+  public static final class ElevatorConstants {
+    public static int kElevatorCANId = 20;
+
+    public static double kElevatorRampRate = 0.1;
+    public static int    kElevatorCurrentLimit = 40;
+    public static double kMaxVelocity = Meters.of(4).per(Second).in(MetersPerSecond);
+    public static double kMaxAcceleration = Meters.of(8).per(Second).per(Second).in(MetersPerSecondPerSecond);
+
+    public static final double kElevatorKp = 26.722;
+    public static final double kElevatorKi = 0;
+    public static final double kElevatorKd = 1.6047;
+
+    public static final double kElevatorkS = 0.01964; // volts (V)
+    public static final double kElevatorkV = 3.894; // volt per velocity (V/(m/s))
+    public static final double kElevatorkA = 0.173; // volt per acceleration (V/(m/s²))
+    public static final double kElevatorkG = 0.91274; // volts (V)
   }
 }
