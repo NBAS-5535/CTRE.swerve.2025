@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
@@ -29,7 +30,7 @@ public class VisionSubsystem extends SubsystemBase {
         "",
         Meters.convertFrom(DriveConstants.kWheelBase / 2., Inches), // forward location wrt robot center
         0., // assume perfect alignment with robor center
-        Meters.convertFrom(VisionConstants.limelightLensHeightInches, Inches), // height of camera from the base plate
+        Meters.convertFrom(VisionConstants.limelightLensHeightInches, Inches), // height of camera from the floor
         0,
         0,
         0);
@@ -43,6 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
     fiducials = LimelightHelpers.getRawFiducials("");
 
   }
+
   public RawFiducial getClosestFiducial() {
     if (fiducials == null || fiducials.length == 0) {
         throw new NoSuchTargetException("No fiducials found.");
@@ -50,6 +52,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     RawFiducial closest = fiducials[0];
     double minDistance = closest.ta;
+    SmartDashboard.putNumber("minDistance", minDistance);
 
     for (RawFiducial fiducial : fiducials) {
         if (fiducial.ta > minDistance) {

@@ -26,7 +26,7 @@ class PIDControllerConfigurable extends PIDController {
 }
 public class AlignCommand extends Command {
   private final CommandSwerveDrivetrain m_drivetrain;
-  private final VisionSubsystem m_Limelight;
+  private final VisionSubsystem m_limelight;
   private int m_tagId;
 
   private static final PIDControllerConfigurable rotationalPidController = new PIDControllerConfigurable(0.05000, 0.000000, 0.001000, 0.01);
@@ -34,17 +34,15 @@ public class AlignCommand extends Command {
   private static final PIDControllerConfigurable yPidController = new PIDControllerConfigurable(0.3, 0, 0, 0.3);
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
-  
+  private static final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   public double rotationalRate = 0;
   public double velocityX = 0;
-  // private static final SwerveRequest.SwerveDriveBrake brake = new
-  // SwerveRequest.SwerveDriveBrake();
 
   public AlignCommand(CommandSwerveDrivetrain drivetrain, VisionSubsystem limelight, int tagId) {
     this.m_drivetrain = drivetrain;
-    this.m_Limelight = limelight;
+    this.m_limelight = limelight;
     this.m_tagId = tagId;
-    addRequirements(m_Limelight);
+    addRequirements(m_limelight);
   }
 
 
@@ -61,7 +59,7 @@ public class AlignCommand extends Command {
     
 
     try {
-      fiducial = m_Limelight.getFiducialWithId(m_tagId);
+      fiducial = m_limelight.getFiducialWithId(m_tagId);
 
       rotationalRate = rotationalPidController.calculate(2*fiducial.txnc, 0.0) * 0.75* 0.9;
       
@@ -75,17 +73,21 @@ public class AlignCommand extends Command {
       SmartDashboard.putNumber("distToRobot", fiducial.distToRobot);
       SmartDashboard.putNumber("rotationalPidController", rotationalRate);
       SmartDashboard.putNumber("xPidController", velocityX);
+      /* uncomment for action 
       m_drivetrain.setControl(
           alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));//.withVelocityY(velocityY));
       // drivetrain.applyRequest(() -> alignRequest.withRotationalRate(0.5 *
       // MaxAngularRate)
       // .withVelocityX(xPidController.calculate(0.2 * MaxSpeed)));
       // drivetrain.setControl(brake);
+      */
     } catch (VisionSubsystem.NoSuchTargetException nste) { 
       System.out.println("No apriltag found");
       if ((rotationalRate != 0) && (velocityX != 0)){
+        /* uncomment for action
         m_drivetrain.setControl(
           alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));//.withVelocityY(velocityY));
+        */
         }
       }
       

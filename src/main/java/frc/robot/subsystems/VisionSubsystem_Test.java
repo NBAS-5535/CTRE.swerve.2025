@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 import frc.robot.Constants.VisionConstants;
-
+import frc.robot.Vision.LimelightHelpers;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -90,5 +90,12 @@ public class VisionSubsystem_Test extends SubsystemBase {
         SmartDashboard.putNumber("Limelight X Offset", getTx());
         SmartDashboard.putNumber("Limelight Y Offset", getTy());
         SmartDashboard.putNumber("Limelight Area", getTa());
+    }
+
+    public double getDistance() {
+        Rotation2d angleToGoal = Rotation2d.fromDegrees(limelightMountAngleDegrees)
+        .plus(Rotation2d.fromDegrees(LimelightHelpers.getTX("limelight")));
+        double distance = (VisionConstants.targetHeightInches - VisionConstants.limelightLensHeightInches) / angleToGoal.getTan();
+        return distance;
     }
 }
