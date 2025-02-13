@@ -1,94 +1,112 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
-import frc.robot.Constants.VisionConstants;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.Vision.LimelightHelpers;
+import frc.robot.Vision.LimelightHelpers.*;
 
-
-/*
- * general trigonometry:
- * 
- */
 public class VisionSubsystem extends SubsystemBase {
-    /** Creates a new VisionSubsystem. */
-    private static NetworkTable m_table = NetworkTableInstance.getDefault().getTable("limelight");
+  private RawFiducial[] fiducials;
 
-    double targetOffsetAngle_Vertical;
+  public VisionSubsystem() {
+    config();
+  }
 
-    // limelight lens angle of the floor plane, non-zero in degrees if lifted upwards
-    double limelightMountAngleDegrees = 45.0; 
+  public static class NoSuchTargetException extends RuntimeException {
+    public NoSuchTargetException(String message) {
+      super(message);
+    }
+  }
 
-    /* check Constants.java
-    // height of the center of the Limelight lens from the floor (inches)
-    double limelightLensHeightInches = 20.0; 
+  public void config() {
 
-    // height of the target from the floor (inches)
-    double targetHeightInches = 60.0; 
-    */
+    // LimelightHelpers.setCropWindow("", -0.5, 0.5, -0.5, 0.5);
+    LimelightHelpers.setCameraPose_RobotSpace(
+        "",
+        Meters.convertFrom(DriveConstants.kWheelBase / 2., Inches), // forward location wrt robot center
+        0., // assume perfect alignment with robor center
+        Meters.convertFrom(VisionConstants.limelightLensHeightInches, Inches), // height of camera from the base plate
+        0,
+        0,
+        0);
+    // Overrides the valid AprilTag IDs that will be used for localization. 
+    // Tags not in this list will be ignored for robot pose estimation.
+    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[] {5});
+  }
 
-    double angleToTargetDegrees;
-    double angleToTargetRadians;
+  @Override
+  public void periodic() {
+    fiducials = LimelightHelpers.getRawFiducials("");
 
-    //calculate distance to the target
-    double distanceFromLimelightTargetInches;
-
-
-    public VisionSubsystem() {
-        // set the correct mount angle
-        computeLimelightMountAngleDegrees(VisionConstants.knownDistance);
+  }
+  public RawFiducial getClosestFiducial() {
+    if (fiducials == null || fiducials.length == 0) {
+        throw new NoSuchTargetException("No fiducials found.");
     }
 
-    public boolean hasTarget() {
-        return m_table.getEntry("tv").getDouble(0) == 1;
+    RawFiducial closest = fiducials[0];
+    double minDistance = closest.ta;
+
+    for (RawFiducial fiducial : fiducials) {
+        if (fiducial.ta > minDistance) {
+            closest = fiducial;
+            minDistance = fiducial.ta;
+        }
     }
 
-    public double getTx() {
-        return m_table.getEntry("tx").getDouble(0);
-    }
+    return closest;
+  }
 
-    public double getTy() {
-        return m_table.getEntry("ty").getDouble(0);
+  public RawFiducial getFiducialWithId(int id) {
+  
+    for (RawFiducial fiducial : fiducials) {
+        if (fiducial.id == id) {
+            return fiducial;
+        }
     }
+    throw new NoSuchTargetException("Can't find ID: " + id);
+  }
 
-    public double getTa() {
-        return m_table.getEntry("ta").getDouble(0);
-    }
+public RawFiducial getFiducialWithId(int id, boolean verbose) {
+  StringBuilder availableIds = new StringBuilder();
 
-    /*
-     * Determine actual mount angle by a known distance - probably experimental
-     */
-    public void computeLimelightMountAngleDegrees(double distance){
-        double ty = getTy();
-        double limelightDegrees = Math.tan((VisionConstants.targetHeightInches - VisionConstants.limelightLensHeightInches) / distance) * 180 / Math.PI;
-        limelightMountAngleDegrees = limelightDegrees - ty;
-    }
+  for (RawFiducial fiducial : fiducials) {
+      if (availableIds.length() > 0) {
+          availableIds.append(", ");
+      } //Error reporting
+      availableIds.append(fiducial.id);
+      
+      if (fiducial.id == id) {
+          return fiducial;
+      }
+  }
+  throw new NoSuchTargetException("Cannot find: " + id + ". IN view:: " + availableIds.toString());
+  }
 
-    /*
-     * compute the current distance to target (estimate)
-     */
-    public double getDistanceToTarget() {
-        //Rotation2d angleToTarget = Rotation2d.fromDegrees(limelightMountAngleDegrees).plus(Rotation2d.fromDegrees(angleToTargetDegrees)))
-        targetOffsetAngle_Vertical = getTy();
-        angleToTargetDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-        angleToTargetRadians = angleToTargetDegrees * (Math.PI / 180.0);
-        distanceFromLimelightTargetInches = (VisionConstants.targetHeightInches - VisionConstants.limelightLensHeightInches) / Math.tan(angleToTargetRadians);
-        SmartDashboard.putNumber("DistanceToTarget", distanceFromLimelightTargetInches);
-        return distanceFromLimelightTargetInches;
-    }
+  public double getTX(){
+    return LimelightHelpers.getTX(VisionConstants.LIMELIGHT_NAME);
+  }
+  public double getTY(){
+    return LimelightHelpers.getTY(VisionConstants.LIMELIGHT_NAME);
+  }
+  public double getTA(){
+    return LimelightHelpers.getTA(VisionConstants.LIMELIGHT_NAME);
+  }
+  public boolean getTV(){
+    return LimelightHelpers.getTV(VisionConstants.LIMELIGHT_NAME);
+  }
 
-    @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("Limelight Has Target", hasTarget());
-        SmartDashboard.putNumber("Limelight X Offset", getTx());
-        SmartDashboard.putNumber("Limelight Y Offset", getTy());
-        SmartDashboard.putNumber("Limelight Area", getTa());
-    }
+  public double getClosestTX(){
+    return getClosestFiducial().txnc;
+  }
+  public double getClosestTY(){
+    return getClosestFiducial().tync;
+  }
+  public double getClosestTA(){
+    return getClosestFiducial().ta;
+  }
 }

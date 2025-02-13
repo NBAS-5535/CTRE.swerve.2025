@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.InstantCommandMarkGyroAngle;
 import frc.robot.commands.InstantCommandMarkGyroPose;
@@ -31,6 +33,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystem_Test;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -60,7 +63,8 @@ public class RobotContainer {
     public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
 
     /* Limelight */
-    public final VisionSubsystem limelight = new VisionSubsystem();
+    public final VisionSubsystem_Test limelight = new VisionSubsystem_Test();
+    private final VisionSubsystem m_vision = new VisionSubsystem();
 
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
@@ -164,7 +168,8 @@ public class RobotContainer {
 
         // get vision-based distance
         joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
-        
+        joystick.x().whileTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
