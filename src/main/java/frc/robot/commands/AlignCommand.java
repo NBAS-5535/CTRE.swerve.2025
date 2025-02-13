@@ -73,14 +73,17 @@ public class AlignCommand extends Command {
       SmartDashboard.putNumber("distToRobot", fiducial.distToRobot);
       SmartDashboard.putNumber("rotationalPidController", rotationalRate);
       SmartDashboard.putNumber("xPidController", velocityX);
-      /* uncomment for action 
+      SmartDashboard.putNumber("TagID", m_tagId);
+      /* uncomment for action */
       m_drivetrain.setControl(
-          alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));//.withVelocityY(velocityY));
+        // MAY WANNA VERIFY MOTION DIRECTIONS!!!!!!
+          alignRequest.withRotationalRate(rotationalRate).withVelocityX(velocityX));
+          //alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));//.withVelocityY(velocityY));
       // drivetrain.applyRequest(() -> alignRequest.withRotationalRate(0.5 *
       // MaxAngularRate)
       // .withVelocityX(xPidController.calculate(0.2 * MaxSpeed)));
       // drivetrain.setControl(brake);
-      */
+      /**/
     } catch (VisionSubsystem.NoSuchTargetException nste) { 
       System.out.println("No apriltag found");
       if ((rotationalRate != 0) && (velocityX != 0)){

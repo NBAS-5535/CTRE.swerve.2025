@@ -28,7 +28,7 @@ public class VisionSubsystem extends SubsystemBase {
     // LimelightHelpers.setCropWindow("", -0.5, 0.5, -0.5, 0.5);
     LimelightHelpers.setCameraPose_RobotSpace(
         "",
-        Meters.convertFrom(DriveConstants.kWheelBase / 2., Inches), // forward location wrt robot center
+        Meters.convertFrom(30. / 2., Inches), // forward location wrt robot center
         0., // assume perfect alignment with robor center
         Meters.convertFrom(VisionConstants.limelightLensHeightInches, Inches), // height of camera from the floor
         0,

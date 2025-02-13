@@ -167,8 +167,8 @@ public class RobotContainer {
         ));
 
         // get vision-based distance
-        joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
-        joystick.x().whileTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
+        //joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
+        joystick.x().onTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
