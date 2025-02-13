@@ -24,7 +24,7 @@ public class VisionSubsystem_Test extends SubsystemBase {
     double targetOffsetAngle_Vertical;
 
     // limelight lens angle of the floor plane, non-zero in degrees if lifted upwards
-    double limelightMountAngleDegrees = 45.0; 
+    double limelightMountAngleDegrees = 0.0; 
 
     /* check Constants.java
     // height of the center of the Limelight lens from the floor (inches)
@@ -43,7 +43,7 @@ public class VisionSubsystem_Test extends SubsystemBase {
 
     public VisionSubsystem_Test() {
         // set the correct mount angle
-        computeLimelightMountAngleDegrees(VisionConstants.knownDistance);
+        //computeLimelightMountAngleDegrees(VisionConstants.knownDistance);
     }
 
     public boolean hasTarget() {
