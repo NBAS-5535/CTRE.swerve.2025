@@ -1,0 +1,105 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import com.revrobotics.REVLibError;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Configs;
+import frc.robot.Constants.ActuatorConstants;
+
+public class ActuatorSubsystem extends SubsystemBase {
+  /** Creates a new ActuatorSubsystem. */
+  private SparkMax actuatorMotor =
+      new SparkMax(ActuatorConstants.kActuatorMotorCanId, MotorType.kBrushless);
+  private SparkClosedLoopController actuatorController = actuatorMotor.getClosedLoopController();
+  private RelativeEncoder actuatorEncoder = actuatorMotor.getEncoder();
+
+  private double initialPosition;
+
+  public ActuatorSubsystem() {
+    SparkMaxConfig actuatorConfig = new SparkMaxConfig();
+
+    actuatorConfig
+        .smartCurrentLimit(ActuatorConstants.kActuatorCurrentLimit)
+        .closedLoopRampRate(ActuatorConstants.kActuatorRampRate)
+        .closedLoop
+        .pid(ActuatorConstants.kActuatorKp, ActuatorConstants.kActuatorKi, ActuatorConstants.kActuatorKd)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .outputRange(-1, 1);
+        actuatorConfig.idleMode(IdleMode.kBrake);
+
+    actuatorMotor.configure(
+        Configs.ActuatorSubsystem.actuatorConfig,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+
+    // Zero actuator encoder on initialization
+    this.setPosition(0);
+
+    actuatorController.setReference(ActuatorConstants.kSetPointInRevolutions, ControlType.kPosition);
+
+    initialPosition = actuatorEncoder.getPosition();
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    //setInMotion();
+    SmartDashboard.putNumber("Actuator Position", actuatorEncoder.getPosition());
+  }
+
+  public void setPosition(double position){
+    actuatorEncoder.setPosition(position);
+  }
+  
+  public double getPosition(){
+    return actuatorEncoder.getPosition();
+  }
+
+  public void setInMotion() {
+    actuatorMotor.set(ActuatorConstants.kSpeed);
+  }
+
+  public void stopMotor() {
+    actuatorMotor.set(0.);
+  }
+
+  /**
+   * mark the current position of the actuator
+   *
+   * @param goal Goal in meters
+   * @return {@link edu.wpi.first.wpilibj2.command.Command}
+   */
+  public void markPosition() {
+    initialPosition = getPosition();
+  }
+
+  /**
+   * check if the actuator reached setpoint
+   *
+   * @param none 
+   * @return true if setpoint is reached
+   */
+  /** Run the control loop to reach and maintain the setpoint from the preferences. */
+  public boolean isReachedSetpoint() {
+    double currentPosition = actuatorEncoder.getPosition();
+    double [] temp = {initialPosition, currentPosition};
+    SmartDashboard.putNumberArray("Actuator Positions", temp);
+    return currentPosition >= initialPosition + ActuatorConstants.kSetPointInRevolutions;
+  }
+
+}

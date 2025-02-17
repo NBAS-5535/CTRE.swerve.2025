@@ -56,8 +56,6 @@ public class AlignCommand extends Command {
     
     RawFiducial fiducial; 
 
-    
-
     try {
       fiducial = m_limelight.getFiducialWithId(m_tagId);
 
@@ -87,19 +85,22 @@ public class AlignCommand extends Command {
     } catch (VisionSubsystem.NoSuchTargetException nste) { 
       System.out.println("No apriltag found");
       if ((rotationalRate != 0) && (velocityX != 0)){
-        /* uncomment for action
+        /* uncomment for action */
         m_drivetrain.setControl(
+          // MAY WANNA VERIFY MOTION DIRECTIONS!!!!!!
+          alignRequest.withRotationalRate(rotationalRate).withVelocityX(velocityX));
+        /* original statement
           alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));//.withVelocityY(velocityY));
         */
         }
       }
-      
     }
-  
 
   @Override
   public boolean isFinished() {
-    return rotationalPidController.atSetpoint() && xPidController.atSetpoint();
+    boolean temp = rotationalPidController.atSetpoint() && xPidController.atSetpoint();
+    SmartDashboard.putBoolean("AlignFinished", temp);
+    return temp;
   }
 
   @Override

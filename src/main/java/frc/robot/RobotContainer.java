@@ -26,11 +26,11 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
-import frc.robot.commands.InstantCommandMarkGyroAngle;
-import frc.robot.commands.InstantCommandMarkGyroPose;
 import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.VisionSubsystem_Test;
@@ -63,9 +63,18 @@ public class RobotContainer {
     public final Pigeon2GyroSubsystem pigeon2Subsystem = new Pigeon2GyroSubsystem(pigeon2);
 
     /* Limelight */
-    public final VisionSubsystem_Test limelight = new VisionSubsystem_Test();
+    /* initial attempt */
+    //public final VisionSubsystem_Test limelight = new VisionSubsystem_Test();
     private final VisionSubsystem m_vision = new VisionSubsystem();
 
+    /* 2025 game related subsystems */
+    /* actuator to move the levator to game start position */
+    public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
+
+    /* elevator subsystem */
+    public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+
+    /************** Ctor */
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -122,7 +131,8 @@ public class RobotContainer {
         // let's try rotation
         //joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward));
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
-        joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
+        // Rotate by 90deg using a fixed speed and time
+        // joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
 
         // point forward
         /*
@@ -130,11 +140,13 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(tempAngle))
         ));
         */
+        /* Rotate by 90deg in-place using a fixed rotational speed
         joystick.povLeft().whileTrue(drivetrain.applyRequest(() ->
             drive.withVelocityX(0) // Drive forward with negative Y (forward)
             .withVelocityY(0) // Drive left with negative X (left)
             .withRotationalRate(tempAngle * 0.1 * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
+        */
         SmartDashboard.putNumber("Angle", tempAngle);
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
@@ -159,7 +171,10 @@ public class RobotContainer {
             new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose")
         ));
         */
-        /* fancy way */
+        /* fancy way: 
+         * Mark current position
+         * Drive forward for 2 meters
+        */
         joystick.povRight().onTrue(new SequentialCommandGroup(
             //new InstantCommandMarkGyroPose(drivetrain),
             new InstantCommand(() -> drivetrain.setCurrentPose()),
@@ -168,12 +183,25 @@ public class RobotContainer {
 
         // get vision-based distance
         //joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
+        /* onTrue: robot moves until the alignment is completed
+        *  whileTrue: must press the button until the alignment is completed
+        */
         //joystick.x().onTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
+        /* simulate a sequence:
+         * align with AprilTag
+         * Move forward by 2 meters
+         */
         joystick.x().onTrue(new SequentialCommandGroup(
             new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId),
-            drivetrain.applyRequest(() -> brake),
+            //drivetrain.applyRequest(() -> brake),
             drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
         ));
+
+        joystick.povUp().whileTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> m_actuator.markPosition()),
+            new InstantCommand(() -> m_actuator.setInMotion()).until(() -> m_actuator.isReachedSetpoint())
+        )
+        );
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

@@ -96,4 +96,27 @@ public class Configs {
       intakeConfig.inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(40);
     }
   }
+
+  public static final class ActuatorSubsystem {
+    public static final SparkMaxConfig actuatorConfig = new SparkMaxConfig();
+
+    static {
+      // Configure basic setting of the arm motor
+      actuatorConfig.smartCurrentLimit(40);
+
+      /*
+       * Configure the closed loop controller. We want to make sure we set the
+       * feedback sensor as the primary encoder.
+       */
+      actuatorConfig
+          .closedLoop
+          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          // Set PID values for position control. We don't need to pass a closed
+          // loop slot, as it will default to slot 0.
+          .p(0.1)
+          .outputRange(-0.5, 0.5);
+
+
+    }
+  }
 }

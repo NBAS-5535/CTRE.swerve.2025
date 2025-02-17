@@ -196,22 +196,53 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants {
-        public static int kElevatorCANId = 20;
+    public static int kElevatorCANId = 20;
 
     public static double kElevatorRampRate = 0.1;
     public static int    kElevatorCurrentLimit = 40;
     public static double kMaxVelocity = Meters.of(4).per(Second).in(MetersPerSecond);
+    public static double kMaxVelocityInRevolutions = 4200; 
     public static double kMaxAcceleration = Meters.of(8).per(Second).per(Second).in(MetersPerSecondPerSecond);
+    public static double kMaxAccelerationInRevolutions = 6000;
 
-    public static final double kElevatorKp = 26.722;
+    public static final double kElevatorKp = 0.1;
     public static final double kElevatorKi = 0;
-    public static final double kElevatorKd = 1.6047;
+    public static final double kElevatorKd = 0.;
 
     public static final double kElevatorkS = 0.01964; // volts (V)
     public static final double kElevatorkV = 3.894; // volt per velocity (V/(m/s))
     public static final double kElevatorkA = 0.173; // volt per acceleration (V/(m/s²))
-    public static final double kElevatorkG = 0.91274; // volts (V)
+    public static final double kElevatorkG = 0.5; // volts (V)
 
+    public static final double kBaseHeight = 0.0;
+    public static final double kBottomReefHeight = 5.0;
+    public static final double kMiddleReefHeight = 10.0;
+    public static final double kAlgaeNetHeight = 15.0;
     
+    public static final class ElevatorSetpointHeights {
+      public static final double kBaseHeight = 0.0;
+      public static final double kBottomReefHeight = 5.0;
+      public static final double kMiddleReefHeight = 10.0;
+      public static final double kAlgaeNetHeight = 15.0;
+    }
+  }
+
+  public static final class ActuatorConstants{
+    public static final int kActuatorMotorCanId = 31;
+
+    public static double kActuatorRampRate = 0.1;
+    public static int    kActuatorCurrentLimit = 40;
+    public static double kMaxVelocity = Meters.of(4).per(Second).in(MetersPerSecond);
+    public static double kMaxAcceleration = Meters.of(8).per(Second).per(Second).in(MetersPerSecondPerSecond);
+
+    public static final double kActuatorKp = 1.;
+    public static final double kActuatorKi = 0;
+    public static final double kActuatorKd = 0.;
+
+    // actuator control parameters
+    public static final double kSpeed = 0.1;
+    public static final double kSetPoint = 2.; //inches
+    public static final int kSetPointInRevolutions = 2000; //inches
+
   }
 }
