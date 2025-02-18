@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.sim.SparkLimitSwitchSim;
+//import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -18,7 +18,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+//import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -33,7 +33,7 @@ import frc.robot.Constants.CoralSubsystemConstants.ElevatorSetpoints;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpointHeights;
 import frc.robot.Constants.SimulationRobotConstants;
-import frc.robot.subsystems.CoralSubsystem.Setpoint;
+import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -70,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   // Simulation setup and variables
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim elevatorMotorSim;
-  private SparkLimitSwitchSim elevatorLimitSwitchSim;
+  //private SparkLimitSwitchSim elevatorLimitSwitchSim;
   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           elevatorMotorModel,
@@ -108,11 +108,12 @@ public class ElevatorSubsystem extends SubsystemBase {
       * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
       * will prevent any actuation of the elevator in the reverse direction if the limit switch is
       * pressed.
-      */
+      
     elevatorConfig
         .limitSwitch
         .reverseLimitSwitchEnabled(true)
         .reverseLimitSwitchType(Type.kNormallyOpen);
+    */
 
       /*
        * Configure the closed loop controller. We want to make sure we set the
@@ -142,7 +143,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     /******** Simulation setup */
     // Initialize simulation values
     elevatorMotorSim = new SparkFlexSim(m_motor, elevatorMotorModel);
-    elevatorLimitSwitchSim = new SparkLimitSwitchSim(m_motor, false);
+    //elevatorLimitSwitchSim = new SparkLimitSwitchSim(m_motor, false);
       
   }
   
@@ -221,12 +222,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     moveToSetpoint();
-    zeroElevatorOnLimitSwitch();
-    zeroOnUserButton();
+    //zeroElevatorOnLimitSwitch();
+    //zeroOnUserButton();
 
     // Display subsystem values
-    SmartDashboard.putNumber("Coral/Elevator/Target Position", m_height);
-    SmartDashboard.putNumber("Coral/Elevator/Actual Position", m_encoder.getPosition());
+    SmartDashboard.putNumber("Elevator/Target Position", m_height);
+    SmartDashboard.putNumber("Elevator/Actual Position", m_encoder.getPosition());
 
     // Update mechanism2d
     m_elevatorMech2d.setLength(
@@ -243,7 +244,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     m_elevatorSim.setInput(m_motor.getAppliedOutput() * RobotController.getBatteryVoltage());
 
     // Update sim limit switch
-    elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
+    //elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
 
     // Next, we update it. The standard loop time is 20ms.
     m_elevatorSim.update(0.020);

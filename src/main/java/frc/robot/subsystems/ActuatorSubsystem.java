@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ActuatorConstants;
@@ -70,8 +71,8 @@ public class ActuatorSubsystem extends SubsystemBase {
     return actuatorEncoder.getPosition();
   }
 
-  public void setInMotion() {
-    actuatorMotor.set(ActuatorConstants.kSpeed);
+  public void setInMotion(int direction) {
+    actuatorMotor.set(direction * ActuatorConstants.kSpeed);
     SmartDashboard.putNumber("Actuator Speed", ActuatorConstants.kSpeed);
   }
 
@@ -82,9 +83,16 @@ public class ActuatorSubsystem extends SubsystemBase {
   /**
    * mark the current position of the actuator
    *
-   * @param goal Goal in meters
+   * @param none
    * @return {@link edu.wpi.first.wpilibj2.command.Command}
    */
+  public Command markPositionCommand() {
+    //initialPosition = getPosition();
+    //SmartDashboard.putNumber("Actuator Init", initialPosition);
+    return this.runOnce( () -> this.markPosition());
+  }
+
+  // plain-vanilla marking
   public void markPosition() {
     initialPosition = getPosition();
     SmartDashboard.putNumber("Actuator Init", initialPosition);
@@ -97,11 +105,17 @@ public class ActuatorSubsystem extends SubsystemBase {
    * @return true if setpoint is reached
    */
   /** Run the control loop to reach and maintain the setpoint from the preferences. */
-  public boolean isReachedSetpoint() {
+  public boolean isReachedSetpoint(int direction) {
     double currentPosition = actuatorEncoder.getPosition();
     double [] temp = {initialPosition, currentPosition};
     SmartDashboard.putNumberArray("Actuator Positions", temp);
-    return currentPosition >= initialPosition + ActuatorConstants.kSetPointInRevolutions;
+    boolean condition = direction * currentPosition >= direction * initialPosition + ActuatorConstants.kSetPointInRevolutions;
+    if ( condition ) {
+      stopMotor();
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

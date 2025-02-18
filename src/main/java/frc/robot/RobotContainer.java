@@ -197,10 +197,18 @@ public class RobotContainer {
             drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
         ));
 
+        // move the elevator to game position: direction =1
         joystick.povUp().whileTrue(new SequentialCommandGroup(
+            m_actuator.markPositionCommand(),
+            //new InstantCommand(() -> m_actuator.markPosition()),
+            //new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
+            new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(0.5))
+        );
+        // move elevator back to start position
+        joystick.povCenter().onTrue(new SequentialCommandGroup(
             new InstantCommand(() -> m_actuator.markPosition()),
-            //new InstantCommand(() -> m_actuator.setInMotion()).until(() -> m_actuator.isReachedSetpoint())
-            new InstantCommand(() -> m_actuator.setInMotion()).withTimeout(0.5))
+            //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
+            new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);
