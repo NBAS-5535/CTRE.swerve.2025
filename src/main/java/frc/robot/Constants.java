@@ -225,6 +225,8 @@ public final class Constants {
       public static final double kMiddleReefHeight = 10.0;
       public static final double kAlgaeNetHeight = 15.0;
     }
+
+    
   }
 
   public static final class ActuatorConstants{
@@ -244,5 +246,30 @@ public final class Constants {
     public static final double kSetPoint = 2.; //inches
     public static final int kSetPointInRevolutions = 200; //revolutions
 
+  }
+
+  public static final class OurCoralSubsystemConstants {
+    public static final int kElevatorMotorCanId = 42;
+    public static final int kArmMotorCanId = 43;
+    public static final int kIntakeMotorCanId = 41;
+
+    public static final class ElevatorSetpoints {
+      public static final double kBase = 0.0;
+      public static final double kBottomReef = 5.0;
+      public static final double kMiddleReef = 10.0;
+      public static final double kAlgaeNet = 15.0;
+    }
+
+    public static final class ArmSetpoints {
+      public static final double kBase = 33;
+      public static final double kBottomReef = 0;
+      public static final double kMiddleReef = 2;
+      public static final double kAlgaeNet = 19;
+    }
+
+    public static final class IntakeSetpoints {
+      public static final double kForward = 0.5; // power-level for motor
+      public static final double kReverse = -0.5; // reverse
+    }
   }
 }

@@ -15,32 +15,31 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.CoralSubsystemConstants;
-import frc.robot.Constants.CoralSubsystemConstants.ArmSetpoints;
-import frc.robot.Constants.CoralSubsystemConstants.ElevatorSetpoints;
-import frc.robot.Constants.CoralSubsystemConstants.IntakeSetpoints;
+import frc.robot.Constants.OurCoralSubsystemConstants;
+import frc.robot.Constants.OurCoralSubsystemConstants.ArmSetpoints;
+import frc.robot.Constants.OurCoralSubsystemConstants.ElevatorSetpoints;
+import frc.robot.Constants.OurCoralSubsystemConstants.IntakeSetpoints;
 
 public class OurAlgaeSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
   public enum Setpoint {
-    kFeederStation,
-    kLevel1,
-    kLevel2,
-    kLevel3,
-    kLevel4;
+    kBase,
+    kBottomReef,
+    kMiddleReef,
+    kAlgaeNet
   }
 
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
-  private SparkMax armMotor =
-      new SparkMax(CoralSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
+  private SparkFlex armMotor =
+      new SparkFlex(OurCoralSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
   private RelativeEncoder armEncoder = armMotor.getEncoder();
 
   // Initialize elevator SPARK. We will use MAXMotion position control for the elevator, so we also
   // need to initialize the closed loop controller and encoder.
   private SparkFlex elevatorMotor =
-      new SparkFlex(CoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
+      new SparkFlex(OurCoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
@@ -48,12 +47,12 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
   // controller like above.
   private SparkMax intakeMotor =
-      new SparkMax(CoralSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
+      new SparkMax(OurCoralSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
 
   // Member variables for subsystem state management
   private boolean wasResetByButton = false;
-  private double armCurrentTarget = ArmSetpoints.kFeederStation;
-  private double elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+  private double armCurrentTarget = ArmSetpoints.kBase; // may have to start at a heigher level kMiddleReef
+  private double elevatorCurrentTarget = ElevatorSetpoints.kBase;
 
   
   public OurAlgaeSubsystem() {
@@ -123,25 +122,21 @@ public class OurAlgaeSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           switch (setpoint) {
-            case kFeederStation:
-              armCurrentTarget = ArmSetpoints.kFeederStation;
-              elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+            case kBase:
+              armCurrentTarget = ArmSetpoints.kBase;
+              elevatorCurrentTarget = ElevatorSetpoints.kBase;
               break;
-            case kLevel1:
-              armCurrentTarget = ArmSetpoints.kLevel1;
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
+            case kBottomReef:
+              armCurrentTarget = ArmSetpoints.kBottomReef;
+              elevatorCurrentTarget = ElevatorSetpoints.kBottomReef;
               break;
-            case kLevel2:
-              armCurrentTarget = ArmSetpoints.kLevel2;
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
+            case kMiddleReef:
+              armCurrentTarget = ArmSetpoints.kMiddleReef;
+              elevatorCurrentTarget = ElevatorSetpoints.kMiddleReef;
               break;
-            case kLevel3:
-              armCurrentTarget = ArmSetpoints.kLevel3;
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
-              break;
-            case kLevel4:
-              armCurrentTarget = ArmSetpoints.kLevel4;
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
+            case kAlgaeNet:
+              armCurrentTarget = ArmSetpoints.kAlgaeNet;
+              elevatorCurrentTarget = ElevatorSetpoints.kAlgaeNet;
               break;
           }
         });
