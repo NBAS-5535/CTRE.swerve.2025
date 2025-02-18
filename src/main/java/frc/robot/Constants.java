@@ -196,7 +196,7 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants {
-    public static int kElevatorCANId = 20;
+    public static int kElevatorCANId = 42;
 
     public static double kElevatorRampRate = 0.1;
     public static int    kElevatorCurrentLimit = 40;
@@ -228,21 +228,21 @@ public final class Constants {
   }
 
   public static final class ActuatorConstants{
-    public static final int kActuatorMotorCanId = 31;
+    public static final int kActuatorMotorCanId = 44;
 
     public static double kActuatorRampRate = 0.1;
     public static int    kActuatorCurrentLimit = 40;
     public static double kMaxVelocity = Meters.of(4).per(Second).in(MetersPerSecond);
     public static double kMaxAcceleration = Meters.of(8).per(Second).per(Second).in(MetersPerSecondPerSecond);
 
-    public static final double kActuatorKp = 1.;
+    public static final double kActuatorKp = 0.1;
     public static final double kActuatorKi = 0;
     public static final double kActuatorKd = 0.;
 
     // actuator control parameters
     public static final double kSpeed = 0.1;
     public static final double kSetPoint = 2.; //inches
-    public static final int kSetPointInRevolutions = 2000; //inches
+    public static final int kSetPointInRevolutions = 200; //revolutions
 
   }
 }

@@ -72,7 +72,7 @@ public class RobotContainer {
     public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
 
     /* elevator subsystem */
-    public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+    //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
     /************** Ctor */
     public RobotContainer() {
@@ -199,8 +199,8 @@ public class RobotContainer {
 
         joystick.povUp().whileTrue(new SequentialCommandGroup(
             new InstantCommand(() -> m_actuator.markPosition()),
-            new InstantCommand(() -> m_actuator.setInMotion()).until(() -> m_actuator.isReachedSetpoint())
-        )
+            //new InstantCommand(() -> m_actuator.setInMotion()).until(() -> m_actuator.isReachedSetpoint())
+            new InstantCommand(() -> m_actuator.setInMotion()).withTimeout(0.5))
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);
