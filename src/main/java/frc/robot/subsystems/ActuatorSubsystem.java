@@ -51,7 +51,9 @@ public class ActuatorSubsystem extends SubsystemBase {
     // Zero actuator encoder on initialization
     this.setPosition(0);
 
-    actuatorController.setReference(ActuatorConstants.kSetPointInRevolutions, ControlType.kPosition);
+    actuatorController.setReference(0, ControlType.kPosition);
+    // sets max revolutions in Constants.java as reference -> moves the actuator to that position (i.e., upright) 
+    //actuatorController.setReference(ActuatorConstants.kSetPointInRevolutions, ControlType.kPosition);
 
     initialPosition = actuatorEncoder.getPosition();
   }

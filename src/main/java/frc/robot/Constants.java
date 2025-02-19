@@ -244,14 +244,14 @@ public final class Constants {
     // actuator control parameters
     public static final double kSpeed = 0.1;
     public static final double kSetPoint = 2.; //inches
-    public static final int kSetPointInRevolutions = 200; //revolutions
+    public static final int kSetPointInRevolutions = 40; //revolutions
 
   }
 
   public static final class OurCoralSubsystemConstants {
     public static final int kElevatorMotorCanId = 42;
-    public static final int kArmMotorCanId = 43;
-    public static final int kIntakeMotorCanId = 41;
+    public static final int kArmMotorCanId = 41;
+    public static final int kIntakeMotorCanId = 43;
 
     public static final class ElevatorSetpoints {
       public static final double kBase = 0.0;

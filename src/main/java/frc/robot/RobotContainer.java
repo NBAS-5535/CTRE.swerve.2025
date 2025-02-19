@@ -119,7 +119,7 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // prefixed movement in +/- X-direction
         /*
@@ -201,17 +201,19 @@ public class RobotContainer {
         ));
 
         // move the elevator to game position: direction =1
-        joystick.povUp().whileTrue(new SequentialCommandGroup(
-            m_actuator.markPositionCommand(),
-            //new InstantCommand(() -> m_actuator.markPosition()),
-            //new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
-            new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(0.5))
+        joystick.leftBumper().onTrue(new SequentialCommandGroup(
+            //m_actuator.markPositionCommand(),
+            new InstantCommand(() -> m_actuator.markPosition()),
+            new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
+            //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
+            )
         );
         // move elevator back to start position
-        joystick.povCenter().onTrue(new SequentialCommandGroup(
+        joystick.rightBumper().onTrue(new SequentialCommandGroup(
             new InstantCommand(() -> m_actuator.markPosition()),
-            //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
-            new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
+            new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
+            //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
+        )
         );
 
         /* OurAlgaeSubsystem
