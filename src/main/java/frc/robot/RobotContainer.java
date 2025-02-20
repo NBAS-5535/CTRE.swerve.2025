@@ -220,8 +220,16 @@ public class RobotContainer {
         )
         );
 
-        joystick.a().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBase));
-        joystick.b().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBottomReef));
+        /* Try gradually moving the elevator to determine operational heights */
+        // A -> Run elevator UP
+        joystick.a().whileTrue(m_algaeSubsystem.runElevatorUpCommand());
+        // B -> Run elevator DOWN
+        joystick.b().whileTrue(m_algaeSubsystem.runElevatorDownCommand());
+
+        /* command to move the elevator to a pre-specified height */
+        //joystick.a().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBase));
+        //joystick.b().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBottomReef));
+
         /* OurAlgaeSubsystem
         // Left Bumper -> Run tube intake
         m_driverController.leftBumper().whileTrue(m_algaeSubsystem.runIntakeCommand());

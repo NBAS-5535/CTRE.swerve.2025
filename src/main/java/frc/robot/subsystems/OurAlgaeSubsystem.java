@@ -109,6 +109,11 @@ public class OurAlgaeSubsystem extends SubsystemBase {
     }
   }
 
+  /** Set elevator motor power in the range of [-1, 1]. - TEST Purpose: step through */
+  private void setElevatorPower(double power) {
+    elevatorMotor.set(power);
+  }
+
   /** Set the intake motor power in the range of [-1, 1]. */
   private void setIntakePower(double power) {
     intakeMotor.set(power);
@@ -140,6 +145,23 @@ public class OurAlgaeSubsystem extends SubsystemBase {
               break;
           }
         });
+  }
+
+  /**
+   * Command to run the elevator motor. 
+   * Intended to step through to adjust proper setpoints for elevator heights
+   * When the command is interrupted, e.g. the button is released, the motor will stop.
+   */
+  public Command runElevatorUpCommand() {
+    return this.startEnd(
+        () -> this.setElevatorPower(OurCoralSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setElevatorPower(0.0));
+  }
+
+  public Command runElevatorDownCommand() {
+    return this.startEnd(
+        () -> this.setElevatorPower((-1) * OurCoralSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setElevatorPower(0.0));
   }
 
   /**

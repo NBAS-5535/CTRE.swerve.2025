@@ -260,6 +260,8 @@ public final class Constants {
       public static final double kAlgaeNet = 15.0;
     }
 
+    public static final double ElevatorSetpointTestSpeed = 0.1;
+
     public static final class ArmSetpoints {
       public static final double kBase = 33;
       public static final double kBottomReef = 0;
