@@ -255,12 +255,12 @@ public final class Constants {
 
     public static final class ElevatorSetpoints {
       public static final double kBase = 0.0;
-      public static final double kBottomReef = -100.0;
+      public static final double kBottomReef = 10.0;
       public static final double kMiddleReef = 25.0;
       public static final double kAlgaeNet = 15.0;
     }
 
-    public static final double ElevatorSetpointTestSpeed = 0.1;
+    public static final double ElevatorSetpointTestSpeed = 0.5;
     public static final double ArmSetpointTestSpeed = 0.1;
     public static final double IntakeSetpointTestSpeed = 0.1;
 
@@ -272,8 +272,8 @@ public final class Constants {
     }
 
     public static final class IntakeSetpoints {
-      public static final double kForward = 0.5; // power-level for motor
-      public static final double kReverse = -0.5; // reverse
+      public static final double kForward = 0.7; // power-level for motor
+      public static final double kReverse = -0.9; // reverse
     }
   }
 }

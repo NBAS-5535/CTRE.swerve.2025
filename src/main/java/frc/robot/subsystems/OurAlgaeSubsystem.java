@@ -160,7 +160,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   public Command runElevatorUpCommand() {
     return this.startEnd(
         () -> this.setElevatorPower(OurCoralSubsystemConstants.ElevatorSetpointTestSpeed), 
-        () -> this.setElevatorPower(0.0));
+        () -> this.setElevatorPower(0.1));
   }
 
   public Command runElevatorDownCommand() {
@@ -206,7 +206,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    moveToSetpoint();
+    //moveToSetpoint();
     //zeroElevatorOnLimitSwitch();
     //zeroOnUserButton();
 
