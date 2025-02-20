@@ -261,6 +261,8 @@ public final class Constants {
     }
 
     public static final double ElevatorSetpointTestSpeed = 0.1;
+    public static final double ArmSetpointTestSpeed = 0.1;
+    public static final double IntakeSetpointTestSpeed = 0.1;
 
     public static final class ArmSetpoints {
       public static final double kBase = 33;

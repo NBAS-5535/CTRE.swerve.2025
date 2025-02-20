@@ -100,6 +100,8 @@ public class RobotContainer {
             )
         );
 
+        /* Swerve DriveTrain */
+        boolean driveTest = false;
         /* reused down below - check ourcoral
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
@@ -109,21 +111,23 @@ public class RobotContainer {
 
         // Rotate by a specific angle
         double tempAngle = Math.PI / 2.;
-        //joystick.x().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(tempAngle))));
-
-
+        
         // drive at a constant speed
-        joystick.y().whileTrue(drivetrain.applyRequest(() -> goForward.withVolts(0.2 * MaxSpeed)));
+        //joystick.y().whileTrue(drivetrain.applyRequest(() -> goForward.withVolts(0.2 * MaxSpeed)));
+
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(2));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        if (driveTest) {
+            joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(2));
+            joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+            joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+            joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        } // end driveTest
 
         // reset the field-centric heading on left bumper press
-        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        if (driveTest)
+            joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // prefixed movement in +/- X-direction
         /*
@@ -138,8 +142,11 @@ public class RobotContainer {
         // let's try rotation
         //joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward));
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
+
         // Rotate by 90deg using a fixed speed and time
-        // joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
+        if (driveTest) {
+            joystick.povUp().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
+        } // end driveTest
 
         // point forward
         /*
@@ -157,74 +164,101 @@ public class RobotContainer {
         SmartDashboard.putNumber("Angle", tempAngle);
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
-        //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
-        //pigeon2Subsystem.setAngleMarker();
-        //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
-        /* rotate robot "gradually" until ~90deg is reached*/
-        joystick.povDown().onTrue(new SequentialCommandGroup(
-            //new InstantCommandMarkGyroAngle(pigeon2Subsystem),
-            new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
-            //new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
-            //Commands.print("Reset the angles"),
-            drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
-            );
+        /* rotate by setting a marker and turning the robot until 90deg is reached */
+        if (driveTest) {
+            //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
+            //pigeon2Subsystem.setAngleMarker();
+            //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
+            /* rotate robot "gradually" until ~90deg is reached*/
+            joystick.povDown().onTrue(new SequentialCommandGroup(
+                //new InstantCommandMarkGyroAngle(pigeon2Subsystem),
+                new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
+                //new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
+                //Commands.print("Reset the angles"),
+                drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
+                );
+        } // end driveTest
 
         /* get robot Pode/location info */
-        /* pedantic way */
-        /*
-        joystick.povRight().onTrue(new SequentialCommandGroup(
-            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose"),
-            drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1),
-            new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose")
-        ));
-        */
-        /* fancy way: 
-         * Mark current position
-         * Drive forward for 2 meters
-        */
-        joystick.povRight().onTrue(new SequentialCommandGroup(
-            //new InstantCommandMarkGyroPose(drivetrain),
-            new InstantCommand(() -> drivetrain.setCurrentPose()),
-            drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
-        ));
+        if (driveTest) {
+            /* pedantic way */
+            /*
+            joystick.povRight().onTrue(new SequentialCommandGroup(
+                new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose"),
+                drivetrain.sysIdDynamic(Direction.kForward).withTimeout(1),
+                new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "pose")
+            ));
+            */
+            /* fancy way: 
+            * Mark current position
+            * Drive forward for 2 meters
+            */
+            joystick.povRight().onTrue(new SequentialCommandGroup(
+                //new InstantCommandMarkGyroPose(drivetrain),
+                new InstantCommand(() -> drivetrain.setCurrentPose()),
+                drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
+            ));
+        } // end driveTest
 
-        // get vision-based distance
-        //joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
-        /* onTrue: robot moves until the alignment is completed
-        *  whileTrue: must press the button until the alignment is completed
-        */
-        //joystick.x().onTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
-        /* simulate a sequence:
-         * align with AprilTag
-         * Move forward by 2 meters
-         */
-        joystick.x().onTrue(new SequentialCommandGroup(
-            new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId),
-            //drivetrain.applyRequest(() -> brake),
-            drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
-        ));
+        /* Vision Subsystem */
+        boolean visionTest = false;
+        if (visionTest) {
+            // get vision-based distance
+            //joystick.x().onTrue(new InstantCommand(() -> limelight.getDistanceToTarget()));
+            /* onTrue: robot moves until the alignment is completed
+            *  whileTrue: must press the button until the alignment is completed
+            */
+            //joystick.x().onTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
+            /* simulate a sequence:
+            * align with AprilTag
+            * Move forward by 2 meters
+            */
+            joystick.x().onTrue(new SequentialCommandGroup(
+                new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId),
+                //drivetrain.applyRequest(() -> brake),
+                drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
+            ));
+        } // end visionTest
 
-        // move the elevator to game position: direction =1
-        joystick.leftBumper().onTrue(new SequentialCommandGroup(
-            //m_actuator.markPositionCommand(),
-            new InstantCommand(() -> m_actuator.markPosition()),
-            new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
-            //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
-            )
-        );
-        // move elevator back to start position
-        joystick.rightBumper().onTrue(new SequentialCommandGroup(
-            new InstantCommand(() -> m_actuator.markPosition()),
-            new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
-            //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
-        )
-        );
+        /* Actuator Subsystem */
+        boolean actuatorTest = true;
+        if (actuatorTest) {
+            // move the elevator to game position: direction =1
+            joystick.leftBumper().onTrue(new SequentialCommandGroup(
+                //m_actuator.markPositionCommand(),
+                new InstantCommand(() -> m_actuator.markPosition()),
+                    new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
+                    //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
+                    )
+                );
+                // move elevator back to start position
+                joystick.rightBumper().onTrue(new SequentialCommandGroup(
+                    new InstantCommand(() -> m_actuator.markPosition()),
+                    new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
+                    //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
+                )
+                );
+        } // end actuator test
 
+        /* Algae Subsystem */
         /* Try gradually moving the elevator to determine operational heights */
         // A -> Run elevator UP
         joystick.a().whileTrue(m_algaeSubsystem.runElevatorUpCommand());
         // B -> Run elevator DOWN
         joystick.b().whileTrue(m_algaeSubsystem.runElevatorDownCommand());
+
+        /* Try gradually moving the arm to determine operational heights */
+        // povUp -> Run arm UP
+        joystick.povUp().whileTrue(m_algaeSubsystem.runArmUpCommand());
+        // povDown -> Run arm DOWN
+        joystick.povDown().whileTrue(m_algaeSubsystem.runArmDownCommand());
+
+        /* run intake motor in suck-in and push-out modes */
+        // povRight -> Run tube intake
+        joystick.povRight().whileTrue(m_algaeSubsystem.runIntakeCommand());
+
+        // povLeft -> Run tube intake in reverse
+        joystick.povLeft().whileTrue(m_algaeSubsystem.reverseIntakeCommand());
 
         /* command to move the elevator to a pre-specified height */
         //joystick.a().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBase));
