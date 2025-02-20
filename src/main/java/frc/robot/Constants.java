@@ -255,8 +255,8 @@ public final class Constants {
 
     public static final class ElevatorSetpoints {
       public static final double kBase = 0.0;
-      public static final double kBottomReef = 5.0;
-      public static final double kMiddleReef = 10.0;
+      public static final double kBottomReef = -100.0;
+      public static final double kMiddleReef = 25.0;
       public static final double kAlgaeNet = 15.0;
     }
 

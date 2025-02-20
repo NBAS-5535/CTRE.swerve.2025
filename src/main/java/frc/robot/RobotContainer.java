@@ -31,6 +31,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.OurAlgaeSubsystem;
+import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.VisionSubsystem_Test;
@@ -74,9 +76,9 @@ public class RobotContainer {
     /* elevator subsystem */
     //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
-    /** OurAlgaeSubsystem
-    private final OurCoralSubsystem m_coralSubSystem = new OurCoralSubsystem();
-     */
+    /** OurAlgaeSubsystem */
+    private final OurAlgaeSubsystem m_algaeSubsystem = new OurAlgaeSubsystem();
+    /* */
     /************** Ctor */
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
@@ -98,10 +100,12 @@ public class RobotContainer {
             )
         );
 
+        /* reused down below - check ourcoral
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+        */
 
         // Rotate by a specific angle
         double tempAngle = Math.PI / 2.;
@@ -216,30 +220,32 @@ public class RobotContainer {
         )
         );
 
+        joystick.a().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBase));
+        joystick.b().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBottomReef));
         /* OurAlgaeSubsystem
         // Left Bumper -> Run tube intake
-        m_driverController.leftBumper().whileTrue(m_coralSubSystem.runIntakeCommand());
+        m_driverController.leftBumper().whileTrue(m_algaeSubsystem.runIntakeCommand());
 
         // Right Bumper -> Run tube intake in reverse
-        m_driverController.rightBumper().whileTrue(m_coralSubSystem.reverseIntakeCommand());
+        m_driverController.rightBumper().whileTrue(m_algaeSubsystem.reverseIntakeCommand());
 
         // B Button -> Elevator/Arm to human player position, set ball intake to stow
         // when idle
         m_driverController
             .b()
             .onTrue(
-                m_coralSubSystem
+                m_algaeSubsystem
                     .setSetpointCommand(Setpoint.kBase)
                     .alongWith(m_algaeSubsystem.stowCommand()));
 
         // A Button -> Elevator/Arm to BottomReef position
-        m_driverController.a().onTrue(m_coralSubSystem.setSetpointCommand(Setpoint.kBottomReef));
+        m_driverController.a().onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBottomReef));
 
         // X Button -> Elevator/Arm to MiddleReef position
-        m_driverController.x().onTrue(m_coralSubSystem.setSetpointCommand(Setpoint.kMiddleReef));
+        m_driverController.x().onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kMiddleReef));
 
         // Y Button -> Elevator/Arm to lAlgaeNet position
-        m_driverController.y().onTrue(m_coralSubSystem.setSetpointCommand(Setpoint.kAlgeaNet));
+        m_driverController.y().onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgeaNet));
 
         // Right Trigger -> Run ball intake, set to leave out when idle
         m_driverController

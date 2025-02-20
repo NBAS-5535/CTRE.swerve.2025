@@ -164,7 +164,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   public void periodic() {
     moveToSetpoint();
     //zeroElevatorOnLimitSwitch();
-    zeroOnUserButton();
+    //zeroOnUserButton();
 
     // Display subsystem values
     SmartDashboard.putNumber("Coral/Arm/Target Position", armCurrentTarget);
