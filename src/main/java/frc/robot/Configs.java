@@ -20,7 +20,7 @@ public class Configs {
 
     static {
       // Configure basic settings of the arm motor
-      armConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+      armConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
 
       /*
        * Configure the closed loop controller. We want to make sure we set the
@@ -39,7 +39,7 @@ public class Configs {
           .allowedClosedLoopError(0.25);
 
       // Configure basic settings of the elevator motor
-      elevatorConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(50).voltageCompensation(12);
+      elevatorConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(50).voltageCompensation(12);
 
       /*
        * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
@@ -97,17 +97,18 @@ public class Configs {
     }
   }
 
+  /*
   public static final class ActuatorSubsystem {
     public static final SparkMaxConfig actuatorConfig = new SparkMaxConfig();
 
     static {
-      // Configure basic setting of the arm motor
+      // Configure basic setting of the actuator motor
       actuatorConfig.smartCurrentLimit(40);
 
-      /*
-       * Configure the closed loop controller. We want to make sure we set the
-       * feedback sensor as the primary encoder.
-       */
+      //
+      // Configure the closed loop controller. We want to make sure we set the
+      // feedback sensor as the primary encoder.
+      //
       actuatorConfig
           .closedLoop
           .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -119,4 +120,5 @@ public class Configs {
 
     }
   }
+  */
 }

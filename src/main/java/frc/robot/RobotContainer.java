@@ -241,24 +241,27 @@ public class RobotContainer {
         } // end actuator test
 
         /* Algae Subsystem */
-        /* Try gradually moving the elevator to determine operational heights */
-        // A -> Run elevator UP
-        joystick.a().whileTrue(m_algaeSubsystem.runElevatorUpCommand());
-        // B -> Run elevator DOWN
-        joystick.b().whileTrue(m_algaeSubsystem.runElevatorDownCommand());
+        boolean algaeSubsystemTuning = true;
+        if (algaeSubsystemTuning) {
+            /* Try gradually moving the elevator to determine operational heights */
+            // A -> Run elevator UP
+            joystick.a().whileTrue(m_algaeSubsystem.runElevatorUpCommand());
+            // B -> Run elevator DOWN
+            joystick.b().whileTrue(m_algaeSubsystem.runElevatorDownCommand());
 
-        /* Try gradually moving the arm to determine operational heights */
-        // povUp -> Run arm UP
-        joystick.povUp().whileTrue(m_algaeSubsystem.runArmUpCommand());
-        // povDown -> Run arm DOWN
-        joystick.povDown().whileTrue(m_algaeSubsystem.runArmDownCommand());
+            /* Try gradually moving the arm to determine operational heights */
+            // povUp -> Run arm UP
+            joystick.povUp().whileTrue(m_algaeSubsystem.runArmUpCommand());
+            // povDown -> Run arm DOWN
+            joystick.povDown().whileTrue(m_algaeSubsystem.runArmDownCommand());
 
-        /* run intake motor in suck-in and push-out modes */
-        // povRight -> Run tube intake
-        joystick.povRight().whileTrue(m_algaeSubsystem.runIntakeCommand());
+            /* run intake motor in suck-in and push-out modes */
+            // povRight -> Run tube intake
+            joystick.povRight().whileTrue(m_algaeSubsystem.runIntakeCommand());
 
-        // povLeft -> Run tube intake in reverse
-        joystick.povLeft().whileTrue(m_algaeSubsystem.reverseIntakeCommand());
+            // povLeft -> Run tube intake in reverse
+            joystick.povLeft().whileTrue(m_algaeSubsystem.reverseIntakeCommand());
+        }
 
         /* command to move the elevator to a pre-specified height */
         //joystick.a().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBase));

@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.Optional;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -36,7 +40,21 @@ public class VisionSubsystem extends SubsystemBase {
         0);
     // Overrides the valid AprilTag IDs that will be used for localization. 
     // Tags not in this list will be ignored for robot pose estimation.
-    LimelightHelpers.SetFiducialIDFiltersOverride("", new int[] {5});
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    int[] tagsToConsider = new int[] {};
+    if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+          tagsToConsider = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        }
+        if (ally.get() == Alliance.Blue) {
+          tagsToConsider = new int[] {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+        }
+    }
+    else {
+      System.out.println("No Alliance info is available");
+    }
+
+    LimelightHelpers.SetFiducialIDFiltersOverride("", tagsToConsider);
   }
 
   @Override

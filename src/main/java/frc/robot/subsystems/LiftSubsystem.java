@@ -20,99 +20,99 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.ActuatorConstants;
+import frc.robot.Constants.LiftConstants;
 
-public class ActuatorSubsystem extends SubsystemBase {
-  /** Creates a new ActuatorSubsystem. */
-  private SparkMax actuatorMotor =
-      new SparkMax(ActuatorConstants.kActuatorMotorCanId, MotorType.kBrushless);
-  private SparkClosedLoopController actuatorController = actuatorMotor.getClosedLoopController();
-  private RelativeEncoder actuatorEncoder = actuatorMotor.getEncoder();
+public class LiftSubsystem extends SubsystemBase {
+  /** Creates a new LiftSubsystem. */
+  private SparkMax liftMotor =
+      new SparkMax(LiftConstants.kLiftMotorCanId, MotorType.kBrushless);
+  private SparkClosedLoopController liftController = liftMotor.getClosedLoopController();
+  private RelativeEncoder liftEncoder = liftMotor.getEncoder();
 
   private double initialPosition;
 
-  public ActuatorSubsystem() {
-    SparkMaxConfig actuatorConfig = new SparkMaxConfig();
+  public LiftSubsystem() {
+    SparkMaxConfig liftConfig = new SparkMaxConfig();
 
-    actuatorConfig
-        .smartCurrentLimit(ActuatorConstants.kActuatorCurrentLimit)
-        .closedLoopRampRate(ActuatorConstants.kActuatorRampRate)
+    liftConfig
+        .smartCurrentLimit(LiftConstants.kLiftCurrentLimit)
+        .closedLoopRampRate(LiftConstants.kLiftRampRate)
         .closedLoop
-        .pid(ActuatorConstants.kActuatorKp, ActuatorConstants.kActuatorKi, ActuatorConstants.kActuatorKd)
+        .pid(LiftConstants.kLiftKp, LiftConstants.kLiftKi, LiftConstants.kLiftKd)
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .outputRange(-1, 1);
-        actuatorConfig.idleMode(IdleMode.kBrake);
+        liftConfig.idleMode(IdleMode.kBrake);
 
-    actuatorMotor.configure(
-        actuatorConfig,
+    liftMotor.configure(
+        liftConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // Zero actuator encoder on initialization
+    // Zero lift encoder on initialization
     this.setPosition(0);
 
-    // sets max revolutions in Constants.java as reference -> moves the actuator to that position (i.e., upright) 
-    //actuatorController.setReference(ActuatorConstants.kSetPointInRevolutions, ControlType.kPosition);
+    // sets max revolutions in Constants.java as reference -> moves the lift to that position (i.e., upright) 
+    //liftController.setReference(LiftConstants.kSetPointInRevolutions, ControlType.kPosition);
     // set reference as the fully-retracted position
-    actuatorController.setReference(0, ControlType.kPosition);
+    liftController.setReference(0, ControlType.kPosition);
 
-    initialPosition = actuatorEncoder.getPosition();
+    initialPosition = liftEncoder.getPosition();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     //setInMotion();
-    SmartDashboard.putNumber("Actuator Position", actuatorEncoder.getPosition());
+    SmartDashboard.putNumber("Lift Position", liftEncoder.getPosition());
   }
 
   public void setPosition(double position){
-    actuatorEncoder.setPosition(position);
+    liftEncoder.setPosition(position);
   }
   
   public double getPosition(){
-    return actuatorEncoder.getPosition();
+    return liftEncoder.getPosition();
   }
 
   public void setInMotion(int direction) {
-    actuatorMotor.set(direction * ActuatorConstants.kSpeed);
-    SmartDashboard.putNumber("Actuator Speed", ActuatorConstants.kSpeed);
+    liftMotor.set(direction * LiftConstants.kSpeed);
+    SmartDashboard.putNumber("Lift Speed", LiftConstants.kSpeed);
   }
 
   public void stopMotor() {
-    actuatorMotor.set(0.);
+    liftMotor.set(0.);
   }
 
   /**
-   * mark the current position of the actuator
+   * mark the current position of the lift
    *
    * @param none
    * @return {@link edu.wpi.first.wpilibj2.command.Command}
    */
   public Command markPositionCommand() {
     //initialPosition = getPosition();
-    //SmartDashboard.putNumber("Actuator Init", initialPosition);
+    //SmartDashboard.putNumber("Lift Init", initialPosition);
     return this.runOnce( () -> this.markPosition());
   }
 
   // plain-vanilla marking
   public void markPosition() {
     initialPosition = getPosition();
-    SmartDashboard.putNumber("Actuator Init", initialPosition);
+    SmartDashboard.putNumber("Lift Init", initialPosition);
   }
 
   /**
-   * check if the actuator reached setpoint
+   * check if the lift reached setpoint
    *
    * @param none 
    * @return true if setpoint is reached
    */
   /** Run the control loop to reach and maintain the setpoint from the preferences. */
   public boolean isReachedSetpoint(int direction) {
-    double currentPosition = actuatorEncoder.getPosition();
+    double currentPosition = liftEncoder.getPosition();
     double [] temp = {initialPosition, currentPosition};
-    SmartDashboard.putNumberArray("Actuator Positions", temp);
-    boolean condition = direction * currentPosition >= direction * initialPosition + ActuatorConstants.kSetPointInRevolutions;
+    SmartDashboard.putNumberArray("Lift Positions", temp);
+    boolean condition = direction * currentPosition >= direction * initialPosition + LiftConstants.kSetPointInRevolutions;
     if ( condition ) {
       stopMotor();
       return true;

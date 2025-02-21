@@ -276,4 +276,23 @@ public final class Constants {
       public static final double kReverse = -0.9; // reverse
     }
   }
+
+  public static final class LiftConstants{
+    public static final int kLiftMotorCanId = 45;
+
+    public static double kLiftRampRate = 0.1;
+    public static int    kLiftCurrentLimit = 40;
+    public static double kMaxVelocity = Meters.of(4).per(Second).in(MetersPerSecond);
+    public static double kMaxAcceleration = Meters.of(8).per(Second).per(Second).in(MetersPerSecondPerSecond);
+
+    public static final double kLiftKp = 0.1;
+    public static final double kLiftKi = 0;
+    public static final double kLiftKd = 0.;
+
+    // Lift control parameters
+    public static final double kSpeed = 0.1;
+    public static final double kSetPoint = 2.; //inches
+    public static final int kSetPointInRevolutions = 40; //revolutions
+
+  }
 }
