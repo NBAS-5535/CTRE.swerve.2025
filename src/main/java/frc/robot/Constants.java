@@ -229,6 +229,9 @@ public final class Constants {
     
   }
 
+  /* *****************
+   * ActuatorConstants
+   */
   public static final class ActuatorConstants{
     public static final int kActuatorMotorCanId = 44;
 
@@ -248,7 +251,10 @@ public final class Constants {
 
   }
 
-  public static final class OurCoralSubsystemConstants {
+  /* **************************
+   * OurAlgaeSubsystemConstants
+   */
+  public static final class OurAlgaeSubsystemConstants {
     public static final int kElevatorMotorCanId = 42;
     public static final int kArmMotorCanId = 41;
     public static final int kIntakeMotorCanId = 43;
@@ -277,6 +283,9 @@ public final class Constants {
     }
   }
 
+  /* *********************
+   * LifSubsystemConstants
+   */
   public static final class LiftConstants{
     public static final int kLiftMotorCanId = 45;
 

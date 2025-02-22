@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.OurCoralSubsystemConstants;
-import frc.robot.Constants.OurCoralSubsystemConstants.ArmSetpoints;
-import frc.robot.Constants.OurCoralSubsystemConstants.ElevatorSetpoints;
-import frc.robot.Constants.OurCoralSubsystemConstants.IntakeSetpoints;
+import frc.robot.Constants.OurAlgaeSubsystemConstants;
+import frc.robot.Constants.OurAlgaeSubsystemConstants.ArmSetpoints;
+import frc.robot.Constants.OurAlgaeSubsystemConstants.ElevatorSetpoints;
+import frc.robot.Constants.OurAlgaeSubsystemConstants.IntakeSetpoints;
 
 public class OurAlgaeSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
@@ -32,14 +32,14 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
   private SparkFlex armMotor =
-      new SparkFlex(OurCoralSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
+      new SparkFlex(OurAlgaeSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
   private RelativeEncoder armEncoder = armMotor.getEncoder();
 
   // Initialize elevator SPARK. We will use MAXMotion position control for the elevator, so we also
   // need to initialize the closed loop controller and encoder.
   private SparkFlex elevatorMotor =
-      new SparkFlex(OurCoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
+      new SparkFlex(OurAlgaeSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
@@ -47,7 +47,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
   // controller like above.
   private SparkMax intakeMotor =
-      new SparkMax(OurCoralSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
+      new SparkMax(OurAlgaeSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
 
   // Member variables for subsystem state management
   private boolean wasResetByButton = false;
@@ -67,15 +67,15 @@ public class OurAlgaeSubsystem extends SubsystemBase {
      * mid-operation.
      */
     armMotor.configure(
-        Configs.CoralSubsystem.armConfig,
+        Configs.OurAlgaeSubsystem.armConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     elevatorMotor.configure(
-        Configs.CoralSubsystem.elevatorConfig,
+        Configs.OurAlgaeSubsystem.elevatorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     intakeMotor.configure(
-        Configs.CoralSubsystem.intakeConfig,
+        Configs.OurAlgaeSubsystem.intakeConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -159,13 +159,13 @@ public class OurAlgaeSubsystem extends SubsystemBase {
    */
   public Command runElevatorUpCommand() {
     return this.startEnd(
-        () -> this.setElevatorPower(OurCoralSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setElevatorPower(OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setElevatorPower(0.1));
   }
 
   public Command runElevatorDownCommand() {
     return this.startEnd(
-        () -> this.setElevatorPower((-1) * OurCoralSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setElevatorPower((-1) * OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setElevatorPower(0.0));
   }
 
@@ -176,13 +176,13 @@ public class OurAlgaeSubsystem extends SubsystemBase {
    */
   public Command runArmUpCommand() {
     return this.startEnd(
-        () -> this.setArmPower(OurCoralSubsystemConstants.ArmSetpointTestSpeed), 
+        () -> this.setArmPower(OurAlgaeSubsystemConstants.ArmSetpointTestSpeed), 
         () -> this.setArmPower(0.0));
   }
 
   public Command runArmDownCommand() {
     return this.startEnd(
-        () -> this.setArmPower((-1) * OurCoralSubsystemConstants.ArmSetpointTestSpeed), 
+        () -> this.setArmPower((-1) * OurAlgaeSubsystemConstants.ArmSetpointTestSpeed), 
         () -> this.setArmPower(0.0));
   }
 

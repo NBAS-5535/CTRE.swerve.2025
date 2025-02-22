@@ -57,7 +57,11 @@ public class AlignCommand extends Command {
     RawFiducial fiducial; 
 
     try {
-      fiducial = m_limelight.getFiducialWithId(m_tagId);
+      if (m_tagId == 0) {
+        fiducial = m_limelight.getClosestFiducial();
+      } else {
+        fiducial = m_limelight.getFiducialWithId(m_tagId);
+      }
 
       rotationalRate = rotationalPidController.calculate(2*fiducial.txnc, 0.0) * 0.75* 0.9;
       

@@ -213,8 +213,16 @@ public class RobotContainer {
             * align with AprilTag
             * Move forward by 2 meters
             */
+            /* Testing Closest versus a specific AprilTag */
+            boolean closestTag = true;
+            // Default: a specific tag number
+            int testTagId = VisionConstants.testTagId;
+            if ( closestTag) {
+                testTagId = 0;
+            }
+            
             joystick.x().onTrue(new SequentialCommandGroup(
-                new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId),
+                new AlignCommand(drivetrain, m_vision, testTagId),
                 //drivetrain.applyRequest(() -> brake),
                 drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
             ));
