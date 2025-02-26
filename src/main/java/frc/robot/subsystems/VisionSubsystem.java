@@ -40,6 +40,7 @@ public class VisionSubsystem extends SubsystemBase {
         0);
     // Overrides the valid AprilTag IDs that will be used for localization. 
     // Tags not in this list will be ignored for robot pose estimation.
+    /*
     Optional<Alliance> ally = DriverStation.getAlliance();
     int[] tagsToConsider = new int[] {};
     if (ally.isPresent()) {
@@ -53,7 +54,9 @@ public class VisionSubsystem extends SubsystemBase {
     else {
       System.out.println("No Alliance info is available");
     }
+    */
 
+    int [] tagsToConsider = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
     LimelightHelpers.SetFiducialIDFiltersOverride("", tagsToConsider);
   }
 

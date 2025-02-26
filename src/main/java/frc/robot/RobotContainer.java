@@ -31,6 +31,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -79,11 +80,26 @@ public class RobotContainer {
     /** OurAlgaeSubsystem */
     private final OurAlgaeSubsystem m_algaeSubsystem = new OurAlgaeSubsystem();
     /* */
+
+    /* Lift subsystem */
+    //private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
+
+    /* autonomous dropdown menu */
+    private SendableChooser<Command> dropDownChooser;// = new SendableChooser<>();
+
     /************** Ctor */
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Mode", autoChooser);
+        SmartDashboard.putData("PP Mode", autoChooser);
+
+        /* dropdown autonomous menu */
+        dropDownChooser = new SendableChooser<>();
+        //dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
+        dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
+        dropDownChooser.addOption("Move Back", drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(0.5));
+        dropDownChooser.addOption("moveRotateRestRepeat", Autos.moveRotateRestRepeat(drivetrain));
+        SmartDashboard.putData("Auto Menu", dropDownChooser);
         
         configureBindings();
     }
@@ -315,7 +331,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // some autonomous sequences
-        String caseType = "auto"; //"manual";
+        String caseType = "menu"; //"manual";
         Command autoCommand = null;
         switch (caseType) {
             case "manual":
@@ -333,13 +349,16 @@ public class RobotContainer {
             case "auto":
                 autoCommand = Autos.moveRotateRestRepeat(drivetrain);
                 break;
+            case "menu":
+                autoCommand = dropDownChooser.getSelected();
             case "path":
                 /* Run the path selected from the auto chooser */
                 //autoCommand = new PathPlannerAuto("FancyAutoPath"); //
-                //autoCommand = autoChooser.getSelected();
+                autoCommand = autoChooser.getSelected();
+                /*
                 try{
                     // Load the path you want to follow using its name in the GUI
-                    PathPlannerPath path = PathPlannerPath.fromPathFile("FancyAutoPath");
+                    PathPlannerPath path = PathPlannerPath.fromPathFile("AutoFancyCurve");
 
                     // Create a path following command using AutoBuilder. This will also trigger event markers.
                     autoCommand = AutoBuilder.followPath(path);
@@ -347,6 +366,7 @@ public class RobotContainer {
                     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
                     autoCommand =  Commands.none();
                 }
+                */
                 break;
             default:
                 autoCommand = Commands.print("No autonomous command configured");
