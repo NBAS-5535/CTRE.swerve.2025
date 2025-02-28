@@ -16,6 +16,7 @@ import frc.robot.Vision.LimelightHelpers.*;
 
 public class VisionSubsystem extends SubsystemBase {
   private RawFiducial[] fiducials;
+  private double m_minDistance = 0.;
 
   public VisionSubsystem() {
     config();
@@ -75,6 +76,9 @@ public class VisionSubsystem extends SubsystemBase {
     double minDistance = closest.ta;
     SmartDashboard.putNumber("minDistance", minDistance);
 
+    /* persist closest distance value */
+    setMinDistance(minDistance);
+
     for (RawFiducial fiducial : fiducials) {
         if (fiducial.ta > minDistance) {
             closest = fiducial;
@@ -111,6 +115,23 @@ public RawFiducial getFiducialWithId(int id, boolean verbose) {
   throw new NoSuchTargetException("Cannot find: " + id + ". IN view:: " + availableIds.toString());
   }
 
+  /* keep track of the minDistance found via linelight Apriltag search */
+  public void setMinDistance(double distance) {
+    m_minDistance = distance;
+    SmartDashboard.putNumber("VisionClosetAprilTag", distance);
+  }
+
+  public double getMinDistance() {
+    return m_minDistance;
+  }
+
+  /* calculate the distance in meters */
+  public double getDistanceToTargetInMeters(double distance) {
+    /* use/update estimation formula via resgression*/
+    return -70.08 * distance + 2.35; 
+  }
+
+  /* utility functions */
   public double getTX(){
     return LimelightHelpers.getTX(VisionConstants.LIMELIGHT_NAME);
   }
