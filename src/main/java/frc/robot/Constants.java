@@ -304,4 +304,17 @@ public final class Constants {
     public static final int kSetPointInRevolutions = 40; //revolutions
 
   }
+
+  /* *********************
+   * LifSubsystemConstants
+   */
+  public static final class AutonomousMenuConstants{
+    public static final String kDownBlue = "Start_Down_Blue/Blue1";
+    public static final String kCenterBlue = "Start_Center_Blue/Blue2";
+    public static final String kUpBlue = "Start_Up_Blue/Blue3";
+
+    public static final String kDownRed = "Start_Down_Red/Red1";
+    public static final String kCenterRed = "Start_Center_Red/Red2";
+    public static final String kUpRed = "Start_Up_Red/Red3";
+  }
 }
