@@ -114,6 +114,7 @@ public class ActuatorSubsystem extends SubsystemBase {
     boolean condition = direction * currentPosition >= direction * initialPosition + ActuatorConstants.kSetPointInRevolutions;
     if ( condition ) {
       stopMotor();
+      System.out.println("Motor Stopped" + String.valueOf(direction));
       return true;
     } else {
       return false;

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.LiftConstants;
+import frc.robot.Constants.OurAlgaeSubsystemConstants;
 
 public class LiftSubsystem extends SubsystemBase {
   /** Creates a new LiftSubsystem. */
@@ -120,4 +121,25 @@ public class LiftSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Command to run the elevator motor. 
+   * Intended to step through to adjust proper setpoints for elevator heights
+   * When the command is interrupted, e.g. the button is released, the motor will stop.
+   */
+  public Command runLiftUpCommand() {
+    return this.startEnd(
+        () -> this.setLiftPower(OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setLiftPower(0.1));
+  }
+
+  public Command runLiftDownCommand() {
+    return this.startEnd(
+        () -> this.setLiftPower((-1) * OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setLiftPower(0.0));
+  }
+
+  /** Set elevator motor power in the range of [-1, 1]. - TEST Purpose: step through */
+  private void setLiftPower(double power) {
+    liftMotor.set(power);
+  }
 }

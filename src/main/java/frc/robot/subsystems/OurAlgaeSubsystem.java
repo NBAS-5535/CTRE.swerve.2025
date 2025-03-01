@@ -160,7 +160,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   public Command runElevatorUpCommand() {
     return this.startEnd(
         () -> this.setElevatorPower(OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
-        () -> this.setElevatorPower(0.1));
+        () -> this.setElevatorPower(0.0));
   }
 
   public Command runElevatorDownCommand() {

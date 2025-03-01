@@ -245,9 +245,9 @@ public final class Constants {
     public static final double kActuatorKd = 0.;
 
     // actuator control parameters
-    public static final double kSpeed = 0.1;
+    public static final double kSpeed = 0.5;
     public static final double kSetPoint = 2.; //inches
-    public static final int kSetPointInRevolutions = 40; //revolutions
+    public static final int kSetPointInRevolutions = 39; //revolutions
 
   }
 
@@ -266,8 +266,9 @@ public final class Constants {
       public static final double kAlgaeNet = 15.0;
     }
 
-    public static final double ElevatorSetpointTestSpeed = 0.5;
-    public static final double ArmSetpointTestSpeed = 0.1;
+    public static final double ElevatorSetpointTestSpeed = 1.00;
+    public static final double ArmSetpointTestSpeed = 0.5;
+    public static final double IntakeShootSetpointTestSpeed = 1.00;
     public static final double IntakeSetpointTestSpeed = 0.1;
 
     public static final class ArmSetpoints {
@@ -279,7 +280,7 @@ public final class Constants {
 
     public static final class IntakeSetpoints {
       public static final double kForward = 0.7; // power-level for motor
-      public static final double kReverse = -0.9; // reverse
+      public static final double kReverse = -1.0; // reverse
     }
   }
 
