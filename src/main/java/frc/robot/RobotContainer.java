@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.AutonomousMenuConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
@@ -31,6 +32,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -88,12 +90,39 @@ public class RobotContainer {
     private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
 
     /* */
+
+    /* Lift subsystem */
+    //private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
+
+    /* autonomous dropdown menu */
+    private SendableChooser<Command> dropDownChooser;// = new SendableChooser<>();
+    private SendableChooser<String> autonomousChooser ;
+    
+
     /************** Ctor */
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Mode", autoChooser);
-        
+        SmartDashboard.putData("PP Mode", autoChooser);
+
+        /* dropdown autonomous menu */
+        dropDownChooser = new SendableChooser<>();
+        //dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
+        dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
+        dropDownChooser.addOption("Move Back", drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(0.5));
+        dropDownChooser.addOption("moveRotateRestRepeat", Autos.moveRotateRestRepeat(drivetrain));
+        SmartDashboard.putData("Auto Menu", dropDownChooser);
+
+        /* autonomous position chooser */
+        autonomousChooser = new SendableChooser<>();
+        autonomousChooser.setDefaultOption("DownBlue/Blue1", AutonomousMenuConstants.kDownBlue);
+        autonomousChooser.addOption("CenterBlue/Blue2", AutonomousMenuConstants.kCenterBlue);
+        autonomousChooser.addOption("UpBlue/Blue3", AutonomousMenuConstants.kUpBlue);
+        autonomousChooser.setDefaultOption("DownRed/Red1", AutonomousMenuConstants.kDownRed);
+        autonomousChooser.addOption("CenterRed/Red2", AutonomousMenuConstants.kCenterRed);
+        autonomousChooser.addOption("UpRed/Red3", AutonomousMenuConstants.kUpRed);
+        SmartDashboard.putData("AutonoumousMenu", autonomousChooser);
+
         configureBindings();
     }
 
@@ -334,8 +363,10 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // some autonomous sequences
-        String caseType = "auto"; //"manual";
+        String caseType = "menu"; //"manual";
         Command autoCommand = null;
+        String menuItem = "";
+        String chosenItem = "";
         switch (caseType) {
             case "manual":
                 autoCommand = Commands.sequence(
@@ -352,13 +383,41 @@ public class RobotContainer {
             case "auto":
                 autoCommand = Autos.moveRotateRestRepeat(drivetrain);
                 break;
+            case "menu":
+                //autoCommand = dropDownChooser.getSelected();
+                menuItem = autonomousChooser.getSelected();
+                switch (menuItem){
+                    case AutonomousMenuConstants.kDownBlue:
+                        chosenItem = "BlueDown_1";
+                        break;
+                    case AutonomousMenuConstants.kCenterBlue:
+                        chosenItem = "BlueCenter_2";
+                        break;
+                    case AutonomousMenuConstants.kUpBlue:
+                        chosenItem = "BlueUp_3";
+                        break;
+                    case AutonomousMenuConstants.kDownRed:
+                        chosenItem = "RedDown_4";
+                        break;
+                    case AutonomousMenuConstants.kCenterRed:
+                        chosenItem = "RedCenter_5";
+                        break;
+                    case AutonomousMenuConstants.kUpRed:
+                        chosenItem = "RedUp_6";
+                        break; 
+                    default:
+                        chosenItem = "Nothing"; 
+                }
+                SmartDashboard.putString("Menu-Pick", chosenItem);
+                break;
             case "path":
                 /* Run the path selected from the auto chooser */
                 //autoCommand = new PathPlannerAuto("FancyAutoPath"); //
-                //autoCommand = autoChooser.getSelected();
+                autoCommand = autoChooser.getSelected();
+                /*
                 try{
                     // Load the path you want to follow using its name in the GUI
-                    PathPlannerPath path = PathPlannerPath.fromPathFile("FancyAutoPath");
+                    PathPlannerPath path = PathPlannerPath.fromPathFile("AutoFancyCurve");
 
                     // Create a path following command using AutoBuilder. This will also trigger event markers.
                     autoCommand = AutoBuilder.followPath(path);
@@ -366,6 +425,7 @@ public class RobotContainer {
                     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
                     autoCommand =  Commands.none();
                 }
+                */
                 break;
             default:
                 autoCommand = Commands.print("No autonomous command configured");
