@@ -109,12 +109,12 @@ public class ActuatorSubsystem extends SubsystemBase {
   /** Run the control loop to reach and maintain the setpoint from the preferences. */
   public boolean isReachedSetpoint(int direction) {
     double currentPosition = actuatorEncoder.getPosition();
-    double [] temp = {initialPosition, currentPosition};
+    double [] temp = {initialPosition, currentPosition, ActuatorConstants.kSetPointInRevolutions};
     SmartDashboard.putNumberArray("Actuator Positions", temp);
     boolean condition = direction * currentPosition >= direction * initialPosition + ActuatorConstants.kSetPointInRevolutions;
     if ( condition ) {
       stopMotor();
-      System.out.println("Motor Stopped" + String.valueOf(direction));
+      System.out.println("Motor Stopped: " + String.valueOf(direction));
       return true;
     } else {
       return false;

@@ -60,7 +60,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController tjoystick = new CommandXboxController(1);
+    private final CommandXboxController txbox = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -317,6 +317,28 @@ public class RobotContainer {
 
             // povLeft -> Run tube intake in reverse
             joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
+
+            // move elevator/arm to their respective positions
+            txbox
+                .a()
+                    .onTrue(new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
+                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
+            ));
+
+            txbox
+                .b()
+                    .onTrue(new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
+                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
+            ));
+            
+            txbox
+                .x()
+                    .onTrue(new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
+                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
+            ));
         }
 
         /* command to move the elevator to a pre-specified height */

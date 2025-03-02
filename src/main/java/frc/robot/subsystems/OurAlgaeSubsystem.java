@@ -23,10 +23,12 @@ import frc.robot.Constants.OurAlgaeSubsystemConstants.IntakeSetpoints;
 public class OurAlgaeSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
   public enum Setpoint {
+    kGroundPickup,
+    kGroundRelease,
     kBase,
-    kBottomReef,
-    kMiddleReef,
-    kAlgaeNet
+    kAlgaePickupLowerReef,
+    kAlgaePickupHigherReef,
+    kShootAlgaeNet
   }
 
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
@@ -90,7 +92,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
    * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
    * setpoints.
    */
-  private void moveToSetpoint() {
+  public void moveToSetpoint() {
     armController.setReference(armCurrentTarget, ControlType.kMAXMotionPositionControl);
     elevatorClosedLoopController.setReference(
         elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
@@ -132,19 +134,27 @@ public class OurAlgaeSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           switch (setpoint) {
+            case kGroundPickup:
+              armCurrentTarget = ArmSetpoints.kGroundPick;
+              elevatorCurrentTarget = ElevatorSetpoints.kGroundPick;
+              break;
+            case kGroundRelease:
+              armCurrentTarget = ArmSetpoints.kSideShoot;
+              elevatorCurrentTarget = ElevatorSetpoints.kSideShoot;
+              break;
             case kBase:
               armCurrentTarget = ArmSetpoints.kBase;
               elevatorCurrentTarget = ElevatorSetpoints.kBase;
               break;
-            case kBottomReef:
-              armCurrentTarget = ArmSetpoints.kBottomReef;
-              elevatorCurrentTarget = ElevatorSetpoints.kBottomReef;
+            case kAlgaePickupLowerReef:
+              armCurrentTarget = ArmSetpoints.kLowerReef;
+              elevatorCurrentTarget = ElevatorSetpoints.kLowerReef;
               break;
-            case kMiddleReef:
-              armCurrentTarget = ArmSetpoints.kMiddleReef;
-              elevatorCurrentTarget = ElevatorSetpoints.kMiddleReef;
+            case kAlgaePickupHigherReef:
+              armCurrentTarget = ArmSetpoints.kHigherReef;
+              elevatorCurrentTarget = ElevatorSetpoints.kHigherReef;
               break;
-            case kAlgaeNet:
+            case kShootAlgaeNet:
               armCurrentTarget = ArmSetpoints.kAlgaeNet;
               elevatorCurrentTarget = ElevatorSetpoints.kAlgaeNet;
               break;
