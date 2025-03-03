@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ActuatorConstants;
+import frc.robot.Constants.OurAlgaeSubsystemConstants;
 
 public class ActuatorSubsystem extends SubsystemBase {
   /** Creates a new ActuatorSubsystem. */
@@ -112,6 +113,7 @@ public class ActuatorSubsystem extends SubsystemBase {
     double [] temp = {initialPosition, currentPosition, ActuatorConstants.kSetPointInRevolutions};
     SmartDashboard.putNumberArray("Actuator Positions", temp);
     boolean condition = direction * currentPosition >= direction * initialPosition + ActuatorConstants.kSetPointInRevolutions;
+    SmartDashboard.putBoolean("isReachedSetpoint", condition);
     if ( condition ) {
       stopMotor();
       System.out.println("Motor Stopped: " + String.valueOf(direction));
@@ -120,5 +122,4 @@ public class ActuatorSubsystem extends SubsystemBase {
       return false;
     }
   }
-
 }

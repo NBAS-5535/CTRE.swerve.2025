@@ -28,6 +28,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.OperatorFriendlyCommands;
+import frc.robot.commands.SemiAuto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -276,17 +277,17 @@ public class RobotContainer {
             joystick.leftBumper().onTrue(new SequentialCommandGroup(
                 //m_actuator.markPositionCommand(),
                 new InstantCommand(() -> m_actuator.markPosition()),
-                    new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
-                    //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
-                    )
-                );
-                // move elevator back to start position
-                joystick.rightBumper().onTrue(new SequentialCommandGroup(
-                    new InstantCommand(() -> m_actuator.markPosition()),
-                    new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
-                    //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
+                new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
+                //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
                 )
-                );
+            );
+            // move elevator back to start position
+            joystick.rightBumper().onTrue(new SequentialCommandGroup(
+                new InstantCommand(() -> m_actuator.markPosition()),
+                new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
+                //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
+                )
+            );
         } // end actuator test
 
         /* Algae Subsystem */
@@ -339,6 +340,29 @@ public class RobotContainer {
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
                         new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
             ));
+
+            txbox
+                .y()
+                    .onTrue(new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
+                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
+            ));
+
+            /* side slot shot may be tricky
+             * actuator put to its initial position
+             * algaeSubsystem move to proper setpoint
+             * actuator back to its extended state
+             txbox
+                .povCenter()
+                    .onTrue(new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
+                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
+            ));
+             */
+            /* try the case from SemiAuto.java */
+            txbox
+                .povCenter()
+                    .onTrue(SemiAuto.runSideSlotShootCommand(m_algaeSubsystem, m_actuator));
         }
 
         /* command to move the elevator to a pre-specified height */

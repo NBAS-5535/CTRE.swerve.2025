@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.OurAlgaeSubsystemConstants;
@@ -24,7 +25,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
   public enum Setpoint {
     kGroundPickup,
-    kGroundRelease,
+    kSideSlotShoot,
     kBase,
     kAlgaePickupLowerReef,
     kAlgaePickupHigherReef,
@@ -138,7 +139,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
               armCurrentTarget = ArmSetpoints.kGroundPick;
               elevatorCurrentTarget = ElevatorSetpoints.kGroundPick;
               break;
-            case kGroundRelease:
+            case kSideSlotShoot:
               armCurrentTarget = ArmSetpoints.kSideShoot;
               elevatorCurrentTarget = ElevatorSetpoints.kSideShoot;
               break;
@@ -235,4 +236,6 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
   }
+
+
 }

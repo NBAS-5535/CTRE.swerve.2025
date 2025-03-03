@@ -52,6 +52,10 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
   public boolean isAngleDiffReached() {
     double currentAngle = getHeading();
     System.out.println(getName() + ": " + String.valueOf(currentAngle) + "  " + String.valueOf(m_initialAngle));
-    return Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
+    boolean condition = Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
+    if ( condition ) {
+      SmartDashboard.putBoolean("isAngleDiffReached", condition);
+    }
+    return condition;
   }
 }
