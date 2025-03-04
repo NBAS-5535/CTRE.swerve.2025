@@ -276,17 +276,20 @@ public class RobotContainer {
         boolean actuatorTest = true;
         if (actuatorTest) {
             // move the elevator to game position: direction =1
-            joystick.leftBumper().whileTrue(
+            joystick.leftBumper().onTrue(
                 //new SequentialCommandGroup(
                 //m_actuator.markPositionCommand(),
                 //new InstantCommand(() -> m_actuator.markPosition()),
                 //new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
                 //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
                 //)
-                new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions)
+                new SequentialCommandGroup(
+                    new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions),
+                    new InstantCommand(() -> m_actuator.stopMotor())
+                )
             );
             // move elevator back to start position
-            joystick.rightBumper().whileTrue(
+            joystick.rightBumper().onTrue(
                 //new SequentialCommandGroup(
                 //new InstantCommand(() -> m_actuator.markPosition()),
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
@@ -301,6 +304,7 @@ public class RobotContainer {
         if (algaeSubsystemTuning) {
             /* Try gradually moving the elevator to determine operational heights */
             // A -> Run elevator UP
+
             joystick.a().whileTrue(m_algaeSubsystem.runElevatorUpCommand());
             // B -> Run elevator DOWN
             joystick.b().whileTrue(m_algaeSubsystem.runElevatorDownCommand());

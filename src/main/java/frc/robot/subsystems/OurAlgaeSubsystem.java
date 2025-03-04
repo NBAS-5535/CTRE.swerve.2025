@@ -222,11 +222,11 @@ public class OurAlgaeSubsystem extends SubsystemBase {
     //zeroOnUserButton();
 
     // Display subsystem values
-    SmartDashboard.putNumber("Coral/Arm/Target Position", armCurrentTarget);
-    SmartDashboard.putNumber("Coral/Arm/Actual Position", armEncoder.getPosition());
-    SmartDashboard.putNumber("Coral/Elevator/Target Position", elevatorCurrentTarget);
-    SmartDashboard.putNumber("Coral/Elevator/Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Coral/Intake/Applied Output", intakeMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Algae/Arm/Target Position", armCurrentTarget);
+    SmartDashboard.putNumber("Algae/Arm/Actual Position", armEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Elevator/Target Position", elevatorCurrentTarget);
+    SmartDashboard.putNumber("Algae/Elevator/Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Intake/Applied Output", intakeMotor.getAppliedOutput());
 
     
   }
