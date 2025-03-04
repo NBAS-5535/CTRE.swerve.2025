@@ -276,7 +276,7 @@ public class RobotContainer {
         boolean actuatorTest = true;
         if (actuatorTest) {
             // move the elevator to game position: direction =1
-            joystick.leftBumper().onTrue(
+            joystick.leftBumper().whileTrue(
                 //new SequentialCommandGroup(
                 //m_actuator.markPositionCommand(),
                 //new InstantCommand(() -> m_actuator.markPosition()),
@@ -286,7 +286,7 @@ public class RobotContainer {
                 new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions)
             );
             // move elevator back to start position
-            joystick.rightBumper().onTrue(
+            joystick.rightBumper().whileTrue(
                 //new SequentialCommandGroup(
                 //new InstantCommand(() -> m_actuator.markPosition()),
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))

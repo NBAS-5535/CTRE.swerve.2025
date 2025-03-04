@@ -80,6 +80,11 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Actuator Speed", ActuatorConstants.kSpeed);
   }
 
+  public void setCurrentPosition(){
+    currentPosition = getPosition();
+    SmartDashboard.putNumber("setCurPos", currentPosition);
+  }
+
   public void stopMotor() {
     actuatorMotor.set(0.);
   }

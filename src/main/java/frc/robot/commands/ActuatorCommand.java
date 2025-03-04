@@ -27,12 +27,14 @@ public class ActuatorCommand extends Command {
   @Override
   public void initialize() {
     m_actuator.markPosition();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_actuator.setInMotion(m_direction);
+    m_actuator.setCurrentPosition();
   }
 
   // Called once the command ends or is interrupted.
