@@ -295,7 +295,10 @@ public class RobotContainer {
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
                 //)
-                new ActuatorCommand(m_actuator, -1, ActuatorConstants.kSetPointInRevolutions)
+                new SequentialCommandGroup(
+                    new ActuatorCommand(m_actuator, -1, ActuatorConstants.kSetPointInRevolutions),
+                    new InstantCommand(() -> m_actuator.stopMotor())
+                )
             );
         } // end actuator test
 
@@ -355,6 +358,13 @@ public class RobotContainer {
                 .y()
                     .onTrue(new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
+                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
+            ));
+
+            txbox
+                .povDown()
+                    .onTrue(new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kBase),
                         new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
             ));
 
