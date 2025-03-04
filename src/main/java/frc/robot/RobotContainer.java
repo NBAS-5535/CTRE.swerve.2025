@@ -23,8 +23,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.ActuatorConstants;
 import frc.robot.Constants.AutonomousMenuConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.ActuatorCommand;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.OperatorFriendlyCommands;
@@ -274,19 +276,23 @@ public class RobotContainer {
         boolean actuatorTest = true;
         if (actuatorTest) {
             // move the elevator to game position: direction =1
-            joystick.leftBumper().onTrue(new SequentialCommandGroup(
+            joystick.leftBumper().onTrue(
+                //new SequentialCommandGroup(
                 //m_actuator.markPositionCommand(),
-                new InstantCommand(() -> m_actuator.markPosition()),
-                new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
+                //new InstantCommand(() -> m_actuator.markPosition()),
+                //new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
                 //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
-                )
+                //)
+                new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions)
             );
             // move elevator back to start position
-            joystick.rightBumper().onTrue(new SequentialCommandGroup(
-                new InstantCommand(() -> m_actuator.markPosition()),
-                new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
+            joystick.rightBumper().onTrue(
+                //new SequentialCommandGroup(
+                //new InstantCommand(() -> m_actuator.markPosition()),
+                //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
-                )
+                //)
+                new ActuatorCommand(m_actuator, -1, ActuatorConstants.kSetPointInRevolutions)
             );
         } // end actuator test
 

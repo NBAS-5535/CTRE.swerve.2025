@@ -245,9 +245,9 @@ public final class Constants {
     public static final double kActuatorKd = 0.;
 
     // actuator control parameters
-    public static final double kSpeed = 0.5;
-    public static final double kSetPoint = 2.; //inches
-    public static final int kSetPointInRevolutions = 39; //revolutions
+    public static final double kSpeed = 0.1; //<---- set smaller as a test, should be 0.5ish
+    public static final double kIntermediateSetPoint = 15.; //revolutions
+    public static final double kSetPointInRevolutions = 35.; //revolutions <---- set smaller as a test, should be 40ish
 
   }
 

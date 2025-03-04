@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ActuatorConstants;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
@@ -42,7 +43,7 @@ public class SemiAuto {
         algae.setSetpointCommand(Setpoint.kSideSlotShoot),
         new InstantCommand(() -> algae.moveToSetpoint()),
         new InstantCommand(() -> actuator.markPosition()),
-        new InstantCommand(() -> actuator.setInMotion(-1)).until(() -> actuator.isReachedSetpoint(-1))
+        new ActuatorCommand(actuator, -1, ActuatorConstants.kSetPointInRevolutions)
        );
   }
 }

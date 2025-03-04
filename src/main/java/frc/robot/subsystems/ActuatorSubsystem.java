@@ -28,6 +28,7 @@ public class ActuatorSubsystem extends SubsystemBase {
   private RelativeEncoder actuatorEncoder = actuatorMotor.getEncoder();
 
   private double initialPosition;
+  private double currentPosition;
 
   public ActuatorSubsystem() {
     /* moved into Config.java 
@@ -114,6 +115,22 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumberArray("Actuator Positions", temp);
     boolean condition = direction * currentPosition >= direction * initialPosition + ActuatorConstants.kSetPointInRevolutions;
     SmartDashboard.putBoolean("isReachedSetpoint", condition);
+    if ( condition ) {
+      stopMotor();
+      System.out.println("Motor Stopped: " + String.valueOf(direction));
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean isSetpointReached(int direction, double setpoint){
+    SmartDashboard.putNumber("initial_position", initialPosition);
+    SmartDashboard.putNumber("current_position", currentPosition);
+    SmartDashboard.putNumber("actuator_setpoint", setpoint);
+
+    boolean condition = direction * currentPosition >= direction * initialPosition + setpoint;
+    SmartDashboard.putBoolean("isSetpointReached", condition);
     if ( condition ) {
       stopMotor();
       System.out.println("Motor Stopped: " + String.valueOf(direction));
