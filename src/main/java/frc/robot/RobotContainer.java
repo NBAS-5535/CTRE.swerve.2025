@@ -44,12 +44,12 @@ import frc.robot.subsystems.VisionSubsystem_Test;
 import frc.robot.subsystems.LiftSubsystem;
 
 public class RobotContainer {
-    private double MaxSpeed = 0.1 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final double speedDeadBand = 0.2;
-    private final double angleDeadBand = 0.2;
+    private final double speedDeadBand = 0.1;
+    private final double angleDeadBand = 0.1;
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * speedDeadBand).withRotationalDeadband(MaxAngularRate * angleDeadBand) // Add a deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
