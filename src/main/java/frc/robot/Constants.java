@@ -259,6 +259,9 @@ public final class Constants {
     public static final int kArmMotorCanId = 41;
     public static final int kIntakeMotorCanId = 43;
 
+    public static final double ElevatorSetpointTestSpeed = 0.75;
+    public static final double ArmSetpointTestSpeed = 0.5;
+  
     public static final class ElevatorSetpoints {
       public static final double kGroundPick = 118.4;
       public static final double kSideShoot = 180.8;
@@ -267,10 +270,6 @@ public final class Constants {
       public static final double kHigherReef = -83;
       public static final double kAlgaeNet = -727.2;
     }
-
-    public static final double ElevatorSetpointTestSpeed = 0.75;
-    public static final double ArmSetpointTestSpeed = 0.5;
-  
 
     public static final class ArmSetpoints {
       public static final double kGroundPick = -15.2;

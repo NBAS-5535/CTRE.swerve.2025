@@ -429,7 +429,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // some autonomous sequences
-        String caseType = "menu"; //"manual";
+        String caseType = "auto"; //"manual";
         Command autoCommand = null;
         String menuItem = "";
         String chosenItem = "";
