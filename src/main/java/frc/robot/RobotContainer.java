@@ -340,6 +340,12 @@ public class RobotContainer {
                         new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
             ));
 
+            // same command sequence from SemiAuto
+            txbox
+                .povUp()
+                    .onTrue(SemiAuto.runAlgaePickupLowerReefCommand(m_algaeSubsystem));
+            //
+
             txbox
                 .b()
                     .onTrue(new SequentialCommandGroup(

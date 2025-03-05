@@ -102,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorConfig
         .smartCurrentLimit(ElevatorConstants.kElevatorCurrentLimit)
         .voltageCompensation(12);
-    elevatorConfig.idleMode(IdleMode.kCoast);
+    elevatorConfig.idleMode(IdleMode.kBrake);
 
     /*
       * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
