@@ -253,7 +253,7 @@ public final class Constants {
   
     public static final class OurActuatorSetpoints {
       public static final double kBase = 0;
-      public static final double kIntermediateSetPoint = 15.;
+      public static final double kAlgaeNetShootSetPoint = 30.;
       public static final double kSetPointInRevolutions = 39.;
      }
 

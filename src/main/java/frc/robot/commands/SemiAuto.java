@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ActuatorConstants;
-import frc.robot.subsystems.ActuatorSubsystem;
+import frc.robot.subsystems.OurActuatorSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 
@@ -38,12 +38,7 @@ public class SemiAuto {
        );
   }
 
-  public static Command runSideSlotShootCommand(AlgaeSubsystem algae, ActuatorSubsystem actuator) {
-    return new SequentialCommandGroup(
-        algae.setSetpointCommand(Setpoint.kSideSlotShoot),
-        new InstantCommand(() -> algae.moveToSetpoint()),
-        new InstantCommand(() -> actuator.markPosition()),
-        new ActuatorCommand(actuator, -1, ActuatorConstants.kSetPointInRevolutions)
-       );
+  public static Command runSideSlotShootCommand(AlgaeSubsystem algae, OurActuatorSubsystem actuator) {
+    return null;
   }
 }

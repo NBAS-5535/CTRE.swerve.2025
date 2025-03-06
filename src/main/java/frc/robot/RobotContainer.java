@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ActuatorConstants;
 import frc.robot.Constants.AutonomousMenuConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.OurActuatorSubsystemConstants.OurActuatorSetpoints;
 import frc.robot.commands.ActuatorCommand;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.OurActuatorSubsystem;
+import frc.robot.subsystems.OurActuatorSubsystem.ActuatorSetpoints;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -82,8 +84,8 @@ public class RobotContainer {
 
     /* 2025 game related subsystems */
     /* actuator to move the levator to game start position */
-    public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
-    //public final OurActuatorSubsystem m_Ouractuator = new OurActuatorSubsystem();
+    //public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
+    public final OurActuatorSubsystem m_actuator = new OurActuatorSubsystem();
 
     /* elevator subsystem */
     //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
@@ -285,10 +287,11 @@ public class RobotContainer {
                 //new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
                 //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
                 //)
-                new SequentialCommandGroup(
-                    new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions),
-                    new InstantCommand(() -> m_actuator.stopMotor())
-                )
+                //new SequentialCommandGroup(
+                //    new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions),
+                //    new InstantCommand(() -> m_actuator.stopMotor())
+                //OurActuator
+                m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
             );
             // move elevator back to start position
             joystick.rightBumper().onTrue(
@@ -297,11 +300,17 @@ public class RobotContainer {
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
                 //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
                 //)
-                new SequentialCommandGroup(
-                    new ActuatorCommand(m_actuator, -1, ActuatorConstants.kSetPointInRevolutions),
-                    new InstantCommand(() -> m_actuator.stopMotor())
-                )
+                //new SequentialCommandGroup(
+                //    new ActuatorCommand(m_actuator, -1, ActuatorConstants.kSetPointInRevolutions),
+                //    new InstantCommand(() -> m_actuator.stopMotor())
+                //OurActuator
+                m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
             );
+            // move to an intermediate point
+            txbox.povRight().onTrue(
+                m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
+            );
+
         } // end actuator test
 
         /* Algae Subsystem */
@@ -389,6 +398,7 @@ public class RobotContainer {
             ));
              */
             /* try the case from SemiAuto.java */
+            // INACTIVE!!!
             txbox
                 .povCenter()
                     .onTrue(SemiAuto.runSideSlotShootCommand(m_algaeSubsystem, m_actuator));

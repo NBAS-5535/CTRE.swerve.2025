@@ -25,9 +25,9 @@ import frc.robot.Constants.AlgaeSubsystemConstants.IntakeSetpoints;
 
 public class OurActuatorSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
-  public enum ActuatorSetpoint {
+  public enum ActuatorSetpoints {
     kBase,
-    kIntermediateSetPoint,
+    kAlgaeNetShootSetPoint,
     kSetPointInRevolutions
   }
 
@@ -96,12 +96,12 @@ public class OurActuatorSubsystem extends SubsystemBase {
    * Command to set the subsystem setpoint. This will set the Actuator and elevator to their predefined
    * positions for the given setpoint.
    */
-  public Command setSetpointCommand(ActuatorSetpoint setpoint) {
+  public Command setSetpointCommand(ActuatorSetpoints setpoint) {
     return this.runOnce(
         () -> {
           switch (setpoint) {
-            case kIntermediateSetPoint:
-              ActuatorCurrentTarget = OurActuatorSetpoints.kIntermediateSetPoint;
+            case kAlgaeNetShootSetPoint:
+              ActuatorCurrentTarget = OurActuatorSetpoints.kAlgaeNetShootSetPoint;
               break;
             case kSetPointInRevolutions:
               ActuatorCurrentTarget = OurActuatorSetpoints.kSetPointInRevolutions;
@@ -132,6 +132,11 @@ public class OurActuatorSubsystem extends SubsystemBase {
         () -> this.setActuatorPower(0.0));
   }
 
+  public Command runActuatorToAlgaeNetCommand() {
+    return this.startEnd(
+        () -> this.setActuatorPower((-1) * OurActuatorSubsystemConstants.ActuatorSetpointTestSpeed), 
+        () -> this.setActuatorPower(0.0));
+  }
 
   @Override
   public void periodic() {
