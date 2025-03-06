@@ -36,6 +36,7 @@ import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.OurActuatorSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem;
 import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -82,6 +83,7 @@ public class RobotContainer {
     /* 2025 game related subsystems */
     /* actuator to move the levator to game start position */
     public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
+    //public final OurActuatorSubsystem m_Ouractuator = new OurActuatorSubsystem();
 
     /* elevator subsystem */
     //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
@@ -160,7 +162,7 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         if (driveTest) {
-            joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(2));
+            joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));//.withTimeout(2));
             joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
             joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
             joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
@@ -367,8 +369,9 @@ public class RobotContainer {
                         new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
             ));
 
+            /* reset all positions to kBase */
             txbox
-                .povDown()
+                .rightBumper()
                     .onTrue(new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kBase),
                         new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())

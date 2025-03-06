@@ -251,6 +251,31 @@ public final class Constants {
 
   }
 
+    /* **************************
+   * OurActuatorSubsystemConstants
+   */
+  public static final class OurActuatorSubsystemConstants {
+    public static final int kActuatorMotorCanId = 44;
+
+    public static double kActuatorRampRate = 0.1;
+    public static int    kActuatorCurrentLimit = 40;
+    public static double kMaxVelocity = Meters.of(4).per(Second).in(MetersPerSecond);
+    public static double kMaxAcceleration = Meters.of(8).per(Second).per(Second).in(MetersPerSecondPerSecond);
+
+    public static final double kActuatorKp = 0.1;
+    public static final double kActuatorKi = 0;
+    public static final double kActuatorKd = 0.;
+    
+    public static final double ActuatorSetpointTestSpeed = 0.25;
+  
+    public static final class OurActuatorSetpoints {
+      public static final double kBase = 0;
+      public static final double kIntermediateSetPoint = 15.;
+      public static final double kSetPointInRevolutions = 39.;
+     }
+
+  }
+
   /* **************************
    * OurAlgaeSubsystemConstants
    */
