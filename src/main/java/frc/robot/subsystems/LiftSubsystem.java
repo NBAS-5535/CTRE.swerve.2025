@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants.OurAlgaeSubsystemConstants;
+import frc.robot.Constants.AlgaeSubsystemConstants;
 
 public class LiftSubsystem extends SubsystemBase {
   /** Creates a new LiftSubsystem. */
@@ -128,13 +128,13 @@ public class LiftSubsystem extends SubsystemBase {
    */
   public Command runLiftUpCommand() {
     return this.startEnd(
-        () -> this.setLiftPower(OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setLiftPower(AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setLiftPower(0.1));
   }
 
   public Command runLiftDownCommand() {
     return this.startEnd(
-        () -> this.setLiftPower((-1) * OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setLiftPower((-1) * AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
   }
 

@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.OurAlgaeSubsystemConstants;
-import frc.robot.Constants.OurAlgaeSubsystemConstants.ArmSetpoints;
-import frc.robot.Constants.OurAlgaeSubsystemConstants.ElevatorSetpoints;
-import frc.robot.Constants.OurAlgaeSubsystemConstants.IntakeSetpoints;
+import frc.robot.Constants.AlgaeSubsystemConstants;
+import frc.robot.Constants.AlgaeSubsystemConstants.ArmSetpoints;
+import frc.robot.Constants.AlgaeSubsystemConstants.ElevatorSetpoints;
+import frc.robot.Constants.AlgaeSubsystemConstants.IntakeSetpoints;
 
-public class OurAlgaeSubsystem extends SubsystemBase {
+public class AlgaeSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
   public enum Setpoint {
     kGroundPickup,
@@ -35,14 +35,14 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
   private SparkFlex armMotor =
-      new SparkFlex(OurAlgaeSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
+      new SparkFlex(AlgaeSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
   private RelativeEncoder armEncoder = armMotor.getEncoder();
 
   // Initialize elevator SPARK. We will use MAXMotion position control for the elevator, so we also
   // need to initialize the closed loop controller and encoder.
   private SparkFlex elevatorMotor =
-      new SparkFlex(OurAlgaeSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
+      new SparkFlex(AlgaeSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
@@ -50,7 +50,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
   // controller like above.
   private SparkMax intakeMotor =
-      new SparkMax(OurAlgaeSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
+      new SparkMax(AlgaeSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
 
   // Member variables for subsystem state management
   private boolean wasResetByButton = false;
@@ -58,7 +58,7 @@ public class OurAlgaeSubsystem extends SubsystemBase {
   private double elevatorCurrentTarget = ElevatorSetpoints.kBase;
 
   
-  public OurAlgaeSubsystem() {
+  public AlgaeSubsystem() {
     /*
      * Apply the appropriate configurations to the SPARKs.
      *
@@ -70,15 +70,15 @@ public class OurAlgaeSubsystem extends SubsystemBase {
      * mid-operation.
      */
     armMotor.configure(
-        Configs.OurAlgaeSubsystem.armConfig,
+        Configs.AlgaeSubsystem.armConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     elevatorMotor.configure(
-        Configs.OurAlgaeSubsystem.elevatorConfig,
+        Configs.AlgaeSubsystem.elevatorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     intakeMotor.configure(
-        Configs.OurAlgaeSubsystem.intakeConfig,
+        Configs.AlgaeSubsystem.intakeConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -170,13 +170,13 @@ public class OurAlgaeSubsystem extends SubsystemBase {
    */
   public Command runElevatorUpCommand() {
     return this.startEnd(
-        () -> this.setElevatorPower(OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setElevatorPower(AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setElevatorPower(0.0));
   }
 
   public Command runElevatorDownCommand() {
     return this.startEnd(
-        () -> this.setElevatorPower((-1) * OurAlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setElevatorPower((-1) * AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setElevatorPower(0.0));
   }
 
@@ -187,13 +187,13 @@ public class OurAlgaeSubsystem extends SubsystemBase {
    */
   public Command runArmUpCommand() {
     return this.startEnd(
-        () -> this.setArmPower(OurAlgaeSubsystemConstants.ArmSetpointTestSpeed), 
+        () -> this.setArmPower(AlgaeSubsystemConstants.ArmSetpointTestSpeed), 
         () -> this.setArmPower(0.0));
   }
 
   public Command runArmDownCommand() {
     return this.startEnd(
-        () -> this.setArmPower((-1) * OurAlgaeSubsystemConstants.ArmSetpointTestSpeed), 
+        () -> this.setArmPower((-1) * AlgaeSubsystemConstants.ArmSetpointTestSpeed), 
         () -> this.setArmPower(0.0));
   }
 
@@ -222,11 +222,11 @@ public class OurAlgaeSubsystem extends SubsystemBase {
     //zeroOnUserButton();
 
     // Display subsystem values
-    SmartDashboard.putNumber("Algae/Arm/Target Position", armCurrentTarget);
-    SmartDashboard.putNumber("Algae/Arm/Actual Position", armEncoder.getPosition());
-    SmartDashboard.putNumber("Algae/Elevator/Target Position", elevatorCurrentTarget);
-    SmartDashboard.putNumber("Algae/Elevator/Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Algae/Intake/Applied Output", intakeMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Arm/Target Position", armCurrentTarget);
+    SmartDashboard.putNumber("Arm/Actual Position", armEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
+    SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Intake/Applied Output", intakeMotor.getAppliedOutput());
 
     
   }

@@ -33,7 +33,7 @@ import frc.robot.Constants.CoralSubsystemConstants.ElevatorSetpoints;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpointHeights;
 import frc.robot.Constants.SimulationRobotConstants;
-import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
+import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;

@@ -133,9 +133,9 @@ public class Configs {
   }
 
   /* *****************
-   * OurAlgaeSubsystem 
+   * AlgaeSubsystem 
    */
-  public static final class OurAlgaeSubsystem {
+  public static final class AlgaeSubsystem {
     public static final SparkMaxConfig armConfig = new SparkMaxConfig();
     public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
     public static final SparkMaxConfig intakeConfig = new SparkMaxConfig();

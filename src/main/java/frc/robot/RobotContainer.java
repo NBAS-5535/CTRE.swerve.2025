@@ -37,8 +37,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.OurActuatorSubsystem;
-import frc.robot.subsystems.OurAlgaeSubsystem;
-import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
+import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.VisionSubsystem_Test;
@@ -89,7 +89,7 @@ public class RobotContainer {
     //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
     /** OurAlgaeSubsystem */
-    private final OurAlgaeSubsystem m_algaeSubsystem = new OurAlgaeSubsystem();
+    private final AlgaeSubsystem m_algaeSubsystem = new AlgaeSubsystem();
 
     /** LiftSubsystem */
     private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();

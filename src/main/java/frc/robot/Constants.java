@@ -53,23 +53,6 @@ public final class Constants {
     }
   }
 
-  public static final class AlgaeSubsystemConstants {
-    public static final int kIntakeMotorCanId = 13;
-    public static final int kPivotMotorCanId = 14;
-
-    public static final class ArmSetpoints {
-      public static final double kStow = 18.5;
-      public static final double kHold = 11.5;
-      public static final double kDown = 0;
-    }
-
-    public static final class IntakeSetpoints {
-      public static final double kForward = 0.5;
-      public static final double kReverse = -0.5;
-      public static final double kHold = 0.25;
-    }
-  }
-
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -277,9 +260,9 @@ public final class Constants {
   }
 
   /* **************************
-   * OurAlgaeSubsystemConstants
+   * AlgaeSubsystemConstants
    */
-  public static final class OurAlgaeSubsystemConstants {
+  public static final class AlgaeSubsystemConstants {
     public static final int kElevatorMotorCanId = 42;
     public static final int kArmMotorCanId = 41;
     public static final int kIntakeMotorCanId = 43;

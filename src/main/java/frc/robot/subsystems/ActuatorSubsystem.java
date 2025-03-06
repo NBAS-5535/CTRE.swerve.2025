@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ActuatorConstants;
-import frc.robot.Constants.OurAlgaeSubsystemConstants;
+import frc.robot.Constants.AlgaeSubsystemConstants;
 
 public class ActuatorSubsystem extends SubsystemBase {
   /** Creates a new ActuatorSubsystem. */

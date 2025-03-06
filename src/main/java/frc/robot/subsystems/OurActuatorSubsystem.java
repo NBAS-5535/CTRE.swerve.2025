@@ -19,8 +19,8 @@ import frc.robot.Configs;
 import frc.robot.Constants.OurActuatorSubsystemConstants;
 
 import frc.robot.Constants.OurActuatorSubsystemConstants.OurActuatorSetpoints;
-import frc.robot.Constants.OurAlgaeSubsystemConstants.ElevatorSetpoints;
-import frc.robot.Constants.OurAlgaeSubsystemConstants.IntakeSetpoints;
+import frc.robot.Constants.AlgaeSubsystemConstants.ElevatorSetpoints;
+import frc.robot.Constants.AlgaeSubsystemConstants.IntakeSetpoints;
 
 
 public class OurActuatorSubsystem extends SubsystemBase {

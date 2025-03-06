@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.OurAlgaeSubsystem;
-import frc.robot.subsystems.OurAlgaeSubsystem.Setpoint;
+import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Autos extends Command {
