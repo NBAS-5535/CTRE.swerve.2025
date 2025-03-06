@@ -10,9 +10,9 @@ import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import frc.robot.Constants.ActuatorConstants;
+import frc.robot.Constants.ActuatorSubsystemConstants;
 import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants.OurActuatorSubsystemConstants;
+import frc.robot.Constants.ActuatorSubsystemConstants;
 
 /** Add your docs here. */
 public class Configs {
@@ -85,8 +85,8 @@ public class Configs {
     static {
       // Configure basic setting of the actuator motor
       actuatorConfig
-        .smartCurrentLimit(ActuatorConstants.kActuatorCurrentLimit)
-        .closedLoopRampRate(ActuatorConstants.kActuatorRampRate);
+        .smartCurrentLimit(ActuatorSubsystemConstants.kActuatorCurrentLimit)
+        .closedLoopRampRate(ActuatorSubsystemConstants.kActuatorRampRate);
 
       /*
        * Configure the closed loop controller. We want to make sure we set the
@@ -97,36 +97,10 @@ public class Configs {
           .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
           // Set PID values for position control. We don't need to pass a closed
           // loop slot, as it will default to slot 0.
-          .pid(ActuatorConstants.kActuatorKp, ActuatorConstants.kActuatorKi, ActuatorConstants.kActuatorKd)
+          .pid(ActuatorSubsystemConstants.kActuatorKp, 
+              ActuatorSubsystemConstants.kActuatorKi, 
+              ActuatorSubsystemConstants.kActuatorKd)
           .outputRange(-0.5, 0.5);
-
-      actuatorConfig.idleMode(IdleMode.kBrake);
-    }
-  }
-
-   /* *****************
-   * OurActuatorSubsystem 
-   */
-  public static final class OurActuatorSubsystem {
-    public static final SparkMaxConfig actuatorConfig = new SparkMaxConfig();
-
-    static {
-      // Configure basic setting of the actuator motor
-      actuatorConfig
-        .smartCurrentLimit(OurActuatorSubsystemConstants.kActuatorCurrentLimit)
-        .closedLoopRampRate(OurActuatorSubsystemConstants.kActuatorRampRate);
-
-      /*
-       * Configure the closed loop controller. We want to make sure we set the
-       * feedback sensor as the primary encoder.
-       */
-      actuatorConfig
-          .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-          // Set PID values for position control. We don't need to pass a closed
-          // loop slot, as it will default to slot 0.
-          .pid(OurActuatorSubsystemConstants.kActuatorKp, OurActuatorSubsystemConstants.kActuatorKi, OurActuatorSubsystemConstants.kActuatorKd)
-          .outputRange(-1., 1.);
 
       actuatorConfig.idleMode(IdleMode.kBrake);
     }

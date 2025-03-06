@@ -23,22 +23,20 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.ActuatorConstants;
 import frc.robot.Constants.AutonomousMenuConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.OurActuatorSubsystemConstants.OurActuatorSetpoints;
 import frc.robot.commands.ActuatorCommand;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.commands.SemiAuto;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.ActuatorSubsystem;
+import frc.robot.subsystems.ActuatorSubsystemRev;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.OurActuatorSubsystem;
-import frc.robot.subsystems.OurActuatorSubsystem.ActuatorSetpoints;
+import frc.robot.subsystems.ActuatorSubsystem;
+import frc.robot.subsystems.ActuatorSubsystem.ActuatorSetpoints;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
@@ -85,7 +83,7 @@ public class RobotContainer {
     /* 2025 game related subsystems */
     /* actuator to move the levator to game start position */
     //public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
-    public final OurActuatorSubsystem m_actuator = new OurActuatorSubsystem();
+    public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
 
     /* elevator subsystem */
     //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();

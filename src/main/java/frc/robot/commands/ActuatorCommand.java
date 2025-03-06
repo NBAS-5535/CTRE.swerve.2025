@@ -5,16 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ActuatorSubsystem;
+import frc.robot.subsystems.ActuatorSubsystemRev;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ActuatorCommand extends Command {
   /** Creates a new test. */
-  private ActuatorSubsystem m_actuator;
+  private ActuatorSubsystemRev m_actuator;
   private int m_direction;
   private double m_setpoint;
 
-  public ActuatorCommand(ActuatorSubsystem actuator, int direction, double setpoint) {
+  public ActuatorCommand(ActuatorSubsystemRev actuator, int direction, double setpoint) {
     this.m_actuator = actuator;
     this.m_direction = direction;
     this.m_setpoint = setpoint;

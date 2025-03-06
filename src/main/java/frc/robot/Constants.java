@@ -214,7 +214,7 @@ public final class Constants {
 
   /* *****************
    * ActuatorConstants
-   */
+   
   public static final class ActuatorConstants{
     public static final int kActuatorMotorCanId = 44;
 
@@ -233,11 +233,12 @@ public final class Constants {
     public static final double kSetPointInRevolutions = 39.; //revolutions <---- set smaller as a test, should be 40ish
 
   }
+    */
 
     /* **************************
-   * OurActuatorSubsystemConstants
+   * ActuatorSubsystemConstants
    */
-  public static final class OurActuatorSubsystemConstants {
+  public static final class ActuatorSubsystemConstants {
     public static final int kActuatorMotorCanId = 44;
 
     public static double kActuatorRampRate = 0.1;
@@ -249,9 +250,9 @@ public final class Constants {
     public static final double kActuatorKi = 0;
     public static final double kActuatorKd = 0.;
     
-    public static final double ActuatorSetpointTestSpeed = 0.25;
+    public static final double ActuatorSetpointTestSpeed = 0.1;
   
-    public static final class OurActuatorSetpoints {
+    public static final class ActuatorSubSystemSetpoints {
       public static final double kBase = 0;
       public static final double kAlgaeNetShootSetPoint = 30.;
       public static final double kSetPointInRevolutions = 39.;
