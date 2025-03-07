@@ -297,7 +297,7 @@ public class RobotContainer {
                 // move to an intermediate point
                 txbox.povRight().onTrue(
                     new SequentialCommandGroup(
-                        new ActuatorCommandRev(m_actuator, -1, ActuatorSubsystemConstants.kSetPointInRevolutions),
+                        new ActuatorCommandRev(m_actuator, -1, ActuatorSubsystemConstants.kIntermediateSetPoint),
                         new InstantCommand(() -> m_actuator.stopMotor()))
                 );
             } else {

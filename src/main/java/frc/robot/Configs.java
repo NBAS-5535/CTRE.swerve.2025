@@ -100,7 +100,12 @@ public class Configs {
           .pid(ActuatorSubsystemConstants.kActuatorKp, 
               ActuatorSubsystemConstants.kActuatorKi, 
               ActuatorSubsystemConstants.kActuatorKd)
-          .outputRange(-0.5, 0.5);
+          .outputRange(-1,1)
+          .maxMotion
+          // Set MAXMotion parameters for position control
+          .maxVelocity(2000)
+          .maxAcceleration(10000)
+          .allowedClosedLoopError(0.25);
 
       actuatorConfig.idleMode(IdleMode.kBrake);
     }
@@ -204,7 +209,7 @@ public class Configs {
           // Set PID values for position control. We don't need to pass a closed
           // loop slot, as it will default to slot 0.
           .pid(LiftConstants.kLiftKp, LiftConstants.kLiftKi, LiftConstants.kLiftKd)
-          .outputRange(-0.5, 0.5);
+          .outputRange(-1., 1);
 
       liftConfig.idleMode(IdleMode.kBrake);
     }
