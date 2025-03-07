@@ -281,8 +281,10 @@ public class RobotContainer {
         /* Actuator Subsystem */
         boolean actuatorTest = true;
         if (actuatorTest) {
+            
             // move the elevator to game position: direction =1
             if ( actuatorIsRev ) {
+                /**/
                 joystick.leftBumper().onTrue(
                     new SequentialCommandGroup(
                         new ActuatorCommandRev(m_actuator, 1, ActuatorSubsystemConstants.kSetPointInRevolutions),
@@ -300,8 +302,9 @@ public class RobotContainer {
                         new ActuatorCommandRev(m_actuator, -1, ActuatorSubsystemConstants.kIntermediateSetPoint),
                         new InstantCommand(() -> m_actuator.stopMotor()))
                 );
+                /**/
             } else {
-                /* uncomment if needed
+                /* uncomment if needed 
                 joystick.leftBumper().onTrue(
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                 );
