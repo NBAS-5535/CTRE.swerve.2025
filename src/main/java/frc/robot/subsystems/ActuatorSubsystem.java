@@ -7,19 +7,15 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ActuatorSubsystemConstants;
 import frc.robot.Constants.ActuatorSubsystemConstants.ActuatorSubSystemSetpoints;
-import frc.robot.Constants.AlgaeSubsystemConstants.ElevatorSetpoints;
-import frc.robot.Constants.AlgaeSubsystemConstants.IntakeSetpoints;
+
 
 
 public class ActuatorSubsystem extends SubsystemBase {
@@ -32,10 +28,10 @@ public class ActuatorSubsystem extends SubsystemBase {
 
   // Initialize Actuator SPARK. We will use MAXMotion position control for the Actuator, so we also need to
   // initialize the closed loop controller and encoder.
-  private SparkMax ActuatorMotor =
+  private SparkMax actuatorMotor =
       new SparkMax(ActuatorSubsystemConstants.kActuatorMotorCanId, MotorType.kBrushless);
-  private SparkClosedLoopController ActuatorController = ActuatorMotor.getClosedLoopController();
-  private RelativeEncoder ActuatorEncoder = ActuatorMotor.getEncoder();
+  private SparkClosedLoopController actuatorController = actuatorMotor.getClosedLoopController();
+  private RelativeEncoder actuatorEncoder = actuatorMotor.getEncoder();
 
   // Member variables for subsystem state management
   private boolean wasResetByButton = false;
@@ -53,14 +49,14 @@ public class ActuatorSubsystem extends SubsystemBase {
      * the SPARK loses power. This is useful for power cycles that may occur
      * mid-operation.
      */
-    ActuatorMotor.configure(
+    actuatorMotor.configure(
         Configs.ActuatorSubsystem.actuatorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
 
     // Zero Actuator and elevator encoders on initialization
-    ActuatorEncoder.setPosition(0);
+    actuatorEncoder.setPosition(0);
 
   }
 
@@ -70,7 +66,7 @@ public class ActuatorSubsystem extends SubsystemBase {
    * setpoints.
    */
   public void moveToSetpoint() {
-    ActuatorController.setReference(ActuatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+    actuatorController.setReference(ActuatorCurrentTarget, ControlType.kMAXMotionPositionControl);
 
   }
 
@@ -80,7 +76,7 @@ public class ActuatorSubsystem extends SubsystemBase {
       // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
       // constant zeroing while pressed
       wasResetByButton = true;
-      ActuatorEncoder.setPosition(0);
+      actuatorEncoder.setPosition(0);
     } else if (!RobotController.getUserButton()) {
       wasResetByButton = false;
     }
@@ -88,7 +84,7 @@ public class ActuatorSubsystem extends SubsystemBase {
 
   /** Set Actuator motor power in the range of [-1, 1]. - TEST Purpose: step through */
   private void setActuatorPower(double power) {
-    ActuatorMotor.set(power);
+    actuatorMotor.set(power);
   }
 
   /**
@@ -137,6 +133,21 @@ public class ActuatorSubsystem extends SubsystemBase {
         () -> this.setActuatorPower(0.0));
   }
 
+  public boolean isSetpointReached(double setpoint){
+    SmartDashboard.putNumber("ActuatorCurrentTarget", ActuatorCurrentTarget);
+    double currentPosition = actuatorEncoder.getPosition();
+    SmartDashboard.putNumber("ActuatorPosition", currentPosition);
+    boolean condition = Math.abs(currentPosition - ActuatorCurrentTarget) <= 0.5;
+    SmartDashboard.putBoolean("Actuator-isSetpointReached", condition);
+    if ( condition ) {
+      setActuatorPower(0.);
+      System.out.println("Actuator Motor Stopped: ");
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @Override
   public void periodic() {
     moveToSetpoint();
@@ -145,12 +156,10 @@ public class ActuatorSubsystem extends SubsystemBase {
 
     // Display subsystem values
     SmartDashboard.putNumber("Actuator/Target Position", ActuatorCurrentTarget);
-    SmartDashboard.putNumber("Actuator/Actual Position", ActuatorEncoder.getPosition());
+    SmartDashboard.putNumber("Actuator/Actual Position", actuatorEncoder.getPosition());
 
     
   }
-
-  
 
   @Override
   public void simulationPeriodic() {

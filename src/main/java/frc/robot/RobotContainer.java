@@ -23,9 +23,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.ActuatorSubsystemConstants;
 import frc.robot.Constants.AutonomousMenuConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.ActuatorCommand;
+import frc.robot.commands.ActuatorCommandRev;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.OperatorFriendlyCommands;
@@ -82,8 +83,11 @@ public class RobotContainer {
 
     /* 2025 game related subsystems */
     /* actuator to move the levator to game start position */
+    //public final boolean actuatorIsRev = false;
     //public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
-    public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
+    public final boolean actuatorIsRev = true;
+    public final ActuatorSubsystemRev m_actuator = new ActuatorSubsystemRev();
+
 
     /* elevator subsystem */
     //public final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
@@ -278,36 +282,39 @@ public class RobotContainer {
         boolean actuatorTest = true;
         if (actuatorTest) {
             // move the elevator to game position: direction =1
-            joystick.leftBumper().onTrue(
-                //new SequentialCommandGroup(
-                //m_actuator.markPositionCommand(),
-                //new InstantCommand(() -> m_actuator.markPosition()),
-                //new InstantCommand(() -> m_actuator.setInMotion(1)).until(() -> m_actuator.isReachedSetpoint(1))
-                //new InstantCommand(() -> m_actuator.setInMotion(1)).withTimeout(1))
-                //)
-                //new SequentialCommandGroup(
-                //    new ActuatorCommand(m_actuator, 1, ActuatorConstants.kSetPointInRevolutions),
-                //    new InstantCommand(() -> m_actuator.stopMotor())
-                //OurActuator
-                m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
-            );
-            // move elevator back to start position
-            joystick.rightBumper().onTrue(
-                //new SequentialCommandGroup(
-                //new InstantCommand(() -> m_actuator.markPosition()),
-                //new InstantCommand(() -> m_actuator.setInMotion(-1)).until(() -> m_actuator.isReachedSetpoint(-1))
-                //new InstantCommand(() -> m_actuator.setInMotion(-1)).withTimeout(0.5))
-                //)
-                //new SequentialCommandGroup(
-                //    new ActuatorCommand(m_actuator, -1, ActuatorConstants.kSetPointInRevolutions),
-                //    new InstantCommand(() -> m_actuator.stopMotor())
-                //OurActuator
-                m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
-            );
-            // move to an intermediate point
-            txbox.povRight().onTrue(
-                m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
-            );
+            if ( actuatorIsRev ) {
+                joystick.leftBumper().onTrue(
+                    new SequentialCommandGroup(
+                        new ActuatorCommandRev(m_actuator, 1, ActuatorSubsystemConstants.kSetPointInRevolutions),
+                        new InstantCommand(() -> m_actuator.stopMotor()))
+                );
+                // move elevator back to start position
+                joystick.rightBumper().onTrue(
+                    new SequentialCommandGroup(
+                        new ActuatorCommandRev(m_actuator, -1, ActuatorSubsystemConstants.kSetPointInRevolutions),
+                        new InstantCommand(() -> m_actuator.stopMotor()))
+               );
+                // move to an intermediate point
+                txbox.povRight().onTrue(
+                    new SequentialCommandGroup(
+                        new ActuatorCommandRev(m_actuator, -1, ActuatorSubsystemConstants.kSetPointInRevolutions),
+                        new InstantCommand(() -> m_actuator.stopMotor()))
+                );
+            } else {
+                /* uncomment if needed
+                joystick.leftBumper().onTrue(
+                    m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                );
+                // move elevator back to start position
+                joystick.rightBumper().onTrue(
+                    m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
+                );
+                // move to an intermediate point
+                txbox.povRight().onTrue(
+                    m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
+                );
+                */
+            }
 
         } // end actuator test
 
@@ -395,11 +402,6 @@ public class RobotContainer {
                         new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
             ));
              */
-            /* try the case from SemiAuto.java */
-            // INACTIVE!!!
-            txbox
-                .povCenter()
-                    .onTrue(SemiAuto.runSideSlotShootCommand(m_algaeSubsystem, m_actuator));
         }
 
         /* command to move the elevator to a pre-specified height */

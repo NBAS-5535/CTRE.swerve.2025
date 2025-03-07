@@ -135,7 +135,7 @@ public class ActuatorSubsystemRev extends SubsystemBase {
     SmartDashboard.putNumber("actuator_setpoint", setpoint);
 
     boolean condition = direction * currentPosition >= direction * initialPosition + setpoint;
-    SmartDashboard.putBoolean("isSetpointReached", condition);
+    SmartDashboard.putBoolean("Actuator-isSetpointReached", condition);
     if ( condition ) {
       stopMotor();
       System.out.println("Motor Stopped: " + String.valueOf(direction));

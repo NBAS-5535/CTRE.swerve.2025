@@ -129,7 +129,7 @@ public class LiftSubsystem extends SubsystemBase {
   public Command runLiftUpCommand() {
     return this.startEnd(
         () -> this.setLiftPower(AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
-        () -> this.setLiftPower(0.1));
+        () -> this.setLiftPower(0.0));
   }
 
   public Command runLiftDownCommand() {
