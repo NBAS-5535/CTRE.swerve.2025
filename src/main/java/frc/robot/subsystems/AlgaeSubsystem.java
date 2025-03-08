@@ -57,6 +57,8 @@ public class AlgaeSubsystem extends SubsystemBase {
   private double armCurrentTarget = ArmSetpoints.kBase; // may have to start at a heigher level kMiddleReef
   private double elevatorCurrentTarget = ElevatorSetpoints.kBase;
 
+  // manual jog flag
+  private boolean runPeriodic = true;
   
   public AlgaeSubsystem() {
     /*
@@ -113,17 +115,17 @@ public class AlgaeSubsystem extends SubsystemBase {
   }
 
   /** Set elevator motor power in the range of [-1, 1]. - TEST Purpose: step through */
-  private void setElevatorPower(double power) {
+  public void setElevatorPower(double power) {
     elevatorMotor.set(power);
   }
 
   /** Set arm motor power in the range of [-1, 1]. - TEST Purpose: step through */
-  private void setArmPower(double power) {
+  public void setArmPower(double power) {
     armMotor.set(power);
   }
 
   /** Set the intake motor power in the range of [-1, 1]. */
-  private void setIntakePower(double power) {
+  public void setIntakePower(double power) {
     intakeMotor.set(power);
   }
 
@@ -169,12 +171,14 @@ public class AlgaeSubsystem extends SubsystemBase {
    * When the command is interrupted, e.g. the button is released, the motor will stop.
    */
   public Command runElevatorUpCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setElevatorPower(AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setElevatorPower(0.0));
   }
 
   public Command runElevatorDownCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setElevatorPower((-1) * AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
         () -> this.setElevatorPower(0.0));
@@ -186,12 +190,14 @@ public class AlgaeSubsystem extends SubsystemBase {
    * When the command is interrupted, e.g. the button is released, the motor will stop.
    */
   public Command runArmUpCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setArmPower(AlgaeSubsystemConstants.ArmSetpointTestSpeed), 
         () -> this.setArmPower(0.0));
   }
 
   public Command runArmDownCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setArmPower((-1) * AlgaeSubsystemConstants.ArmSetpointTestSpeed), 
         () -> this.setArmPower(0.0));
@@ -202,6 +208,7 @@ public class AlgaeSubsystem extends SubsystemBase {
    * the motor will stop.
    */
   public Command runIntakeCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kForward), () -> this.setIntakePower(0.0));
   }
@@ -211,13 +218,16 @@ public class AlgaeSubsystem extends SubsystemBase {
    * released, the motor will stop.
    */
   public Command reverseIntakeCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kReverse), () -> this.setIntakePower(0.0));
   }
 
   @Override
   public void periodic() {
-    moveToSetpoint();
+    if ( runPeriodic ) {
+      moveToSetpoint();
+    }
     //zeroElevatorOnLimitSwitch();
     zeroOnUserButton();
 
@@ -227,10 +237,14 @@ public class AlgaeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Intake/Applied Output", intakeMotor.getAppliedOutput());
+    SmartDashboard.putBoolean("runPeriodic", runPeriodic);
 
     
   }
 
+  public void resetPeriodicMode() {
+    runPeriodic = true;
+  }
   
 
   @Override

@@ -276,21 +276,21 @@ public final class Constants {
     public static final double ArmSetpointTestSpeed = 0.5;
   
     public static final class ElevatorSetpoints {
-      public static final double kGroundPick = 100.; //118.4;
-      public static final double kSideShoot = 180.8;
-      public static final double kBase = 0.0;
+      public static final double kGroundPick = 44.72;
+      public static final double kSideShoot = 61.85;
+      public static final double kBase = -10.;
       public static final double kLowerReef = -8.57;
-      public static final double kHigherReef = -83;
-      public static final double kAlgaeNet = -220.; //test - actual=-248.5;
+      public static final double kHigherReef = -83.00;
+      public static final double kAlgaeNet = -248.5;
     }
 
     public static final class ArmSetpoints {
-      public static final double kGroundPick = -10.8;//-15.2;
-      public static final double kSideShoot = 0.0;
-      public static final double kBase = 0;
+      public static final double kGroundPick = -17.15;
+      public static final double kSideShoot = 10.79;
+      public static final double kBase = -17.15;
       public static final double kLowerReef = 18.67;
       public static final double kHigherReef = 18.67;
-      public static final double kAlgaeNet = 16.5;//31.9;
+      public static final double kAlgaeNet = 31.9;
     }
 
     public static final class IntakeSetpoints {
@@ -318,7 +318,7 @@ public final class Constants {
     // Lift control parameters
     public static final class LiftSubSystemSetpoints {
       public static final double kBase = 0;
-      public static final double kmaxLiftSetpoint = 40.;
+      public static final double kmaxLiftSetpoint = 200.;
      }
 
   }

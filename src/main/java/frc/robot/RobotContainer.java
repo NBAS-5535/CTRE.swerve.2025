@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -29,6 +30,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.ActuatorCommandRev;
 import frc.robot.commands.AlignCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ManualCommands;
 import frc.robot.commands.OperatorFriendlyCommands;
 import frc.robot.commands.SemiAuto;
 import frc.robot.generated.TunerConstants;
@@ -50,7 +52,7 @@ public class RobotContainer {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final double speedDeadBand = 0.1;
+    private final double speedDeadBand = 0.08;
     private final double angleDeadBand = 0.1;
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * speedDeadBand).withRotationalDeadband(MaxAngularRate * angleDeadBand) // Add a deadband
@@ -191,7 +193,7 @@ public class RobotContainer {
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
 
         // Rotate by 90deg using a fixed speed and time
-        if (true) {
+        if (driveTest) {
             joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
             joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.67));
             //joystick.x().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
@@ -231,7 +233,7 @@ public class RobotContainer {
         } // end driveTest
 
         /* get robot Pode/location info */
-        if (driveTest) {
+        if (true) {
             /* pedantic way */
             /*
             joystick.povRight().onTrue(new SequentialCommandGroup(
@@ -244,10 +246,10 @@ public class RobotContainer {
             * Mark current position
             * Drive forward for 2 meters
             */
-            joystick.povRight().onTrue(new SequentialCommandGroup(
+            txbox.povDown().onTrue(new SequentialCommandGroup(
                 //new InstantCommandMarkGyroPose(drivetrain),
                 new InstantCommand(() -> drivetrain.setCurrentPose()),
-                drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
+                drivetrain.sysIdDynamic(Direction.kReverse).until(() -> drivetrain.isDesiredPoseReached(2.))
             ));
         } // end driveTest
 
@@ -275,7 +277,7 @@ public class RobotContainer {
             joystick.x().onTrue(new SequentialCommandGroup(
                 new AlignCommand(drivetrain, m_vision, testTagId),
                 //drivetrain.applyRequest(() -> brake),
-                drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(2.))
+                drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(1.))
             ));
         } // end visionTest
 
@@ -328,22 +330,22 @@ public class RobotContainer {
             /* Try gradually moving the elevator to determine operational heights */
             // A -> Run elevator UP
 
-            joystick.a().whileTrue(m_algaeSubsystem.runElevatorUpCommand());
+            joystick.a().whileTrue(ManualCommands.runElevatorUpCommand(m_algaeSubsystem));
             // B -> Run elevator DOWN
-            joystick.b().whileTrue(m_algaeSubsystem.runElevatorDownCommand());
+            joystick.b().whileTrue(ManualCommands.runElevatorDownCommand(m_algaeSubsystem));
 
             /* Try gradually moving the arm to determine operational heights */
             // povUp -> Run arm UP
-            joystick.povUp().whileTrue(m_algaeSubsystem.runArmUpCommand());
+            joystick.povUp().whileTrue(ManualCommands.runArmUpCommand(m_algaeSubsystem));
             // povDown -> Run arm DOWN
-            joystick.povDown().whileTrue(m_algaeSubsystem.runArmDownCommand());
+            joystick.povDown().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
 
             /* run intake motor in suck-in and push-out modes */
             // povRight -> Run tube intake
-            joystick.povRight().whileTrue(m_algaeSubsystem.runIntakeCommand());
+            joystick.povRight().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
 
             // povLeft -> Run tube intake in reverse
-            joystick.povLeft().whileTrue(m_algaeSubsystem.reverseIntakeCommand());
+            joystick.povLeft().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
 
             /* run lift motor in suck-in and push-out modes */
             // povRight -> Run tube intake
@@ -355,34 +357,53 @@ public class RobotContainer {
             // move elevator/arm to their respective positions
             txbox
                 .a()
-            //        .onTrue(new SequentialCommandGroup(
-            //            m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
-            //            new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint()))
-                    .onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
+                    .onTrue(
+                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
+                        new ParallelCommandGroup(
+                                m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
+                                m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        )    
             );
-
-            // same command sequence from SemiAuto
-            txbox
-                .povUp()
-                    .onTrue(SemiAuto.runAlgaePickupLowerReefCommand(m_algaeSubsystem));
-            //
 
             txbox
                 .b()
                     .onTrue(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)                   
+                        new ParallelCommandGroup(
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
+                            m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        )
+                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)                   
             );
             
             txbox
                 .x()
                     .onTrue(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+                        new ParallelCommandGroup(
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
+                            m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        )
             );
 
             txbox
                 .y()
                     .onTrue(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet)
+                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet)
+                        new ParallelCommandGroup(
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
+                            m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
+                        )
+            );
+
+            //
+            txbox
+                .povUp()
+                    .onTrue(
+                        new SequentialCommandGroup(
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kBase),
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
+                            m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        )    
             );
 
             /* reset all positions to kBase */

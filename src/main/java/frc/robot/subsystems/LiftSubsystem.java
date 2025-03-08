@@ -36,6 +36,8 @@ public class LiftSubsystem extends SubsystemBase {
   private boolean wasResetByButton = false;
   private double LiftCurrentTarget = LiftSubSystemSetpoints.kBase; // may have to start at a heigher level kMiddleReef
 
+  // manual jog flag
+  private boolean runPeriodic = false;
   
   public LiftSubsystem() {
     /*
@@ -112,12 +114,14 @@ public class LiftSubsystem extends SubsystemBase {
    * When the command is interrupted, e.g. the button is released, the motor will stop.
    */
   public Command runLiftUpCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setLiftPower(LiftSubsystemConstants.LiftSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
   }
 
   public Command runLiftDownCommand() {
+    runPeriodic = false;
     return this.startEnd(
         () -> this.setLiftPower((-1) * LiftSubsystemConstants.LiftSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
@@ -125,7 +129,10 @@ public class LiftSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    moveToSetpoint();
+    // manual jog option: don't run moveToSetpoint
+    if (runPeriodic) {
+      moveToSetpoint();
+    }
     //zeroElevatorOnLimitSwitch();
     zeroOnUserButton();
 
