@@ -302,7 +302,7 @@ public final class Constants {
   /* *********************
    * LifSubsystemConstants
    */
-  public static final class LiftConstants{
+  public static final class LiftSubsystemConstants{
     public static final int kLiftMotorCanId = 45;
 
     public static double kLiftRampRate = 0.1;
@@ -314,10 +314,12 @@ public final class Constants {
     public static final double kLiftKi = 0;
     public static final double kLiftKd = 0.;
 
+    public static final double LiftSetpointTestSpeed = 0.1;
     // Lift control parameters
-    public static final double kSpeed = 0.1;
-    public static final double kSetPoint = 2.; //inches
-    public static final int kSetPointInRevolutions = 40; //revolutions
+    public static final class LiftSubSystemSetpoints {
+      public static final double kBase = 0;
+      public static final double kmaxLiftSetpoint = 40.;
+     }
 
   }
 

@@ -11,8 +11,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.ActuatorSubsystemConstants;
-import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants.ActuatorSubsystemConstants;
+import frc.robot.Constants.LiftSubsystemConstants;
+
 
 /** Add your docs here. */
 public class Configs {
@@ -196,8 +196,8 @@ public class Configs {
     static {
       // Configure basic setting of the lift motor
       liftConfig
-        .smartCurrentLimit(LiftConstants.kLiftCurrentLimit)
-        .closedLoopRampRate(LiftConstants.kLiftRampRate);
+        .smartCurrentLimit(LiftSubsystemConstants.kLiftCurrentLimit)
+        .closedLoopRampRate(LiftSubsystemConstants.kLiftRampRate);
 
       /*
        * Configure the closed loop controller. We want to make sure we set the
@@ -208,8 +208,15 @@ public class Configs {
           .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
           // Set PID values for position control. We don't need to pass a closed
           // loop slot, as it will default to slot 0.
-          .pid(LiftConstants.kLiftKp, LiftConstants.kLiftKi, LiftConstants.kLiftKd)
-          .outputRange(-1., 1);
+          .pid(LiftSubsystemConstants.kLiftKp, 
+               LiftSubsystemConstants.kLiftKi, 
+               LiftSubsystemConstants.kLiftKd)
+          .outputRange(-1., 1)
+          .maxMotion
+          // Set MAXMotion parameters for position control
+          .maxVelocity(2000)
+          .maxAcceleration(10000)
+          .allowedClosedLoopError(0.25);
 
       liftConfig.idleMode(IdleMode.kBrake);
     }

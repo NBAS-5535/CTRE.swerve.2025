@@ -1,145 +1,144 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
-import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants.AlgaeSubsystemConstants;
+import frc.robot.Constants.LiftSubsystemConstants;
+import frc.robot.Constants.LiftSubsystemConstants.LiftSubSystemSetpoints;
+
+
 
 public class LiftSubsystem extends SubsystemBase {
-  /** Creates a new LiftSubsystem. */
+  /** Subsystem-wide setpoints */
+  public enum LiftSetpoints {
+    kBase,
+    kmaxSetpoint
+  }
+
+  // Initialize Lift SPARK. We will use MAXMotion position control for the Lift, so we also need to
+  // initialize the closed loop controller and encoder.
   private SparkMax liftMotor =
-      new SparkMax(LiftConstants.kLiftMotorCanId, MotorType.kBrushless);
+      new SparkMax(LiftSubsystemConstants.kLiftMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController liftController = liftMotor.getClosedLoopController();
   private RelativeEncoder liftEncoder = liftMotor.getEncoder();
 
-  private double initialPosition;
+  // Member variables for subsystem state management
+  private boolean wasResetByButton = false;
+  private double LiftCurrentTarget = LiftSubSystemSetpoints.kBase; // may have to start at a heigher level kMiddleReef
 
+  
   public LiftSubsystem() {
-    /* refer to Config.java
-    SparkMaxConfig liftConfig = new SparkMaxConfig();
-
-    liftConfig
-        .smartCurrentLimit(LiftConstants.kLiftCurrentLimit)
-        .closedLoopRampRate(LiftConstants.kLiftRampRate)
-        .closedLoop
-        .pid(LiftConstants.kLiftKp, LiftConstants.kLiftKi, LiftConstants.kLiftKd)
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .outputRange(-1, 1);
-        liftConfig.idleMode(IdleMode.kBrake);
-    */
-
+    /*
+     * Apply the appropriate configurations to the SPARKs.
+     *
+     * kResetSafeParameters is used to get the SPARK to a known state. This
+     * is useful in case the SPARK is replaced.
+     *
+     * kPersistParameters is used to ensure the configuration is not lost when
+     * the SPARK loses power. This is useful for power cycles that may occur
+     * mid-operation.
+     */
     liftMotor.configure(
         Configs.LiftSubsystem.liftConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // Zero lift encoder on initialization
-    this.setPosition(0);
 
-    // sets max revolutions in Constants.java as reference -> moves the lift to that position (i.e., upright) 
-    //liftController.setReference(LiftConstants.kSetPointInRevolutions, ControlType.kPosition);
-    // set reference as the fully-retracted position
-    liftController.setReference(0, ControlType.kPosition);
+    // Zero Lift and elevator encoders on initialization
+    liftEncoder.setPosition(0);
 
-    initialPosition = liftEncoder.getPosition();
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    //setInMotion();
-    SmartDashboard.putNumber("Lift Position", liftEncoder.getPosition());
-  }
-
-  public void setPosition(double position){
-    liftEncoder.setPosition(position);
-  }
-  
-  public double getPosition(){
-    return liftEncoder.getPosition();
-  }
-
-  public void setInMotion(int direction) {
-    liftMotor.set(direction * LiftConstants.kSpeed);
-    SmartDashboard.putNumber("Lift Speed", LiftConstants.kSpeed);
-  }
-
-  public void stopMotor() {
-    liftMotor.set(0.);
   }
 
   /**
-   * mark the current position of the lift
-   *
-   * @param none
-   * @return {@link edu.wpi.first.wpilibj2.command.Command}
+   * Drive the Lift and elevator motors to their respective setpoints. This will use MAXMotion
+   * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
+   * setpoints.
    */
-  public Command markPositionCommand() {
-    //initialPosition = getPosition();
-    //SmartDashboard.putNumber("Lift Init", initialPosition);
-    return this.runOnce( () -> this.markPosition());
+  public void moveToSetpoint() {
+    liftController.setReference(LiftCurrentTarget, ControlType.kMAXMotionPositionControl);
+
   }
 
-  // plain-vanilla marking
-  public void markPosition() {
-    initialPosition = getPosition();
-    SmartDashboard.putNumber("Lift Init", initialPosition);
-  }
-
-  /**
-   * check if the lift reached setpoint
-   *
-   * @param none 
-   * @return true if setpoint is reached
-   */
-  /** Run the control loop to reach and maintain the setpoint from the preferences. */
-  public boolean isReachedSetpoint(int direction) {
-    double currentPosition = liftEncoder.getPosition();
-    double [] temp = {initialPosition, currentPosition};
-    SmartDashboard.putNumberArray("Lift Positions", temp);
-    boolean condition = direction * currentPosition >= direction * initialPosition + LiftConstants.kSetPointInRevolutions;
-    if ( condition ) {
-      stopMotor();
-      return true;
-    } else {
-      return false;
+  /** Zero the Lift and elevator encoders when the user button is pressed on the roboRIO. */
+  private void zeroOnUserButton() {
+    if (!wasResetByButton && RobotController.getUserButton()) {
+      // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
+      // constant zeroing while pressed
+      wasResetByButton = true;
+      liftEncoder.setPosition(0);
+    } else if (!RobotController.getUserButton()) {
+      wasResetByButton = false;
     }
   }
 
+  /** Set Lift motor power in the range of [-1, 1]. - TEST Purpose: step through */
+  private void setLiftPower(double power) {
+    liftMotor.set(power);
+  }
+
   /**
-   * Command to run the elevator motor. 
+   * Command to set the subsystem setpoint. This will set the Lift and elevator to their predefined
+   * positions for the given setpoint.
+   */
+  public Command setSetpointCommand(LiftSetpoints setpoint) {
+    return this.runOnce(
+        () -> {
+          switch (setpoint) {
+            case kmaxSetpoint:
+              LiftCurrentTarget = LiftSubSystemSetpoints.kmaxLiftSetpoint;
+              break;
+            case kBase:
+              LiftCurrentTarget = LiftSubSystemSetpoints.kBase;
+              break;
+
+          }
+        });
+  }
+
+
+  /**
+   * Command to run the lift motor. 
    * Intended to step through to adjust proper setpoints for elevator heights
    * When the command is interrupted, e.g. the button is released, the motor will stop.
    */
   public Command runLiftUpCommand() {
     return this.startEnd(
-        () -> this.setLiftPower(AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setLiftPower(LiftSubsystemConstants.LiftSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
   }
 
   public Command runLiftDownCommand() {
     return this.startEnd(
-        () -> this.setLiftPower((-1) * AlgaeSubsystemConstants.ElevatorSetpointTestSpeed), 
+        () -> this.setLiftPower((-1) * LiftSubsystemConstants.LiftSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
   }
 
-  /** Set elevator motor power in the range of [-1, 1]. - TEST Purpose: step through */
-  private void setLiftPower(double power) {
-    liftMotor.set(power);
+  @Override
+  public void periodic() {
+    moveToSetpoint();
+    //zeroElevatorOnLimitSwitch();
+    zeroOnUserButton();
+
+    // Display subsystem values
+    SmartDashboard.putNumber("Lift/Target Position", LiftCurrentTarget);
+    SmartDashboard.putNumber("Lift/Actual Position", liftEncoder.getPosition());
+
+    
   }
+
+  @Override
+  public void simulationPeriodic() {
+  }
+
+
 }
