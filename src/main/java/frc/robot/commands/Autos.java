@@ -43,13 +43,13 @@ public class Autos extends Command {
   /* test */
   public static Command moveRotateRestRepeat(CommandSwerveDrivetrain swerve){
     Command autoCommand = Commands.sequence(
-      swerve.sysIdDynamic(Direction.kForward).withTimeout(1),
-            Commands.waitSeconds(3.0),
-            swerve.sysIdRotate(Direction.kForward).withTimeout(0.666), // for 90deg, rotate for 0.333s at pi rad/s
-            Commands.waitSeconds(1.),
-            swerve.sysIdRotate(Direction.kForward).withTimeout(0.666),
-            Commands.waitSeconds(2.),
-            swerve.sysIdDynamic(Direction.kReverse).withTimeout(1)
+      swerve.sysIdDynamic(Direction.kForward).withTimeout(0.1),
+            Commands.waitSeconds(5.0),
+            swerve.sysIdRotate(Direction.kForward).withTimeout(0.65), // for 90deg, rotate for 0.333s at pi rad/s
+            Commands.waitSeconds(5.),
+            swerve.sysIdRotate(Direction.kForward).withTimeout(0.65),
+            Commands.waitSeconds(5.),
+            swerve.sysIdDynamic(Direction.kReverse).withTimeout(0.1)
         );
     return autoCommand;
   }

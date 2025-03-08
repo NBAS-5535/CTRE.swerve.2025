@@ -217,9 +217,9 @@ public class AlgaeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //moveToSetpoint();
+    moveToSetpoint();
     //zeroElevatorOnLimitSwitch();
-    //zeroOnUserButton();
+    zeroOnUserButton();
 
     // Display subsystem values
     SmartDashboard.putNumber("Arm/Target Position", armCurrentTarget);

@@ -83,10 +83,10 @@ public class RobotContainer {
 
     /* 2025 game related subsystems */
     /* actuator to move the levator to game start position */
-    //public final boolean actuatorIsRev = false;
-    //public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
-    public final boolean actuatorIsRev = true;
-    public final ActuatorSubsystemRev m_actuator = new ActuatorSubsystemRev();
+    public final boolean actuatorIsRev = false;
+    public final ActuatorSubsystem m_actuator = new ActuatorSubsystem();
+    //public final boolean actuatorIsRev = true;
+    //public final ActuatorSubsystemRev m_actuator = new ActuatorSubsystemRev();
 
 
     /* elevator subsystem */
@@ -191,8 +191,9 @@ public class RobotContainer {
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
 
         // Rotate by 90deg using a fixed speed and time
-        if (driveTest) {
-            joystick.x().onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
+        if (true) {
+            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
+            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.67));
             //joystick.x().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
             joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
             joystick.povCenter().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -215,12 +216,12 @@ public class RobotContainer {
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
         /* rotate by setting a marker and turning the robot until 90deg is reached */
-        if (driveTest) {
+        if (true) {
             //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
             //pigeon2Subsystem.setAngleMarker();
             //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
             /* rotate robot "gradually" until ~90deg is reached*/
-            joystick.povDown().onTrue(new SequentialCommandGroup(
+            txbox.povLeft().onTrue(new SequentialCommandGroup(
                 //new InstantCommandMarkGyroAngle(pigeon2Subsystem),
                 new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
                 //new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
@@ -284,7 +285,7 @@ public class RobotContainer {
             
             // move the elevator to game position: direction =1
             if ( actuatorIsRev ) {
-                /**/
+                /*
                 joystick.leftBumper().onTrue(
                     new SequentialCommandGroup(
                         new ActuatorCommandRev(m_actuator, 1, ActuatorSubsystemConstants.kSetPointInRevolutions),
@@ -302,9 +303,9 @@ public class RobotContainer {
                         new ActuatorCommandRev(m_actuator, -1, ActuatorSubsystemConstants.kIntermediateSetPoint),
                         new InstantCommand(() -> m_actuator.stopMotor()))
                 );
-                /**/
+                */
             } else {
-                /* uncomment if needed 
+                /* uncomment if needed */
                 joystick.leftBumper().onTrue(
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                 );
@@ -316,7 +317,7 @@ public class RobotContainer {
                 txbox.povRight().onTrue(
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
                 );
-                */
+                /**/
             }
 
         } // end actuator test
@@ -354,10 +355,11 @@ public class RobotContainer {
             // move elevator/arm to their respective positions
             txbox
                 .a()
-                    .onTrue(new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
-                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
-            ));
+            //        .onTrue(new SequentialCommandGroup(
+            //            m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
+            //            new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint()))
+                    .onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
+            );
 
             // same command sequence from SemiAuto
             txbox
@@ -367,32 +369,28 @@ public class RobotContainer {
 
             txbox
                 .b()
-                    .onTrue(new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
-                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
-            ));
+                    .onTrue(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)                   
+            );
             
             txbox
                 .x()
-                    .onTrue(new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
-                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
-            ));
+                    .onTrue(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+            );
 
             txbox
                 .y()
-                    .onTrue(new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
-                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
-            ));
+                    .onTrue(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet)
+            );
 
             /* reset all positions to kBase */
             txbox
                 .rightBumper()
-                    .onTrue(new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kBase),
-                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
-            ));
+                    .onTrue(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kBase)
+            );
 
             /* side slot shot may be tricky
              * actuator put to its initial position
