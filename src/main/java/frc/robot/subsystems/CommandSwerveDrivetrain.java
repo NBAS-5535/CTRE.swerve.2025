@@ -324,25 +324,37 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     /* get the current location */
     public Pose2d getCurrentPose() {
-        return getState().Pose;
+        Pose2d currentPose = getState().Pose;
+        SmartDashboard.putNumber("Pose/Current X", currentPose.getX());
+        SmartDashboard.putNumber("Pose/Current Y", currentPose.getY());
+        return currentPose;
     } 
 
     /* store the current Pose */
     public void setCurrentPose() {
         m_initialPose = getState().Pose;
-        SmartDashboard.putNumber("Initial X", m_initialPose.getX());
-        SmartDashboard.putNumber("Initial Y", m_initialPose.getY());
+        SmartDashboard.putNumber("Pose/Initial X", m_initialPose.getX());
+        SmartDashboard.putNumber("Pose/Initial Y", m_initialPose.getY());
     }
 
     /* check if the desired Pose is reached */
     public Boolean isDesiredPoseReached(double distanceToGo){
         Pose2d currentPose = getState().Pose;
-        SmartDashboard.putNumber("Current X", currentPose.getX());
-        SmartDashboard.putNumber("Current Y", currentPose.getY());
+        SmartDashboard.putNumber("Pose/Current X", currentPose.getX());
+        SmartDashboard.putNumber("Pose/Current Y", currentPose.getY());
         double currentDistanceInX = Math.abs(currentPose.getX()) - Math.abs(m_initialPose.getX());
         double currentDistanceInY = Math.abs(currentPose.getY()) - Math.abs(m_initialPose.getY());
         double actualDistance = Math.sqrt(currentDistanceInX * currentDistanceInX + currentDistanceInY * currentDistanceInY);
         // add a 1% error margin
         return actualDistance >= 0.99 * distanceToGo ? true : false;
+    }
+
+    /* retrieve encoder readings for the drivetrain */
+    public void recordEncoderReadings(CommandSwerveDrivetrain dtrain) {
+        double[] temp = {0., 0., 0., 0.};
+        for ( int i = 0; i < 4; i++ ){
+            temp[i]= dtrain.getModule(0).getDriveMotor().getPosition().getValueAsDouble();
+            SmartDashboard.putNumber("Swerve/Module:" + String.valueOf(i), temp[i]);
+        }
     }
 }
