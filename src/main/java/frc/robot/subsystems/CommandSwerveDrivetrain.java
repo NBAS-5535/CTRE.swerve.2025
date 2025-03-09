@@ -44,7 +44,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private static final Time timeout = Seconds.of(2.); //default is set to null for 10s 
-    private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(1).per(Second);
+    private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(0).per(Second); // assume no acceleration Volts.of(1).per(Second);
     private static final Voltage dynamicTestRampRate = Volts.of(4.); // original was 4
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -342,6 +342,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double currentDistanceInX = Math.abs(currentPose.getX()) - Math.abs(m_initialPose.getX());
         double currentDistanceInY = Math.abs(currentPose.getY()) - Math.abs(m_initialPose.getY());
         double actualDistance = Math.sqrt(currentDistanceInX * currentDistanceInX + currentDistanceInY * currentDistanceInY);
-        return actualDistance > distanceToGo ? true : false;
+        // add a 1% error margin
+        return actualDistance >= 0.99 * distanceToGo ? true : false;
     }
 }

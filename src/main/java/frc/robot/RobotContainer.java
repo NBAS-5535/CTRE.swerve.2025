@@ -199,6 +199,7 @@ public class RobotContainer {
             //joystick.x().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
             joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
             joystick.povCenter().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+            //drivetrain.getModule(0).getDriveMotor().getPosition().getValue();
         } // end driveTest
 
         // point forward
@@ -224,12 +225,10 @@ public class RobotContainer {
             //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
             /* rotate robot "gradually" until ~90deg is reached*/
             txbox.povLeft().onTrue(new SequentialCommandGroup(
-                //new InstantCommandMarkGyroAngle(pigeon2Subsystem),
                 new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
-                //new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem, "rotate"),
-                //Commands.print("Reset the angles"),
                 drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
                 );
+            
         } // end driveTest
 
         /* get robot Pode/location info */
@@ -251,6 +250,7 @@ public class RobotContainer {
                 new InstantCommand(() -> drivetrain.setCurrentPose()),
                 drivetrain.sysIdDynamic(Direction.kReverse).until(() -> drivetrain.isDesiredPoseReached(2.))
             ));
+            
         } // end driveTest
 
         /* Vision Subsystem */
@@ -400,7 +400,7 @@ public class RobotContainer {
                 .povUp()
                     .onTrue(
                         new SequentialCommandGroup(
-                            m_algaeSubsystem.setSetpointCommand(Setpoint.kBase),
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
                             m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
                             m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                         )    

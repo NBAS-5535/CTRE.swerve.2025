@@ -27,6 +27,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     kGroundPickup,
     kSideSlotShoot,
     kBase,
+    kMoveWithBall,
     kAlgaePickupLowerReef,
     kAlgaePickupHigherReef,
     kShootAlgaeNet
@@ -148,6 +149,10 @@ public class AlgaeSubsystem extends SubsystemBase {
             case kBase:
               armCurrentTarget = ArmSetpoints.kBase;
               elevatorCurrentTarget = ElevatorSetpoints.kBase;
+              break;
+            case kMoveWithBall:
+              armCurrentTarget = ArmSetpoints.kMoveWithBall;
+              elevatorCurrentTarget = ElevatorSetpoints.kMoveWithBall;
               break;
             case kAlgaePickupLowerReef:
               armCurrentTarget = ArmSetpoints.kLowerReef;

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +19,7 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
 
   private double m_initialAngle = 0.;
   private double m_initialPose;
+  private double m_angleDiff;
 
   public Pigeon2GyroSubsystem(Pigeon2 pigeon2) {
     this.m_pigeon2 = pigeon2;
@@ -31,6 +33,7 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Yaw", getHeading());
     SmartDashboard.putNumber("Angle", getGyroAngle().getDegrees());
+    m_angleDiff = getHeading() - m_initialAngle;
   }
 
   public void zeroHeading(){
@@ -50,11 +53,11 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
   }
 
   public boolean isAngleDiffReached() {
-    double currentAngle = getHeading();
-    System.out.println(getName() + ": " + String.valueOf(currentAngle) + "  " + String.valueOf(m_initialAngle));
-    boolean condition = Math.abs(currentAngle) - Math.abs(m_initialAngle) >= 90.;
+    System.out.println(getName() + ": " + String.valueOf(m_angleDiff));
+    boolean condition = MathUtil.isNear(Math.abs(m_angleDiff), 90., 1.);
     if ( condition ) {
       SmartDashboard.putBoolean("isAngleDiffReached", condition);
+      System.out.println(getName() + " ---- AngleDiffReached"); 
     }
     return condition;
   }
