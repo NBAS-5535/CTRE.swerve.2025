@@ -470,7 +470,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // some autonomous sequences
-        String caseType = "auto"; //"manual";
+        String caseType = "menu"; //"manual";
         Command autoCommand = null;
         String menuItem = "";
         String chosenItem = "";
@@ -496,21 +496,27 @@ public class RobotContainer {
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
                         chosenItem = "BlueDown_1";
+                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kCenterBlue:
                         chosenItem = "BlueCenter_2";
+                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem);
                         break;
                     case AutonomousMenuConstants.kUpBlue:
                         chosenItem = "BlueUp_3";
+                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kDownRed:
                         chosenItem = "RedDown_4";
+                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kCenterRed:
                         chosenItem = "RedCenter_5";
+                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem);
                         break;
                     case AutonomousMenuConstants.kUpRed:
                         chosenItem = "RedUp_6";
+                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break; 
                     default:
                         chosenItem = "Nothing"; 

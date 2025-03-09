@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Pigeon2GyroSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 
@@ -60,5 +61,60 @@ public class Autos extends Command {
     return swerve.sysIdDynamic(direction).withTimeout(1);
   }
 
+  /* move from line to reef; 
+   * move actuator straight;
+   * drop corral;
+   * move to low reef seeting
+   * pick up algae
+   * move back
+   * rotate 90deg
+   * move to barge net
+   * rotate 90deg
+   * move towarda barge
+   * move algae shoot setting
+   * eject algae
+   */
+  public static Command midlineStartCommand(CommandSwerveDrivetrain swerve, Pigeon2GyroSubsystem gyro, AlgaeSubsystem algae) {
+    Command tempCommand;
+    tempCommand = new SequentialCommandGroup(
+      //move forward
+      new SequentialCommandGroup(
+                //new InstantCommandMarkGyroPose(drivetrain),
+                new InstantCommand(() -> swerve.setCurrentPose()),
+                swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(1.5))
+                ),
+      // add corraldrop and low reef pickup
+      // move back
+      new SequentialCommandGroup(
+                  //new InstantCommandMarkGyroPose(drivetrain),
+                  new InstantCommand(() -> swerve.setCurrentPose()),
+                  swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(0.6))
+                  ),
+      // rotate set angel tol to 10deg??
+      new SequentialCommandGroup(
+                new InstantCommand(() -> gyro.setAngleMarker()),
+                swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached())
+                ),
+      //move to wards barge
+      new SequentialCommandGroup(
+                //new InstantCommandMarkGyroPose(drivetrain),
+                new InstantCommand(() -> swerve.setCurrentPose()),
+                swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(2.0))
+                ),
+      // rotate
+      new SequentialCommandGroup(
+                new InstantCommand(() -> gyro.setAngleMarker()),
+                swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached())
+                ),
+      new SequentialCommandGroup(
+                //new InstantCommandMarkGyroPose(drivetrain),
+                new InstantCommand(() -> swerve.setCurrentPose()),
+                swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(0.8))
+                )
+      // add highreef setting and shooting
+
+    );
+    return tempCommand;
+  }
 
 }
