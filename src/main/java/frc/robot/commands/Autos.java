@@ -93,7 +93,7 @@ public class Autos extends Command {
       // rotate set angel tol to 10deg??
       new SequentialCommandGroup(
                 new InstantCommand(() -> gyro.setAngleMarker()),
-                swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached())
+                swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached(swerve))
                 ),
       //move to wards barge
       new SequentialCommandGroup(
@@ -104,7 +104,7 @@ public class Autos extends Command {
       // rotate
       new SequentialCommandGroup(
                 new InstantCommand(() -> gyro.setAngleMarker()),
-                swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached())
+                swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached(swerve))
                 ),
       new SequentialCommandGroup(
                 //new InstantCommandMarkGyroPose(drivetrain),

@@ -226,7 +226,7 @@ public class RobotContainer {
             /* rotate robot "gradually" until ~90deg is reached*/
             txbox.povLeft().onTrue(new SequentialCommandGroup(
                 new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
-                drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached()))
+                drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached(drivetrain)))
                 );
             
         } // end driveTest
@@ -248,7 +248,7 @@ public class RobotContainer {
             txbox.povDown().onTrue(new SequentialCommandGroup(
                 //new InstantCommandMarkGyroPose(drivetrain),
                 new InstantCommand(() -> drivetrain.setCurrentPose()),
-                drivetrain.sysIdDynamic(Direction.kReverse).until(() -> drivetrain.isDesiredPoseReached(2.))
+                drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(1.5))
             ));
             
         } // end driveTest

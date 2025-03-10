@@ -346,7 +346,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         double currentDistanceInY = Math.abs(currentPose.getY()) - Math.abs(m_initialPose.getY());
         double actualDistance = Math.sqrt(currentDistanceInX * currentDistanceInX + currentDistanceInY * currentDistanceInY);
         // add a 1% error margin
-        return actualDistance >= 0.99 * distanceToGo ? true : false;
+        boolean condition = actualDistance >= 0.99 * distanceToGo ? true : false;
+        if ( condition ) {
+            SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+            this.applyRequest(() -> brake);
+            SmartDashboard.putBoolean(getName(), condition);
+        }
+        return condition;
     }
 
     /* retrieve encoder readings for the drivetrain */

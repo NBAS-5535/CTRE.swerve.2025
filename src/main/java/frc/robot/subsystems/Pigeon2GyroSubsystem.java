@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,10 +53,12 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
     m_initialAngle = getHeading();
   }
 
-  public boolean isAngleDiffReached() {
+  public boolean isAngleDiffReached(CommandSwerveDrivetrain swerve) {
     System.out.println(getName() + ": " + String.valueOf(m_angleDiff));
     boolean condition = MathUtil.isNear(Math.abs(m_angleDiff), 90., 1.);
     if ( condition ) {
+      SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+      swerve.applyRequest(() -> brake);
       SmartDashboard.putBoolean("isAngleDiffReached", condition);
       System.out.println(getName() + " ---- AngleDiffReached"); 
     }
