@@ -229,7 +229,7 @@ public class RobotContainer {
             /* rotate robot "gradually" until ~90deg is reached*/
             joystick.b().onTrue(new SequentialCommandGroup(
                 new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
-                drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached(drivetrain)))
+                drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached(drivetrain, 90.)))
                 );
             
         } // end driveTest

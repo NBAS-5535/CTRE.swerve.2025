@@ -348,19 +348,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // add a 1% error margin
         boolean condition = actualDistance >= 0.99 * distanceToGo ? true : false;
         if ( condition ) {
-            SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-            this.applyRequest(() -> brake);
+            this.stopAllMotors();
             SmartDashboard.putBoolean(getName(), condition);
         }
         return condition;
     }
 
     /* retrieve encoder readings for the drivetrain */
-    public void recordEncoderReadings(CommandSwerveDrivetrain dtrain) {
+    public void recordEncoderReadings() {
         double[] temp = {0., 0., 0., 0.};
         for ( int i = 0; i < 4; i++ ){
-            temp[i]= dtrain.getModule(0).getDriveMotor().getPosition().getValueAsDouble();
+            temp[i]= this.getModule(0).getDriveMotor().getPosition().getValueAsDouble();
             SmartDashboard.putNumber("Swerve/Module:" + String.valueOf(i), temp[i]);
+        }
+    }
+
+    /* stop all motors when the desired state is reached to be used with until() */
+    public void stopAllMotors() {
+        for ( int i = 0; i < 4; i++ ){
+            this.getModule(0).getDriveMotor().stopMotor();
+            this.getModule(0).getSteerMotor().stopMotor();
         }
     }
 }
