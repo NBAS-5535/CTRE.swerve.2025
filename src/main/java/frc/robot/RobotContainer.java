@@ -151,7 +151,7 @@ public class RobotContainer {
 
         /* This makes the current orientation of the robot X forward for field-centric maneuvers.  */
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         /* */
         joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
