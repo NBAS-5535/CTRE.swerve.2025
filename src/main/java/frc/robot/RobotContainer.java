@@ -151,7 +151,7 @@ public class RobotContainer {
 
         /* This makes the current orientation of the robot X forward for field-centric maneuvers.  */
         // reset the field-centric heading on left bumper press
-        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         /* */
         joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -222,7 +222,7 @@ public class RobotContainer {
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
         /* rotate by setting a marker and turning the robot until 90deg is reached */
-        if (true) {
+        if (driveTest) {
             //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
             //pigeon2Subsystem.setAngleMarker();
             //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
@@ -327,7 +327,7 @@ public class RobotContainer {
         } // end actuator test buttons
 
         /* Algae Subsystem */
-        boolean algaeSubsystemTuning = true;
+        boolean algaeSubsystemTuning = false;
         if (algaeSubsystemTuning) {
             /* Try gradually moving the elevator to determine operational heights */
             // A -> Run elevator UP
@@ -343,6 +343,19 @@ public class RobotContainer {
             joystick.povDown().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
         } // end of elevator/arm test buttons
 
+                    /* Try gradually moving the elevator to determine operational heights */
+            // A -> Run elevator UP
+
+            joystick.a().whileTrue(ManualCommands.runElevatorUpCommand(m_algaeSubsystem));
+            // B -> Run elevator DOWN
+            joystick.b().whileTrue(ManualCommands.runElevatorDownCommand(m_algaeSubsystem));
+
+                    /* Try gradually moving the arm to determine operational heights */
+            // povUp -> Run arm UP
+            joystick.start().whileTrue(ManualCommands.runArmUpCommand(m_algaeSubsystem));
+            // povDown -> Run arm DOWN
+            joystick.back().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
+        
         
         /* !!!!!! Button definitiotions for COMPETITION !!!!!!!!  */
         /* run intake motor in suck-in and push-out modes */
@@ -402,7 +415,7 @@ public class RobotContainer {
 
         //
         txbox
-            .rightBumper()
+            .povUp()
                 .onTrue(
                     new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
@@ -411,23 +424,22 @@ public class RobotContainer {
                     )    
         );
 
-        /* reset all positions to kBase: may not be useful due to MoveWithBall setpoint*/
+        /* corral drop: most likely an autonomous functionality */
         txbox
-            .povUp()
+            .povDown()
                 .onTrue(
                     new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kCorralDrop),
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kCorralDrop),
-                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootCorralDrop)
                     )
         );
 
         /* move with ball */
-            txbox
-            .leftBumper()
+        txbox
+            .rightBumper()
                 .onTrue(
                 new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
                     )

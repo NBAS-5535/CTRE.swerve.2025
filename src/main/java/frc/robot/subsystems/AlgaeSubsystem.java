@@ -28,6 +28,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     kSideSlotShoot,
     kBase,
     kCorralDrop,
+    kShootCorralDrop,
     kMoveWithBall,
     kAlgaePickupLowerReef,
     kAlgaePickupHigherReef,
@@ -155,6 +156,10 @@ public class AlgaeSubsystem extends SubsystemBase {
               armCurrentTarget = ArmSetpoints.kCorralDrop;
               elevatorCurrentTarget = ElevatorSetpoints.kCorralDrop;
               break;
+            case kShootCorralDrop:
+              armCurrentTarget = ArmSetpoints.kShootAfterCorralDrop;
+              elevatorCurrentTarget = ElevatorSetpoints.kShootAfterCorralDrop;
+              break;
             case kMoveWithBall:
               armCurrentTarget = ArmSetpoints.kMoveWithBall;
               elevatorCurrentTarget = ElevatorSetpoints.kMoveWithBall;
@@ -235,9 +240,9 @@ public class AlgaeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if ( runPeriodic ) {
-      moveToSetpoint();
-    }
+  
+      //moveToSetpoint();
+
     //zeroElevatorOnLimitSwitch();
     zeroOnUserButton();
 
