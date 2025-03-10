@@ -149,17 +149,20 @@ public class RobotContainer {
             )
         );
 
+        /* This makes the current orientation of the robot X forward for field-centric maneuvers.  */
+        // reset the field-centric heading on left bumper press
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        /* */
+        joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
+
         /* Swerve DriveTrain */
-        boolean driveTest = false;
+
         /* reused down below - check ourcoral
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
-        */
-
-        // Rotate by a specific angle
-        double tempAngle = Math.PI / 2.;
+        */ 
         
         // drive at a constant speed
         //joystick.y().whileTrue(drivetrain.applyRequest(() -> goForward.withVolts(0.2 * MaxSpeed)));
@@ -167,16 +170,13 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
+        boolean driveTest = false;
         if (driveTest) {
             joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));//.withTimeout(2));
             joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
             joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
             joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         } // end driveTest
-
-        // reset the field-centric heading on left bumper press
-        if (driveTest)
-            //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // prefixed movement in +/- X-direction
         /*
@@ -193,12 +193,13 @@ public class RobotContainer {
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
 
         // Rotate by 90deg using a fixed speed and time
-        if (driveTest) {
+        boolean rotationTest = false;
+        if ( rotationTest ) {
             joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
             joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.67));
             //joystick.x().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
             joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-            joystick.povCenter().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+         
             //drivetrain.getModule(0).getDriveMotor().getPosition().getValue();
         } // end driveTest
 
@@ -215,6 +216,8 @@ public class RobotContainer {
             .withRotationalRate(tempAngle * 0.1 * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
         */
+        // Rotate by a specific angle
+        double tempAngle = Math.PI / 2.;
         SmartDashboard.putNumber("Angle", tempAngle);
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
@@ -224,7 +227,7 @@ public class RobotContainer {
             //pigeon2Subsystem.setAngleMarker();
             //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
             /* rotate robot "gradually" until ~90deg is reached*/
-            txbox.povLeft().onTrue(new SequentialCommandGroup(
+            joystick.b().onTrue(new SequentialCommandGroup(
                 new InstantCommand(() -> pigeon2Subsystem.setAngleMarker()),
                 drivetrain.sysIdRotate(Direction.kForward).until(() -> pigeon2Subsystem.isAngleDiffReached(drivetrain)))
                 );
@@ -321,8 +324,7 @@ public class RobotContainer {
                 );
                 /**/
             }
-
-        } // end actuator test
+        } // end actuator test buttons
 
         /* Algae Subsystem */
         boolean algaeSubsystemTuning = true;
@@ -339,132 +341,100 @@ public class RobotContainer {
             joystick.povUp().whileTrue(ManualCommands.runArmUpCommand(m_algaeSubsystem));
             // povDown -> Run arm DOWN
             joystick.povDown().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
+        } // end of elevator/arm test buttons
 
-            /* run intake motor in suck-in and push-out modes */
-            // povRight -> Run tube intake
-            joystick.povRight().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
+        
+        /* !!!!!! Button definitiotions for COMPETITION !!!!!!!!  */
+        /* run intake motor in suck-in and push-out modes */
+        // povRight -> Run tube intake
+        joystick.povRight().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
 
-            // povLeft -> Run tube intake in reverse
-            joystick.povLeft().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
+        // povLeft -> Run tube intake in reverse
+        joystick.povLeft().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
 
-            /* run lift motor in suck-in and push-out modes */
-            // povRight -> Run tube intake
-            joystick.x().whileTrue(m_liftSubsystem.runLiftUpCommand());
+        /* run lift motor in suck-in and push-out modes */
+        // povRight -> Run tube intake
+        joystick.x().whileTrue(m_liftSubsystem.runLiftUpCommand());
 
-            // povLeft -> Run tube intake in reverse
-            joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
-
-            // move elevator/arm to their respective positions
-            txbox
-                .a()
-                    .onTrue(
-                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
-                        new ParallelCommandGroup(
-                                m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
-                                m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
-                        )    
-            );
-
-            txbox
-                .b()
-                    .onTrue(
-                        new ParallelCommandGroup(
-                            m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
+        // povLeft -> Run tube intake in reverse
+        joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
+        
+        // move elevator/arm to their respective positions
+        txbox
+            .a()
+                .onTrue(
+                    //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
+                    new ParallelCommandGroup(
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
                             m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
-                        )
-                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)                   
-            );
-            
-            txbox
-                .x()
-                    .onTrue(
-                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
-                        new ParallelCommandGroup(
-                            m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
-                            m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
-                        )
-            );
+                    )    
+        );
 
-            txbox
-                .y()
-                    .onTrue(
-                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet)
-                        new ParallelCommandGroup(
-                            m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
-                            m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
-                        )
-            );
-
-            //
-            txbox
-                .povUp()
-                    .onTrue(
-                        new SequentialCommandGroup(
-                            m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
-                            m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
-                            m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
-                        )    
-            );
-
-            /* reset all positions to kBase */
-            txbox
-                .rightBumper()
-                    .onTrue(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kBase)
-            );
-
-            /* side slot shot may be tricky
-             * actuator put to its initial position
-             * algaeSubsystem move to proper setpoint
-             * actuator back to its extended state
-             txbox
-                .povCenter()
-                    .onTrue(new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
-                        new InstantCommand(() -> m_algaeSubsystem.moveToSetpoint())
-            ));
-             */
-        }
-
-        /* command to move the elevator to a pre-specified height */
-        //joystick.a().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBase));
-        //joystick.b().whileTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBottomReef));
-
-        /* OurAlgaeSubsystem
-        // Left Bumper -> Run tube intake
-        m_driverController.leftBumper().whileTrue(m_algaeSubsystem.runIntakeCommand());
-
-        // Right Bumper -> Run tube intake in reverse
-        m_driverController.rightBumper().whileTrue(m_algaeSubsystem.reverseIntakeCommand());
-
-        // B Button -> Elevator/Arm to human player position, set ball intake to stow
-        // when idle
-        m_driverController
+        txbox
             .b()
-            .onTrue(
-                m_algaeSubsystem
-                    .setSetpointCommand(Setpoint.kBase)
-                    .alongWith(m_algaeSubsystem.stowCommand()));
+                .onTrue(
+                    new ParallelCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                    )
+                    //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)                   
+        );
+        
+        txbox
+            .x()
+                .onTrue(
+                    //m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+                    new ParallelCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                    )
+        );
 
-        // A Button -> Elevator/Arm to BottomReef position
-        m_driverController.a().onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kBottomReef));
+        txbox
+            .y()
+                .onTrue(
+                    //m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet)
+                    new ParallelCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
+                    )
+        );
 
-        // X Button -> Elevator/Arm to MiddleReef position
-        m_driverController.x().onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kMiddleReef));
+        //
+        txbox
+            .rightBumper()
+                .onTrue(
+                    new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                    )    
+        );
 
-        // Y Button -> Elevator/Arm to lAlgaeNet position
-        m_driverController.y().onTrue(m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgeaNet));
+        /* reset all positions to kBase: may not be useful due to MoveWithBall setpoint*/
+        txbox
+            .povUp()
+                .onTrue(
+                    new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kCorralDrop),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kCorralDrop),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                    )
+        );
 
-        // Right Trigger -> Run ball intake, set to leave out when idle
-        m_driverController
-            .rightTrigger(OIConstants.kTriggerButtonThreshold)
-            .whileTrue(m_algaeSubsystem.runIntakeCommand());
-
-        // Left Trigger -> Run ball intake in reverse, set to stow when idle
-        m_driverController
-            .leftTrigger(OIConstants.kTriggerButtonThreshold)
-            .whileTrue(m_algaeSubsystem.reverseIntakeCommand());
-         */
+        /* move with ball */
+            txbox
+            .leftBumper()
+                .onTrue(
+                new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
+                    )
+        );
+            
+                
+    
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 

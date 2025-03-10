@@ -279,6 +279,7 @@ public final class Constants {
       public static final double kGroundPick = 44.72;
       public static final double kSideShoot = 61.85;
       public static final double kBase = 0.;
+      public static final double kCorralDrop = 0.;
       public static final double kMoveWithBall = -10.0;
       public static final double kLowerReef = -8.57;
       public static final double kHigherReef = -83.00;
@@ -289,6 +290,7 @@ public final class Constants {
       public static final double kGroundPick = -17.15;
       public static final double kSideShoot = 10.79;
       public static final double kBase = 0.;
+      public static final double kCorralDrop = 0.;
       public static final double kMoveWithBall = -17.15;
       public static final double kLowerReef = 18.67;
       public static final double kHigherReef = 18.67;
