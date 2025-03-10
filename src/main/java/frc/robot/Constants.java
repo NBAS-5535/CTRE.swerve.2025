@@ -320,7 +320,7 @@ public final class Constants {
     public static final double kLiftKi = 0;
     public static final double kLiftKd = 0.;
 
-    public static final double LiftSetpointTestSpeed = 0.1;
+    public static final double LiftSetpointTestSpeed = 0.5;
     // Lift control parameters
     public static final class LiftSubSystemSetpoints {
       public static final double kBase = 0;
