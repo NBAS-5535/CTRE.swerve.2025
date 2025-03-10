@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pigeon2GyroSubsystem;
+import frc.robot.subsystems.ActuatorSubsystem;
+import frc.robot.subsystems.ActuatorSubsystem.ActuatorSetpoints;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 
@@ -74,7 +76,10 @@ public class Autos extends Command {
    * move algae shoot setting
    * eject algae
    */
-  public static Command midlineStartCommand(CommandSwerveDrivetrain swerve, Pigeon2GyroSubsystem gyro, AlgaeSubsystem algae) {
+  public static Command midlineStartCommand(CommandSwerveDrivetrain swerve, 
+                                            Pigeon2GyroSubsystem gyro, 
+                                            AlgaeSubsystem algae,
+                                            ActuatorSubsystem actuator) {
     Command tempCommand;
     tempCommand = new SequentialCommandGroup(
       //move forward
@@ -84,6 +89,11 @@ public class Autos extends Command {
                 swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(1.5))
                 ),
       // add corraldrop and low reef pickup
+      new SequentialCommandGroup(
+                actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions),
+                algae.setSetpointCommand(AlgaeSubsystem.Setpoint.kCorralDrop),
+                ManualCommands.runIntakeCommand(algae)
+                ),
       // move back
       new SequentialCommandGroup(
                   //new InstantCommandMarkGyroPose(drivetrain),

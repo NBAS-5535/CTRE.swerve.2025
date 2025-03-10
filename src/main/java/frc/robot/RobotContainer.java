@@ -470,7 +470,7 @@ public class RobotContainer {
                         break;
                     case AutonomousMenuConstants.kCenterBlue:
                         chosenItem = "BlueCenter_2";
-                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem);
+                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
                         break;
                     case AutonomousMenuConstants.kUpBlue:
                         chosenItem = "BlueUp_3";
@@ -482,7 +482,7 @@ public class RobotContainer {
                         break;
                     case AutonomousMenuConstants.kCenterRed:
                         chosenItem = "RedCenter_5";
-                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem);
+                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
                         break;
                     case AutonomousMenuConstants.kUpRed:
                         chosenItem = "RedUp_6";
