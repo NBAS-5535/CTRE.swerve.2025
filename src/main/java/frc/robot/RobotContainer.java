@@ -116,23 +116,25 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("PP Mode", autoChooser);
 
-        /* dropdown autonomous menu */
+        /* dropdown autonomous menu 
         dropDownChooser = new SendableChooser<>();
         //dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
         dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
         dropDownChooser.addOption("Move Back", drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(0.5));
         dropDownChooser.addOption("moveRotateRestRepeat", Autos.moveRotateRestRepeat(drivetrain));
         SmartDashboard.putData("Auto Menu", dropDownChooser);
+        */
 
         /* autonomous position chooser */
         autonomousChooser = new SendableChooser<>();
-        autonomousChooser.setDefaultOption("DownBlue/Blue1", AutonomousMenuConstants.kDownBlue);
+        autonomousChooser.setDefaultOption("No Action", "none");
+        autonomousChooser.addOption("DownBlue/Blue1", AutonomousMenuConstants.kDownBlue);
         autonomousChooser.addOption("CenterBlue/Blue2", AutonomousMenuConstants.kCenterBlue);
         autonomousChooser.addOption("UpBlue/Blue3", AutonomousMenuConstants.kUpBlue);
-        autonomousChooser.setDefaultOption("DownRed/Red1", AutonomousMenuConstants.kDownRed);
+        autonomousChooser.addOption("DownRed/Red1", AutonomousMenuConstants.kDownRed);
         autonomousChooser.addOption("CenterRed/Red2", AutonomousMenuConstants.kCenterRed);
         autonomousChooser.addOption("UpRed/Red3", AutonomousMenuConstants.kUpRed);
-        SmartDashboard.putData("AutonoumousMenu", autonomousChooser);
+        SmartDashboard.putData("AutonomousMenu", autonomousChooser);
 
         configureBindings();
     }
@@ -151,7 +153,7 @@ public class RobotContainer {
 
         /* This makes the current orientation of the robot X forward for field-centric maneuvers.  */
         // reset the field-centric heading on left bumper press
-        //joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         /* */
         joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -222,7 +224,7 @@ public class RobotContainer {
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
         /* rotate by setting a marker and turning the robot until 90deg is reached */
-        if (driveTest) {
+        if (true) {
             //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
             //pigeon2Subsystem.setAngleMarker();
             //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
@@ -343,19 +345,18 @@ public class RobotContainer {
             joystick.povDown().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
         } // end of elevator/arm test buttons
 
-                    /* Try gradually moving the elevator to determine operational heights */
-            // A -> Run elevator UP
+        /* quick test code 
 
+            // A -> Run elevator UP
             joystick.a().whileTrue(ManualCommands.runElevatorUpCommand(m_algaeSubsystem));
             // B -> Run elevator DOWN
             joystick.b().whileTrue(ManualCommands.runElevatorDownCommand(m_algaeSubsystem));
 
-                    /* Try gradually moving the arm to determine operational heights */
-            // povUp -> Run arm UP
+            // start -> Run arm UP
             joystick.start().whileTrue(ManualCommands.runArmUpCommand(m_algaeSubsystem));
-            // povDown -> Run arm DOWN
+            // back -> Run arm DOWN
             joystick.back().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
-        
+        */
         
         /* !!!!!! Button definitiotions for COMPETITION !!!!!!!!  */
         /* run intake motor in suck-in and push-out modes */
@@ -475,6 +476,7 @@ public class RobotContainer {
             case "menu":
                 //autoCommand = dropDownChooser.getSelected();
                 menuItem = autonomousChooser.getSelected();
+                chosenItem = "NO ACTION";
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
                         chosenItem = "BlueDown_1";

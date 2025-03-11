@@ -180,15 +180,24 @@ public class Autos extends Command {
                                     AlgaeSubsystem algae,
                                     ActuatorSubsystem actuator) {
     Command tempCommand;
+    double timeout = 30.; // seconds between commands
     tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 1.5),            //move forward
+      Commands.waitSeconds(timeout),
       dropCorralOnLowerLevel(algae, actuator),                //drop corral
+      Commands.waitSeconds(timeout),
       pickupAlgaeFromLowReef(algae),                          //get algae
+      Commands.waitSeconds(timeout),
       moveByDistance(swerve, 0.6),            //move back to rotate
+      Commands.waitSeconds(timeout),
       rotateByAngleInDegrees(swerve, gyro, 90.),        //rotate 90deg
+      Commands.waitSeconds(timeout),
       moveByDistance(swerve, 2.0),            //move to algae net/barge
+      Commands.waitSeconds(timeout),
       rotateByAngleInDegrees(swerve, gyro, 90.),        //rotate 90deg towards algaenet
+      Commands.waitSeconds(timeout),
       moveByDistance(swerve, 0.8),            //move closer to algae net/barge
+      Commands.waitSeconds(timeout),
       shootAlgaeIntoNet(algae)                                //shoot algae into net
     );
     return tempCommand;
