@@ -190,11 +190,11 @@ public class Autos extends Command {
       Commands.waitSeconds(timeout),
       moveByDistance(swerve, 0.6),            //move back to rotate
       Commands.waitSeconds(timeout),
-      rotateByAngleInDegrees(swerve, gyro, 90.),        //rotate 90deg
+      rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       Commands.waitSeconds(timeout),
       moveByDistance(swerve, 2.0),            //move to algae net/barge
       Commands.waitSeconds(timeout),
-      rotateByAngleInDegrees(swerve, gyro, 90.),        //rotate 90deg towards algaenet
+      rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg towards algaenet
       Commands.waitSeconds(timeout),
       moveByDistance(swerve, 0.8),            //move closer to algae net/barge
       Commands.waitSeconds(timeout),

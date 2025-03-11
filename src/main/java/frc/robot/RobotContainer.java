@@ -145,8 +145,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
@@ -156,7 +156,7 @@ public class RobotContainer {
         joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         /* */
-        joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
+        //joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
 
         /* Swerve DriveTrain */
 
@@ -313,15 +313,15 @@ public class RobotContainer {
                 */
             } else {
                 /* uncomment if needed */
-                joystick.leftBumper().onTrue(
+                joystick.povRight().onTrue(
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                 );
                 // move elevator back to start position
-                joystick.rightBumper().onTrue(
+                joystick.povLeft().onTrue(
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
                 );
                 // move to an intermediate point
-                txbox.povRight().onTrue(
+                joystick.start().onTrue(
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
                 );
                 /**/
@@ -361,10 +361,10 @@ public class RobotContainer {
         /* !!!!!! Button definitiotions for COMPETITION !!!!!!!!  */
         /* run intake motor in suck-in and push-out modes */
         // povRight -> Run tube intake
-        joystick.povRight().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
+        joystick.rightBumper().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
 
         // povLeft -> Run tube intake in reverse
-        joystick.povLeft().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
+        joystick.leftBumper().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
 
         /* run lift motor in suck-in and push-out modes */
         // povRight -> Run tube intake
@@ -387,7 +387,7 @@ public class RobotContainer {
         txbox
             .b()
                 .onTrue(
-                    new ParallelCommandGroup(
+                    new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )
@@ -397,11 +397,13 @@ public class RobotContainer {
         txbox
             .x()
                 .onTrue(
-                    //m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+                    m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+                    /*
                     new ParallelCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)//,
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )
+                        */
         );
 
         txbox
@@ -419,7 +421,7 @@ public class RobotContainer {
             .povUp()
                 .onTrue(
                     new SequentialCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
+                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )    
@@ -442,7 +444,7 @@ public class RobotContainer {
                 .onTrue(
                 new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
-                        m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )
         );
             
@@ -480,27 +482,27 @@ public class RobotContainer {
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
                         chosenItem = "BlueDown_1";
-                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kCenterBlue:
                         chosenItem = "BlueCenter_2";
-                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
                         break;
                     case AutonomousMenuConstants.kUpBlue:
                         chosenItem = "BlueUp_3";
-                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kDownRed:
                         chosenItem = "RedDown_4";
-                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kCenterRed:
                         chosenItem = "RedCenter_5";
-                        Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
                         break;
                     case AutonomousMenuConstants.kUpRed:
                         chosenItem = "RedUp_6";
-                        Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break; 
                     default:
                         chosenItem = "Nothing"; 
