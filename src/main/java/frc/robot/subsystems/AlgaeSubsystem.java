@@ -25,6 +25,7 @@ public class AlgaeSubsystem extends SubsystemBase {
   /** Subsystem-wide setpoints */
   public enum Setpoint {
     kGroundPickup,
+    kClearWires,
     kSideSlotShoot,
     kBase,
     kCorralDrop,
@@ -143,6 +144,10 @@ public class AlgaeSubsystem extends SubsystemBase {
             case kGroundPickup:
               armCurrentTarget = ArmSetpoints.kGroundPick;
               elevatorCurrentTarget = ElevatorSetpoints.kGroundPick;
+              break;
+            case kClearWires:
+              armCurrentTarget = ArmSetpoints.kGroundPick;
+              elevatorCurrentTarget = ElevatorSetpoints.kMoveWithBall;
               break;
             case kSideSlotShoot:
               armCurrentTarget = ArmSetpoints.kSideShoot;

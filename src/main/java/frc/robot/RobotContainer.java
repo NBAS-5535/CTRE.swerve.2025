@@ -378,7 +378,8 @@ public class RobotContainer {
             .a()
                 .onTrue(
                     //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
-                    new ParallelCommandGroup(
+                    new SequentialCommandGroup(
+                            m_algaeSubsystem.setSetpointCommand(Setpoint.kClearWires),
                             m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
                             m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )    
@@ -388,6 +389,7 @@ public class RobotContainer {
             .b()
                 .onTrue(
                     new SequentialCommandGroup(
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kClearWires),
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )
