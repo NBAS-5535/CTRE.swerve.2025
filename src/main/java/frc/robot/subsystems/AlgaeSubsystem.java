@@ -223,7 +223,6 @@ public class AlgaeSubsystem extends SubsystemBase {
    * the motor will stop.
    */
   public Command runIntakeCommand() {
-    runPeriodic = false;
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kForward), () -> this.setIntakePower(0.0));
   }
@@ -233,15 +232,15 @@ public class AlgaeSubsystem extends SubsystemBase {
    * released, the motor will stop.
    */
   public Command reverseIntakeCommand() {
-    runPeriodic = false;
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kReverse), () -> this.setIntakePower(0.0));
   }
 
   @Override
   public void periodic() {
-  
-      //moveToSetpoint();
+    if ( runPeriodic ) {
+      moveToSetpoint();
+    }
 
     //zeroElevatorOnLimitSwitch();
     zeroOnUserButton();

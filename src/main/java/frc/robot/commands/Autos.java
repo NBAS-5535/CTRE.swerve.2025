@@ -76,7 +76,7 @@ public class Autos extends Command {
    * move algae shoot setting
    * eject algae
    */
-  public static Command midlineStartCommand(CommandSwerveDrivetrain swerve, 
+  public static Command midlineStartCommandPedantic(CommandSwerveDrivetrain swerve, 
                                             Pigeon2GyroSubsystem gyro, 
                                             AlgaeSubsystem algae,
                                             ActuatorSubsystem actuator) {
@@ -123,6 +123,73 @@ public class Autos extends Command {
                 )
       // add highreef setting and shooting
 
+    );
+    return tempCommand;
+  }
+
+  /* action to be stitched together if desired */
+  /* go distance: in encoder value */
+  public static Command moveByDistance(CommandSwerveDrivetrain swerve, double encoderPosition) {
+    return new SequentialCommandGroup(
+      //new InstantCommandMarkGyroPose(drivetrain),
+      new InstantCommand(() -> swerve.setCurrentPose()),
+      swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(encoderPosition))
+      );
+  }
+
+  /* rotate by angle using Pigeon info */
+  public static Command rotateByAngleInDegrees(CommandSwerveDrivetrain swerve, 
+                                               Pigeon2GyroSubsystem gyro,
+                                               double angle) {
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> gyro.setAngleMarker()),
+      swerve.sysIdRotate(Direction.kForward).until(() -> gyro.isAngleDiffReached(swerve, angle))
+      );
+  }
+
+  /* position for corral drop */
+  public static Command dropCorralOnLowerLevel(AlgaeSubsystem algae,
+                                               ActuatorSubsystem actuator) {
+    return new SequentialCommandGroup(
+      algae.setSetpointCommand(Setpoint.kCorralDrop),
+      actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint),
+      algae.setSetpointCommand(Setpoint.kShootCorralDrop)
+      );
+  }
+
+  /* activate intake and move to low algae pickup */
+  public static Command pickupAlgaeFromLowReef(AlgaeSubsystem algae) {
+    return new SequentialCommandGroup(
+      algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
+      algae.runIntakeCommand().withTimeout(0.5)
+    );
+  }
+
+  /* move to algae shoot and activate intake in reverse */
+  public static Command shootAlgaeIntoNet(AlgaeSubsystem algae) {
+    return new SequentialCommandGroup(
+      algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
+      algae.reverseIntakeCommand().withTimeout(0.5)
+    );
+  }
+
+  /* COMPOSITE Commands */
+  /* midline start commmand reimagined */
+  public static Command midlineStartCommand(CommandSwerveDrivetrain swerve, 
+                                    Pigeon2GyroSubsystem gyro, 
+                                    AlgaeSubsystem algae,
+                                    ActuatorSubsystem actuator) {
+    Command tempCommand;
+    tempCommand = new SequentialCommandGroup(
+      moveByDistance(swerve, 1.5),            //move forward
+      dropCorralOnLowerLevel(algae, actuator),                //drop corral
+      pickupAlgaeFromLowReef(algae),                          //get algae
+      moveByDistance(swerve, 0.6),            //move back to rotate
+      rotateByAngleInDegrees(swerve, gyro, 90.),        //rotate 90deg
+      moveByDistance(swerve, 2.0),            //move to algae net/barge
+      rotateByAngleInDegrees(swerve, gyro, 90.),        //rotate 90deg towards algaenet
+      moveByDistance(swerve, 0.8),            //move closer to algae net/barge
+      shootAlgaeIntoNet(algae)                                //shoot algae into net
     );
     return tempCommand;
   }

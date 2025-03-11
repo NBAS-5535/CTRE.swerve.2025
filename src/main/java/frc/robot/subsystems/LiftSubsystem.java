@@ -114,14 +114,12 @@ public class LiftSubsystem extends SubsystemBase {
    * When the command is interrupted, e.g. the button is released, the motor will stop.
    */
   public Command runLiftUpCommand() {
-    runPeriodic = false;
     return this.startEnd(
         () -> this.setLiftPower(LiftSubsystemConstants.LiftSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
   }
 
   public Command runLiftDownCommand() {
-    runPeriodic = false;
     return this.startEnd(
         () -> this.setLiftPower((-1) * LiftSubsystemConstants.LiftSetpointTestSpeed), 
         () -> this.setLiftPower(0.0));
