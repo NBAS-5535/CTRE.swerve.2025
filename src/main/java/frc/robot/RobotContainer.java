@@ -197,10 +197,12 @@ public class RobotContainer {
         // Rotate by 90deg using a fixed speed and time
         boolean rotationTest = false;
         if ( rotationTest ) {
-            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.67));
-            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.67));
+            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.66));
+            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.65));
+            joystick.start().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.333));
+            joystick.start().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.320));
             //joystick.x().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
-            joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+            //joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
          
             //drivetrain.getModule(0).getDriveMotor().getPosition().getValue();
         } // end driveTest
@@ -236,7 +238,7 @@ public class RobotContainer {
             
         } // end driveTest
 
-        /* get robot Pode/location info */
+        /* get robot Pose/location info */
         if (true) {
             /* pedantic way */
             /*
@@ -321,9 +323,9 @@ public class RobotContainer {
                     m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
                 );
                 // move to an intermediate point
-                joystick.start().onTrue(
-                    m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
-                );
+                //joystick.start().onTrue(
+                //    m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint)
+                //);
                 /**/
             }
         } // end actuator test buttons
@@ -479,6 +481,11 @@ public class RobotContainer {
                 break;
             case "menu":
                 //autoCommand = dropDownChooser.getSelected();
+                /* IMPORTANT: Designations are wrt PathPlanner layout: 
+                *             Blue on the left / Red on the right 
+                *             Blue AlgeNet/barge is BlueUP
+                *             Red AlgeNet/barge is RedDOWN
+                */
                 menuItem = autonomousChooser.getSelected();
                 chosenItem = "NO ACTION";
                 switch (menuItem){
@@ -492,11 +499,11 @@ public class RobotContainer {
                         break;
                     case AutonomousMenuConstants.kUpBlue:
                         chosenItem = "BlueUp_3";
-                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
                         break;
                     case AutonomousMenuConstants.kDownRed:
                         chosenItem = "RedDown_4";
-                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
                         break;
                     case AutonomousMenuConstants.kCenterRed:
                         chosenItem = "RedCenter_5";

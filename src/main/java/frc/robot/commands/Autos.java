@@ -60,7 +60,7 @@ public class Autos extends Command {
   /* Game scenarios */
   /* move off the start line by driving forward for 1 sec */
   public static Command moveOffTheLine(CommandSwerveDrivetrain swerve, Direction direction){
-    return swerve.sysIdDynamic(direction).withTimeout(1);
+    return swerve.sysIdDynamic(direction).withTimeout(2);
   }
 
   /* move from line to reef; 
@@ -147,13 +147,20 @@ public class Autos extends Command {
       );
   }
 
+  /* rotate by angle using Pigeon info */
+  public static Command rotateByTime(CommandSwerveDrivetrain swerve, 
+                                     Direction direction) {
+    return swerve.sysIdRotate(direction);
+  }
+
   /* position for corral drop */
   public static Command dropCorralOnLowerLevel(AlgaeSubsystem algae,
                                                ActuatorSubsystem actuator) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kCorralDrop),
       actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint),
-      algae.setSetpointCommand(Setpoint.kShootCorralDrop)
+      algae.setSetpointCommand(Setpoint.kShootCorralDrop),
+      algae.runIntakeCommand().withTimeout(0.5) // to eject the corral
       );
   }
 
@@ -161,7 +168,15 @@ public class Autos extends Command {
   public static Command pickupAlgaeFromLowReef(AlgaeSubsystem algae) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
-      algae.runIntakeCommand().withTimeout(0.5)
+      algae.runIntakeCommand().withTimeout(0.5) // retrieve algae
+    );
+  }
+
+  /* activate intake and move to low algae pickup */
+  public static Command pickupAlgaeFromHighReef(AlgaeSubsystem algae) {
+    return new SequentialCommandGroup(
+      algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
+      algae.runIntakeCommand().withTimeout(0.5) // retrieve algae
     );
   }
 
@@ -179,28 +194,83 @@ public class Autos extends Command {
                                     Pigeon2GyroSubsystem gyro, 
                                     AlgaeSubsystem algae,
                                     ActuatorSubsystem actuator) {
-    Command tempCommand;
-    double timeout = 30.; // seconds between commands
-    tempCommand = new SequentialCommandGroup(
-      moveByDistance(swerve, 1.5),            //move forward
+    double timeout = 10.; // seconds between commands
+    double motionTime = 0.333; // seconds to rotate for 90deg <---------
+    Command tempCommand = new SequentialCommandGroup(
+      moveByDistance(swerve, 1.5),            //move forward 88"
       Commands.waitSeconds(timeout),
+      
       dropCorralOnLowerLevel(algae, actuator),                //drop corral
       Commands.waitSeconds(timeout),
-      pickupAlgaeFromLowReef(algae),                          //get algae
+      
+      moveByDistance(swerve, 0.2),            //move closer for pickup
       Commands.waitSeconds(timeout),
+
+      pickupAlgaeFromHighReef(algae),                          //get algae
+      Commands.waitSeconds(timeout),
+      
       moveByDistance(swerve, 0.6),            //move back to rotate
       Commands.waitSeconds(timeout),
-      rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
+      
+      //rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
+      rotateByTime(swerve, Direction.kReverse).withTimeout(motionTime),
       Commands.waitSeconds(timeout),
-      moveByDistance(swerve, 2.0),            //move to algae net/barge
+      
+      moveByDistance(swerve, 2.0),            //move to algae net/barge ~100"
       Commands.waitSeconds(timeout),
-      rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg towards algaenet
+      
+      //rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg towards algaenet
+      rotateByTime(swerve, Direction.kReverse).withTimeout(motionTime),
       Commands.waitSeconds(timeout),
+      
       moveByDistance(swerve, 0.8),            //move closer to algae net/barge
       Commands.waitSeconds(timeout),
+      
       shootAlgaeIntoNet(algae)                                //shoot algae into net
     );
     return tempCommand;
   }
 
+  /* start in front of the Blue or Red barge */
+  public static Command algaenetSideStart(CommandSwerveDrivetrain swerve, 
+                                          Pigeon2GyroSubsystem gyro, 
+                                          AlgaeSubsystem algae,
+                                          ActuatorSubsystem actuator) {
+    double timeout = 10.; // seconds between commands
+    double motionTime = 0.333; // seconds to rotate for 90deg <--------- change to a value for ANGLE = 45-60deg value
+    Command tempCommand = new SequentialCommandGroup(
+      moveByDistance(swerve, 0.2),            //move closer for pickup 30.3"
+      Commands.waitSeconds(timeout),
+
+      rotateByTime(swerve, Direction.kReverse).withTimeout(motionTime), //rotate toward reef side by ANGLE
+      moveByDistance(swerve, 2.5),            //move forward 115.5"
+      Commands.waitSeconds(timeout),
+      
+      dropCorralOnLowerLevel(algae, actuator),                //drop corral
+      Commands.waitSeconds(timeout),
+      
+      moveByDistance(swerve, 0.2),            //move closer for pickup
+      Commands.waitSeconds(timeout),
+
+      pickupAlgaeFromHighReef(algae),                          //get algae
+      Commands.waitSeconds(timeout),
+      
+      moveByDistance(swerve, 0.6),            //move back to rotate
+      Commands.waitSeconds(timeout),
+      
+      //rotateByAngleInDegrees(swerve, gyro, -180.),        //rotate 180deg
+      rotateByTime(swerve, Direction.kReverse).withTimeout(motionTime), // 180deg
+      Commands.waitSeconds(timeout),
+      
+      moveByDistance(swerve, 2.0),            //move to algae net/barge
+      Commands.waitSeconds(timeout),
+      //rotateByAngleInDegrees(swerve, gyro, -180.),        //rotate 180deg towards algaenet
+      
+      rotateByTime(swerve, Direction.kForward).withTimeout(motionTime), // rotate to face the net by ANGLE
+      Commands.waitSeconds(timeout),
+
+      shootAlgaeIntoNet(algae)                                //shoot algae into net
+    );
+    return tempCommand;
+}
 }
