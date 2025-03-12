@@ -370,10 +370,10 @@ public class RobotContainer {
 
         /* run lift motor in suck-in and push-out modes */
         // povRight -> Run tube intake
-        //joystick.x().whileTrue(m_liftSubsystem.runLiftUpCommand());
+        joystick.y().whileTrue(m_liftSubsystem.runLiftUpCommand());
 
         // povLeft -> Run tube intake in reverse
-        joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
+        //joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
         
         // move elevator/arm to their respective positions
         txbox

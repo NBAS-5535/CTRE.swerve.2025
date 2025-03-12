@@ -198,11 +198,18 @@ public class Autos extends Command {
     double motionTime = 0.6; // seconds to rotate for 90deg <---------
     Command tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 2.1),            //move forward 88"
-      Commands.waitSeconds(timeout),
+     // Commands.waitSeconds(timeout),
       
       dropCorralOnLowerLevel(algae, actuator),                //drop corral
+      Commands.waitSeconds(1.),
+      algae.runIntakeCommand().withTimeout(1.5), // to eject the corral
+      
+      moveByDistance(swerve, 0.3),            //move closer for pickup
+      algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
       Commands.waitSeconds(2.),
-      algae.runIntakeCommand().withTimeout(2.) // to eject the corral
+      algae.runIntakeCommand().withTimeout(1.5), // to get algae
+      Commands.waitSeconds(2.),
+      moveByDistance(swerve, -0.6)            //move back to rotate
       /*
       Commands.waitSeconds(3*timeout),
       
