@@ -45,7 +45,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     private static final Time timeout = Seconds.of(2.); //default is set to null for 10s 
     private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(0).per(Second); // assume no acceleration Volts.of(1).per(Second);
-    private static final Voltage dynamicTestRampRate = Volts.of(4.); // original was 4
+    private static final Voltage dynamicTestRampRate = Volts.of(1.); // original was 4
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;

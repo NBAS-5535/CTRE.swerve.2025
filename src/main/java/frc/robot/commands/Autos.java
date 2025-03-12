@@ -159,8 +159,8 @@ public class Autos extends Command {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kCorralDrop),
       actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint),
-      algae.setSetpointCommand(Setpoint.kShootCorralDrop),
-      algae.runIntakeCommand().withTimeout(0.5) // to eject the corral
+      algae.setSetpointCommand(Setpoint.kShootCorralDrop)//,
+      //algae.runIntakeCommand()//.withTimeout(1.) // to eject the corral
       );
   }
 
@@ -168,7 +168,7 @@ public class Autos extends Command {
   public static Command pickupAlgaeFromLowReef(AlgaeSubsystem algae) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
-      algae.runIntakeCommand().withTimeout(0.5) // retrieve algae
+      algae.runIntakeCommand().withTimeout(1.) // retrieve algae
     );
   }
 
@@ -176,7 +176,7 @@ public class Autos extends Command {
   public static Command pickupAlgaeFromHighReef(AlgaeSubsystem algae) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
-      algae.runIntakeCommand().withTimeout(0.5) // retrieve algae
+      algae.runIntakeCommand().withTimeout(1.) // retrieve algae
     );
   }
 
@@ -184,7 +184,7 @@ public class Autos extends Command {
   public static Command shootAlgaeIntoNet(AlgaeSubsystem algae) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
-      algae.reverseIntakeCommand().withTimeout(0.5)
+      algae.reverseIntakeCommand().withTimeout(1.)
     );
   }
 
@@ -195,13 +195,16 @@ public class Autos extends Command {
                                     AlgaeSubsystem algae,
                                     ActuatorSubsystem actuator) {
     double timeout = 10.; // seconds between commands
-    double motionTime = 0.333; // seconds to rotate for 90deg <---------
+    double motionTime = 0.6; // seconds to rotate for 90deg <---------
     Command tempCommand = new SequentialCommandGroup(
-      moveByDistance(swerve, 1.5),            //move forward 88"
+      moveByDistance(swerve, 2.1),            //move forward 88"
       Commands.waitSeconds(timeout),
       
       dropCorralOnLowerLevel(algae, actuator),                //drop corral
-      Commands.waitSeconds(timeout),
+      Commands.waitSeconds(2.),
+      algae.runIntakeCommand().withTimeout(2.) // to eject the corral
+      /*
+      Commands.waitSeconds(3*timeout),
       
       moveByDistance(swerve, 0.2),            //move closer for pickup
       Commands.waitSeconds(timeout),
@@ -227,6 +230,7 @@ public class Autos extends Command {
       Commands.waitSeconds(timeout),
       
       shootAlgaeIntoNet(algae)                                //shoot algae into net
+      */
     );
     return tempCommand;
   }

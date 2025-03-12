@@ -197,10 +197,10 @@ public class RobotContainer {
         // Rotate by 90deg using a fixed speed and time
         boolean rotationTest = true;
         if ( rotationTest ) {
-            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.66));
-            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.65));
-            joystick.start().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.333));
-            joystick.start().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.320));
+            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.64));
+            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.63));
+            joystick.start().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.62));
+            joystick.start().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.61));
             //joystick.x().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
             //joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
          
@@ -370,7 +370,7 @@ public class RobotContainer {
 
         /* run lift motor in suck-in and push-out modes */
         // povRight -> Run tube intake
-        joystick.x().whileTrue(m_liftSubsystem.runLiftUpCommand());
+        //joystick.x().whileTrue(m_liftSubsystem.runLiftUpCommand());
 
         // povLeft -> Run tube intake in reverse
         joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
@@ -393,6 +393,7 @@ public class RobotContainer {
                     new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kClearWires),
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
+                        Commands.waitSeconds(1.),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )
                     //m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)                   
