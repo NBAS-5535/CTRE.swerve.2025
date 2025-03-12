@@ -195,7 +195,7 @@ public class RobotContainer {
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
 
         // Rotate by 90deg using a fixed speed and time
-        boolean rotationTest = false;
+        boolean rotationTest = true;
         if ( rotationTest ) {
             joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.66));
             joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.65));
