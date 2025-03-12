@@ -130,10 +130,14 @@ public class Autos extends Command {
   /* action to be stitched together if desired */
   /* go distance: in encoder value */
   public static Command moveByDistance(CommandSwerveDrivetrain swerve, double encoderPosition) {
+    Direction direction = Direction.kForward;
+    if ( encoderPosition < 0. ) {
+      direction = Direction.kReverse;
+    }
     return new SequentialCommandGroup(
       //new InstantCommandMarkGyroPose(drivetrain),
       new InstantCommand(() -> swerve.setCurrentPose()),
-      swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(encoderPosition))
+      swerve.sysIdDynamic(direction).until(() -> swerve.isDesiredPoseReached(encoderPosition))
       );
   }
 
@@ -198,7 +202,7 @@ public class Autos extends Command {
     double motionTime = 0.6; // seconds to rotate for 90deg <---------
     Command tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 2.1),            //move forward 88"
-      Commands.waitSeconds(timeout),
+      //Commands.waitSeconds(timeout),
       
       dropCorralOnLowerLevel(algae, actuator),                //drop corral
       Commands.waitSeconds(2.),
