@@ -22,6 +22,9 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
   private double m_initialPose;
   private double m_angleDiff;
 
+  // instead of stopping motors
+  private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
+
   public Pigeon2GyroSubsystem(Pigeon2 pigeon2) {
     this.m_pigeon2 = pigeon2;
     this.m_pigeon2SimState = m_pigeon2.getSimState();
@@ -58,7 +61,8 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
     //boolean condition = MathUtil.isNear(maxAngle, Math.abs(m_angleDiff), 1.);
     boolean condition = Math.abs(m_angleDiff) >= 0.90 * maxAngle;
     if ( condition ) {
-      swerve.stopAllMotors();
+      //swerve.stopAllMotors();
+      swerve.applyRequest(() -> idleRequest);
       SmartDashboard.putBoolean("isAngleDiffReached", condition);
       System.out.println(getName() + " ---- AngleDiffReached"); 
     }
