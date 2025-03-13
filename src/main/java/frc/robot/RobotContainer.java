@@ -15,6 +15,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ActuatorSubsystemConstants;
 import frc.robot.Constants.AutonomousMenuConstants;
+import frc.robot.Constants.AutonomousModeOptions;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.ActuatorCommandRev;
 import frc.robot.commands.AlignCommand;
@@ -106,7 +108,7 @@ public class RobotContainer {
     //private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
 
     /* autonomous dropdown menu */
-    private SendableChooser<Command> dropDownChooser;// = new SendableChooser<>();
+    private SendableChooser<String> dropDownChooser;// = new SendableChooser<>();
     private SendableChooser<String> autonomousChooser ;
     
 
@@ -116,24 +118,22 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("PP Mode", autoChooser);
 
-        /* dropdown autonomous menu 
+        /* dropdown autonomous menu */
         dropDownChooser = new SendableChooser<>();
-        //dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
-        dropDownChooser.setDefaultOption("Default Auto", drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5));
-        dropDownChooser.addOption("Move Back", drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(0.5));
-        dropDownChooser.addOption("moveRotateRestRepeat", Autos.moveRotateRestRepeat(drivetrain));
-        SmartDashboard.putData("Auto Menu", dropDownChooser);
-        */
+        dropDownChooser.setDefaultOption("Corral-Only", AutonomousModeOptions.kCorralOnly);
+        dropDownChooser.addOption("Corral-Plus-Algae", AutonomousModeOptions.kCorralPlusAlgae);
+        SmartDashboard.putData("Autonomous Mode Menu", dropDownChooser);
+        
 
         /* autonomous position chooser */
         autonomousChooser = new SendableChooser<>();
         autonomousChooser.setDefaultOption("No Action", "none");
-        autonomousChooser.addOption("DownBlue/Blue1", AutonomousMenuConstants.kDownBlue);
-        autonomousChooser.addOption("CenterBlue/Blue2", AutonomousMenuConstants.kCenterBlue);
-        autonomousChooser.addOption("UpBlue/Blue3", AutonomousMenuConstants.kUpBlue);
-        autonomousChooser.addOption("DownRed/Red1", AutonomousMenuConstants.kDownRed);
-        autonomousChooser.addOption("CenterRed/Red2", AutonomousMenuConstants.kCenterRed);
-        autonomousChooser.addOption("UpRed/Red3", AutonomousMenuConstants.kUpRed);
+        autonomousChooser.addOption("Blue_1/Red-Barge-Side", AutonomousMenuConstants.kDownBlue);
+        autonomousChooser.addOption("Blue_2/Center", AutonomousMenuConstants.kCenterBlue);
+        autonomousChooser.addOption("Blue_3/Blue-Barge-Side", AutonomousMenuConstants.kUpBlue);
+        autonomousChooser.addOption("Red_4/Red-Barge-Side", AutonomousMenuConstants.kDownRed);
+        autonomousChooser.addOption("Red_5/Center", AutonomousMenuConstants.kCenterRed);
+        autonomousChooser.addOption("Red_6/Blue-Barge-Side", AutonomousMenuConstants.kUpRed);
         SmartDashboard.putData("AutonomousMenu", autonomousChooser);
 
         configureBindings();
@@ -464,6 +464,7 @@ public class RobotContainer {
         Command autoCommand = null;
         String menuItem = "";
         String chosenItem = "";
+        String modeOption = AutonomousModeOptions.kCorralOnly;
         switch (caseType) {
             case "manual":
                 autoCommand = Commands.sequence(
@@ -488,30 +489,56 @@ public class RobotContainer {
                 *             Red AlgeNet/barge is RedDOWN
                 */
                 menuItem = autonomousChooser.getSelected();
+                modeOption = dropDownChooser.getSelected();
                 chosenItem = "NO ACTION";
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
-                        chosenItem = "BlueDown_1";
+                        chosenItem = "Blue_1/Red-Barge-Side";
                         autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kCenterBlue:
-                        chosenItem = "BlueCenter_2";
-                        autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        chosenItem = "Blue_2/Center";
+                        switch (modeOption){
+                            case AutonomousModeOptions.kCorralOnly:
+                                autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                break;
+                            case AutonomousModeOptions.kCorralPlusAlgae:
+                                autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                //SmartDashboard.putString("WhatsUP?", modeOption);
+                                break;
+                            default:
+                                autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                break;
+                        }
                         break;
                     case AutonomousMenuConstants.kUpBlue:
-                        chosenItem = "BlueUp_3";
-                        autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        chosenItem = "Blue_3/Blue-Barge-Side";
+                        //autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kDownRed:
-                        chosenItem = "RedDown_4";
-                        autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        chosenItem = "Red_4/Red-Barge-Side";
+                        //autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break;
                     case AutonomousMenuConstants.kCenterRed:
-                        chosenItem = "RedCenter_5";
-                        autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        chosenItem = "Red_5/Center";
+                        switch (modeOption){
+                            case AutonomousModeOptions.kCorralOnly:
+                                autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                break;
+                            case AutonomousModeOptions.kCorralPlusAlgae:
+                                autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                //SmartDashboard.putString("CorralStuff", "With Algae Throw");
+                                break;
+                            default:
+                                autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                //SmartDashboard.putString("CorralStuff", "Hit default");
+                                break;
+                        }
                         break;
                     case AutonomousMenuConstants.kUpRed:
-                        chosenItem = "RedUp_6";
+                        chosenItem = "Red_6/Blue-Barge-Side";
                         autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         break; 
                     default:

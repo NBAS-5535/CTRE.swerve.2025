@@ -330,7 +330,7 @@ public final class Constants {
   }
 
   /* *********************
-   * LifSubsystemConstants
+   * AutonomousConstants
    */
   public static final class AutonomousMenuConstants{
     public static final String kDownBlue = "Start_Down_Blue/Blue1";
@@ -340,5 +340,10 @@ public final class Constants {
     public static final String kDownRed = "Start_Down_Red/Red1";
     public static final String kCenterRed = "Start_Center_Red/Red2";
     public static final String kUpRed = "Start_Up_Red/Red3";
+  }
+
+  public static final class AutonomousModeOptions{
+    public static final String kCorralOnly = "Corral-Only";
+    public static final String kCorralPlusAlgae = "Corral-And-HighReef-Pickup";
   }
 }

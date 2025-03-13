@@ -60,7 +60,8 @@ public class Autos extends Command {
   /* Game scenarios */
   /* move off the start line by driving forward for 1 sec */
   public static Command moveOffTheLine(CommandSwerveDrivetrain swerve, Direction direction){
-    return swerve.sysIdDynamic(direction).withTimeout(2);
+    double timeToTravel = 4.; //sec at 1m/s 
+    return swerve.sysIdDynamic(direction).withTimeout(timeToTravel);
   }
 
   /* move from line to reef; 
@@ -86,14 +87,15 @@ public class Autos extends Command {
       new SequentialCommandGroup(
                 //new InstantCommandMarkGyroPose(drivetrain),
                 new InstantCommand(() -> swerve.setCurrentPose()),
-                swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(1.5))
+                swerve.sysIdDynamic(Direction.kForward).until(() -> swerve.isDesiredPoseReached(2.1))
                 ),
       // add corraldrop and low reef pickup
       new SequentialCommandGroup(
+                algae.setSetpointCommand(Setpoint.kCorralDrop),
                 actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions),
-                algae.setSetpointCommand(AlgaeSubsystem.Setpoint.kCorralDrop),
-                ManualCommands.runIntakeCommand(algae)
+                algae.setSetpointCommand(AlgaeSubsystem.Setpoint.kCorralDrop)                
                 ),
+      ManualCommands.runIntakeCommand(algae).withTimeout(1.5),
       // move back
       new SequentialCommandGroup(
                   //new InstantCommandMarkGyroPose(drivetrain),
@@ -137,7 +139,7 @@ public class Autos extends Command {
     return new SequentialCommandGroup(
       //new InstantCommandMarkGyroPose(drivetrain),
       new InstantCommand(() -> swerve.setCurrentPose()),
-      swerve.sysIdDynamic(direction).until(() -> swerve.isDesiredPoseReached(encoderPosition))
+      swerve.sysIdDynamic(direction).until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition)))
       );
   }
 
@@ -158,7 +160,7 @@ public class Autos extends Command {
   }
 
   /* position for corral drop */
-  public static Command dropCorralOnLowerLevel(AlgaeSubsystem algae,
+  public static Command moveCorralToLowerReefLevel(AlgaeSubsystem algae,
                                                ActuatorSubsystem actuator) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kCorralDrop),
@@ -193,27 +195,56 @@ public class Autos extends Command {
   }
 
   /* COMPOSITE Commands */
+  /* take a corral to the reef */
+  public static Command midlineStart_scoreCorralOnly(CommandSwerveDrivetrain swerve, 
+                                                Pigeon2GyroSubsystem gyro, 
+                                                AlgaeSubsystem algae,
+                                                ActuatorSubsystem actuator) {
+    double timeout = 2.; // seconds between commands
+    Command tempCommand = new SequentialCommandGroup(
+        moveByDistance(swerve, 2.1),            //move forward 88"
+
+        moveCorralToLowerReefLevel(algae, actuator),                //drop corral
+        actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
+        Commands.waitSeconds(timeout),
+        algae.runIntakeCommand().withTimeout(2), // to eject the corral
+        Commands.waitSeconds(timeout),
+
+        // get ready for TeleOp action
+        algae.setSetpointCommand(Setpoint.kClearWires),
+        algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)
+    );
+
+    return tempCommand;
+  }
+
   /* midline start commmand reimagined */
   public static Command midlineStartCommand(CommandSwerveDrivetrain swerve, 
                                     Pigeon2GyroSubsystem gyro, 
                                     AlgaeSubsystem algae,
                                     ActuatorSubsystem actuator) {
-    double timeout = 10.; // seconds between commands
+    double timeout = 2.; // seconds between commands
     double motionTime = 0.6; // seconds to rotate for 90deg <---------
     Command tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 2.1),            //move forward 88"
      // Commands.waitSeconds(timeout),
       //Commands.waitSeconds(timeout),
       
-      dropCorralOnLowerLevel(algae, actuator),                //drop corral
+      moveCorralToLowerReefLevel(algae, actuator),                //drop corral
+      actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
       Commands.waitSeconds(1.),
       algae.runIntakeCommand().withTimeout(1.5), // to eject the corral
+      Commands.waitSeconds(1.),
+      
+      algae.setSetpointCommand(Setpoint.kClearWires),
+      algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
       
       moveByDistance(swerve, 0.3),            //move closer for pickup
-      algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef),
-      Commands.waitSeconds(2.),
+      Commands.waitSeconds(timeout),
+      
       algae.runIntakeCommand().withTimeout(1.5), // to get algae
-      Commands.waitSeconds(2.),
+      Commands.waitSeconds(timeout),
+      
       moveByDistance(swerve, -0.6)            //move back to rotate
       /*
       Commands.waitSeconds(3*timeout),
@@ -262,7 +293,7 @@ public class Autos extends Command {
       moveByDistance(swerve, 2.5),            //move forward 115.5"
       Commands.waitSeconds(timeout),
       
-      dropCorralOnLowerLevel(algae, actuator),                //drop corral
+      moveCorralToLowerReefLevel(algae, actuator),                //drop corral
       Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, 0.2),            //move closer for pickup

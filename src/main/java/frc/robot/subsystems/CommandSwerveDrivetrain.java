@@ -43,9 +43,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
     private static final Time timeout = Seconds.of(2.); //default is set to null for 10s 
-    private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(0).per(Second); // assume no acceleration Volts.of(1).per(Second);
-    private static final Voltage dynamicTestRampRate = Volts.of(1.); // original was 4
+    private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(0).per(Second); // assume no acceleration original: Volts.of(1).per(Second);
+    private static final Voltage dynamicTestVelocity = Volts.of(1.); // original was 4
+
+    private static final Velocity<VoltageUnit> angularSpeedRampRate = Volts.of(0).per(Second); // original: Volts.of(Math.PI / 6).per(Second)
+    private static final Voltage angularTestVelocity = Volts.of(Math.PI / 2.); // original: Volts.of(Math.PI)
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -69,7 +73,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
             velocityRampRate,        // Use default ramp rate (1 V/s)
-            dynamicTestRampRate, // Reduce dynamic step voltage to 4 V to prevent brownout
+            dynamicTestVelocity, // Reduce dynamic step voltage to 4 V to prevent brownout
             null,        // Use default timeout (10 s)
             // Log state with SignalLogger class
             state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
@@ -106,9 +110,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
         new SysIdRoutine.Config(
             /* This is in radians per second², but SysId only supports "volts per second" */
-            Volts.of(0.).per(Second), //Volts.of(Math.PI / 6).per(Second),
+            angularSpeedRampRate, //Volts.of(Math.PI / 6).per(Second),
             /* This is in radians per second, but SysId only supports "volts" */
-            Volts.of(Math.PI),
+            angularTestVelocity,
             timeout, // null, // Use default timeout (10 s)
             // Log state with SignalLogger class
             state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
@@ -370,4 +374,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.getModule(0).getSteerMotor().stopMotor();
         }
     }
+    
 }
