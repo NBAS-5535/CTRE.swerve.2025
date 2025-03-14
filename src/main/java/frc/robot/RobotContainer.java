@@ -268,7 +268,7 @@ public class RobotContainer {
             /* onTrue: robot moves until the alignment is completed
             *  whileTrue: must press the button until the alignment is completed
             */
-            //joystick.x().onTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
+            //joystick.back().onTrue(new AlignCommand(drivetrain, m_vision, VisionConstants.testTagId));
             /* simulate a sequence:
             * align with AprilTag
             * Move forward by 2 meters
@@ -281,7 +281,7 @@ public class RobotContainer {
                 testTagId = 0;
             }
             
-            joystick.x().onTrue(new SequentialCommandGroup(
+            joystick.start().onTrue(new SequentialCommandGroup(
                 new AlignCommand(drivetrain, m_vision, testTagId),
                 //drivetrain.applyRequest(() -> brake),
                 drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(1.))
