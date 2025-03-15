@@ -301,7 +301,7 @@ public final class Constants {
 
     public static final class IntakeSetpoints {
       public static final double kForward = 0.7; // power-level for motor
-      public static final double kReverse = -1.0; // reverse
+      public static final double kReverse = -0.7; // reverse
     }
   }
 

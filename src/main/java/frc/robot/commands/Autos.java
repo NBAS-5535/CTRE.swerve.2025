@@ -212,7 +212,7 @@ public class Autos extends Command {
 
         // get ready for TeleOp action
         algae.setSetpointCommand(Setpoint.kClearWires),
-        algae.setSetpointCommand(Setpoint.kAlgaePickupHigherReef)
+        algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
     );
 
     return tempCommand;
