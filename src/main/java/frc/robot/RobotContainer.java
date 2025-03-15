@@ -209,7 +209,7 @@ public class RobotContainer {
         //joystick.povUp().whileTrue(drivetrain.sysIdRotate(Direction.kForward));
 
         // Rotate by 90deg using a fixed speed and time
-        boolean rotationTest = true;
+        boolean rotationTest = false;
         if ( rotationTest ) {
             joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdRotate(Direction.kForward).withTimeout(0.64));
             joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdRotate(Direction.kReverse).withTimeout(0.63));
@@ -390,7 +390,7 @@ public class RobotContainer {
         joystick.y().whileTrue(m_liftSubsystem.runLiftUpCommand());
 
         // povLeft -> Run tube intake in reverse
-        //joystick.y().whileTrue(m_liftSubsystem.runLiftDownCommand());
+        joystick.start().whileTrue(m_liftSubsystem.runLiftDownCommand());
         
         // move elevator/arm to their respective positions
         txbox
