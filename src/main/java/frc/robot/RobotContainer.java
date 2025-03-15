@@ -53,7 +53,7 @@ import frc.robot.subsystems.VisionSubsystem_Test;
 import frc.robot.subsystems.LiftSubsystem;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = 0.8 * (TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -167,7 +167,7 @@ public class RobotContainer {
 
         /* This makes the current orientation of the robot X forward for field-centric maneuvers.  */
         // reset the field-centric heading on left bumper press
-        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         /* */
         //joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -378,6 +378,9 @@ public class RobotContainer {
         /* run intake motor in suck-in and push-out modes */
         // povRight -> Run tube intake
         joystick.rightBumper().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
+
+        // a -> Run tube intake
+        joystick.a().whileTrue(ManualCommands.reverseIntakeCommandSlow(m_algaeSubsystem));
 
         // povLeft -> Run tube intake in reverse
         joystick.leftBumper().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));

@@ -58,4 +58,13 @@ public class ManualCommands {
         return algae.startEnd(
             () -> algae.setIntakePower(IntakeSetpoints.kReverse), () -> algae.setIntakePower(0.0));
     }
+
+    /**
+     * Command to reverses the intake motor. When the command is interrupted, e.g. the button is
+     * released, the motor will stop.
+     */
+    public static Command reverseIntakeCommandSlow(AlgaeSubsystem algae) {
+        return algae.startEnd(
+            () -> algae.setIntakePower(-0.4), () -> algae.setIntakePower(0.0));
+    }
 }

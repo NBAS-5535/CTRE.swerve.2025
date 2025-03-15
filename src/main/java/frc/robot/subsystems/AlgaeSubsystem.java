@@ -233,6 +233,15 @@ public class AlgaeSubsystem extends SubsystemBase {
   }
 
   /**
+   * Command to run the intake motor. When the command is interrupted, e.g. the button is released,
+   * the motor will stop.
+   */
+  public Command reverseIntakeCommandSlow() {
+    return this.startEnd(
+        () -> this.setIntakePower(-0.4), () -> this.setIntakePower(0.0));
+  }
+
+  /**
    * Command to reverses the intake motor. When the command is interrupted, e.g. the button is
    * released, the motor will stop.
    */
