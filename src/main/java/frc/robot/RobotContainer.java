@@ -186,12 +186,13 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        boolean driveTest = false;
-        if (driveTest) {
-            joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));//.withTimeout(2));
-            joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-            joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-            joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        boolean pidTest = false;
+        if (pidTest) {
+            double timeOut = 1.;
+            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(timeOut));
+            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(timeOut));
+            joystick.start().and(joystick.y()).onTrue(drivetrain.sysIdQuasistatic(Direction.kForward).withTimeout(timeOut));
+            joystick.start().and(joystick.x()).onTrue(drivetrain.sysIdQuasistatic(Direction.kReverse).withTimeout(timeOut));
         } // end driveTest
 
         // prefixed movement in +/- X-direction
@@ -240,7 +241,8 @@ public class RobotContainer {
         SmartDashboard.putNumber("MaxAngularVelocity", MaxAngularRate);
 
         /* rotate by setting a marker and turning the robot until 90deg is reached */
-        if (true) {
+        boolean pigeonTest = false;
+        if (pigeonTest) {
             //joystick.povDown().whileTrue(new OperatorFriendlyCommands(drivetrain, pigeon2Subsystem));
             //pigeon2Subsystem.setAngleMarker();
             //SmartDashboard.putNumber("Reference Angle", pigeon2Subsystem.getHeading());
@@ -380,7 +382,7 @@ public class RobotContainer {
         joystick.rightBumper().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
 
         // a -> Run tube intake
-        joystick.a().whileTrue(ManualCommands.reverseIntakeCommandSlow(m_algaeSubsystem));
+        //joystick.a().whileTrue(ManualCommands.reverseIntakeCommandSlow(m_algaeSubsystem));
 
         // povLeft -> Run tube intake in reverse
         joystick.leftBumper().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
@@ -390,7 +392,9 @@ public class RobotContainer {
         joystick.y().whileTrue(m_liftSubsystem.runLiftUpCommand());
 
         // povLeft -> Run tube intake in reverse
+        /* MUST reinstate for COMPETITION!!!!
         joystick.start().whileTrue(m_liftSubsystem.runLiftDownCommand());
+        */
         
         // move elevator/arm to their respective positions
         txbox

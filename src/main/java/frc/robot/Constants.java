@@ -272,24 +272,24 @@ public final class Constants {
     public static final int kArmMotorCanId = 41;
     public static final int kIntakeMotorCanId = 43;
 
-    public static final double ElevatorSetpointTestSpeed = 0.9;
-    public static final double ArmSetpointTestSpeed = 0.5;
+    public static final double ElevatorSetpointTestSpeed = 0.1;
+    public static final double ArmSetpointTestSpeed = 0.2;
   
     public static final class ElevatorSetpoints {
-      public static final double kGroundPick = 44.72;
-      public static final double kSideShoot = 61.85;
+      public static final double kGroundPick = 26.04; //44.72;
+      public static final double kSideShoot = 41.91; //61.85;
       public static final double kBase = 0.;
-      public static final double kCorralDrop = 73.43;
-      public static final double kShootAfterCorralDrop = 73.43;
-      public static final double kMoveWithBall = -10.0;
-      public static final double kLowerReef = -1.5; //-8.57;
-      public static final double kHigherReef = -83.00;
-      public static final double kAlgaeNet = -264; //-248.5;
+      public static final double kCorralDrop = 32.63; //73.43;
+      public static final double kShootAfterCorralDrop = 39.7; //73.43;
+      public static final double kMoveWithBall = -6.; //-10.0;
+      public static final double kLowerReef = -4.78; //-1.5; //-8.57;
+      public static final double kHigherReef = -46.91; //-83.00;
+      public static final double kAlgaeNet = -144.15; //-264; //-248.5;
     }
 
     public static final class ArmSetpoints {
       public static final double kGroundPick = -17.15;
-      public static final double kSideShoot = 10.79;
+      public static final double kSideShoot = 20.61;
       public static final double kBase = 0.;
       public static final double kCorralDrop = 14.33;
       public static final double kShootAfterCorralDrop = 6.28;
