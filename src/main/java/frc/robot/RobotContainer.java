@@ -189,10 +189,10 @@ public class RobotContainer {
         boolean pidTest = false;
         if (pidTest) {
             double timeOut = 1.;
-            joystick.back().and(joystick.y()).onTrue(drivetrain.sysIdDynamic(Direction.kForward).withTimeout(timeOut));
-            joystick.back().and(joystick.x()).onTrue(drivetrain.sysIdDynamic(Direction.kReverse).withTimeout(timeOut));
-            joystick.start().and(joystick.y()).onTrue(drivetrain.sysIdQuasistatic(Direction.kForward).withTimeout(timeOut));
-            joystick.start().and(joystick.x()).onTrue(drivetrain.sysIdQuasistatic(Direction.kReverse).withTimeout(timeOut));
+            joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));//.withTimeout(timeOut));
+            joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));//.withTimeout(timeOut));
+            joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));//.withTimeout(timeOut));
+            joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));//.withTimeout(timeOut));
         } // end driveTest
 
         // prefixed movement in +/- X-direction
@@ -376,7 +376,7 @@ public class RobotContainer {
             joystick.back().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
         */
         
-        /* !!!!!! Button definitiotions for COMPETITION !!!!!!!!  */
+        /* !!!!!! Button definitions for COMPETITION !!!!!!!!  */
         /* run intake motor in suck-in and push-out modes */
         // povRight -> Run tube intake
         joystick.rightBumper().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
@@ -389,12 +389,14 @@ public class RobotContainer {
 
         /* run lift motor in suck-in and push-out modes */
         // povRight -> Run tube intake
+        /* MUST reinstate for COMPETITION!!!! */
         joystick.y().whileTrue(m_liftSubsystem.runLiftUpCommand());
+        /**/
 
         // povLeft -> Run tube intake in reverse
-        /* MUST reinstate for COMPETITION!!!!
+        /* MUST reinstate for COMPETITION!!!! */
         joystick.start().whileTrue(m_liftSubsystem.runLiftDownCommand());
-        */
+        /**/
         
         // move elevator/arm to their respective positions
         txbox
@@ -534,8 +536,11 @@ public class RobotContainer {
                         break;
                     case AutonomousMenuConstants.kUpBlue:
                         chosenItem = "Blue_3/Blue-Barge-Side";
-                        //autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
-                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        switch (modeOption){
+                            case AutonomousModeOptions.kCorralOnly:
+                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        }
                         break;
                     case AutonomousMenuConstants.kDownRed:
                         chosenItem = "Red_4/Red-Barge-Side";
