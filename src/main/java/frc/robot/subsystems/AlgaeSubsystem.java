@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Configs;
 import frc.robot.Constants.AlgaeSubsystemConstants;
 import frc.robot.Constants.AlgaeSubsystemConstants.ArmSetpoints;
@@ -63,7 +66,19 @@ public class AlgaeSubsystem extends SubsystemBase {
 
   // manual jog flag
   private boolean runPeriodic = true;
-  
+  /*
+  // Create the SysId routine: Data collection
+  SysIdRoutine elevatorSysIdRoutine = new SysIdRoutine(
+    new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism(
+      (voltage) -> elevatorMotor.setVoltage(voltage.in(Volts)),
+      null, // No log consumer, since data is recorded by URCL
+      this
+    )
+  );
+  */
+
+
   public AlgaeSubsystem() {
     /*
      * Apply the appropriate configurations to the SPARKs.
@@ -91,6 +106,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     // Zero arm and elevator encoders on initialization
     armEncoder.setPosition(0);
     elevatorEncoder.setPosition(0);
+
 
   }
 
@@ -279,5 +295,15 @@ public class AlgaeSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
   }
 
+
+  /* sysid: data collection Commands 
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return elevatorSysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return elevatorSysIdRoutine.dynamic(direction);
+  }
+    */
 
 }
