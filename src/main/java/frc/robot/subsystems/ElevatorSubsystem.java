@@ -34,13 +34,17 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpointHeights;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
@@ -94,6 +98,9 @@ public class ElevatorSubsystem extends SubsystemBase {
                   * SimulationRobotConstants.kPixelsPerMeter,
               90));
 
+  private TrapezoidProfile.State m_trapezoidalGoal;
+  private TrapezoidProfile.State m_trapezoidalSetpoint;
+  
   /******* Ctor */
   public ElevatorSubsystem() {
     SparkFlexConfig elevatorConfig = new SparkFlexConfig();
@@ -136,6 +143,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     m_motor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     m_encoder.setPosition(0);
+    m_trapezoidalSetpoint = new TrapezoidProfile.State(m_encoder.getPosition(), 0);
+    m_trapezoidalGoal = m_trapezoidalSetpoint;
 
     //m_state = ElevatorState.Base;
     m_height = ElevatorConstants.kBaseHeight;
