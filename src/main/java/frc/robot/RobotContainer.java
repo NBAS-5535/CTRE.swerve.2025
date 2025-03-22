@@ -146,8 +146,8 @@ public class RobotContainer {
         SmartDashboard.putData("AutonomousMenu", autonomousChooser);
 
         scenarioChooser = new SendableChooser<String>();
-        scenarioChooser.setDefaultOption("Must Choose One", "None");
-        scenarioChooser.addOption("Manually-Generated", "manual");
+        //scenarioChooser.setDefaultOption("Must Choose One", "None");
+        scenarioChooser.setDefaultOption("Manually-Generated", "manual");
         scenarioChooser.addOption("PathPlanner", "path");
         SmartDashboard.putData("Scenario Type", scenarioChooser);
 
@@ -513,6 +513,7 @@ public class RobotContainer {
         String chosenItem = "";
         String modeOption = AutonomousModeOptions.kCorralOnly;
         int direction = 1;
+        SmartDashboard.putString("Auto Sequence", caseType);
         switch (caseType) {
             case "pedantic":
                 autoCommand = Commands.sequence(
