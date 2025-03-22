@@ -137,12 +137,12 @@ public class RobotContainer {
         /* autonomous position chooser */
         autonomousChooser = new SendableChooser<>();
         autonomousChooser.setDefaultOption("No Action", "None");
-        autonomousChooser.addOption("Blue_1/Red-Barge-Side", AutonomousMenuConstants.kDownBlue);
+        autonomousChooser.addOption("Blue_1/Red-Barge-Side/Right", AutonomousMenuConstants.kDownBlue);
         autonomousChooser.addOption("Blue_2/Center", AutonomousMenuConstants.kCenterBlue);
-        autonomousChooser.addOption("Blue_3/Blue-Barge-Side", AutonomousMenuConstants.kUpBlue);
-        autonomousChooser.addOption("Red_4/Red-Barge-Side", AutonomousMenuConstants.kDownRed);
+        autonomousChooser.addOption("Blue_3/Blue-Barge-Side/Left", AutonomousMenuConstants.kUpBlue);
+        autonomousChooser.addOption("Red_4/Red-Barge-Side/Left", AutonomousMenuConstants.kDownRed);
         autonomousChooser.addOption("Red_5/Center", AutonomousMenuConstants.kCenterRed);
-        autonomousChooser.addOption("Red_6/Blue-Barge-Side", AutonomousMenuConstants.kUpRed);
+        autonomousChooser.addOption("Red_6/Blue-Barge-Side/Right", AutonomousMenuConstants.kUpRed);
         SmartDashboard.putData("AutonomousMenu", autonomousChooser);
 
         scenarioChooser = new SendableChooser<String>();
@@ -552,7 +552,7 @@ public class RobotContainer {
                 menuItem = autonomousChooser.getSelected();
                 modeOption = dropDownChooser.getSelected();
                 chosenItem = "NO ACTION";
-                angle = 50.;
+                angle = 53.;
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
                         chosenItem = "Blue_1/Red-Barge-Side";
