@@ -393,7 +393,7 @@ public class RobotContainer {
             joystick.a().whileTrue(ManualCommands.runElevatorUpCommand(m_algaeSubsystem));
             // B -> Run elevator DOWN
             joystick.b().whileTrue(ManualCommands.runElevatorDownCommand(m_algaeSubsystem));
-            */
+            
             // start -> Run arm UP
             joystick.a().whileTrue(new SequentialCommandGroup(
                 new InstantCommand(() -> m_algaeSubsystem.setPeriodicToFalse()),
@@ -409,6 +409,7 @@ public class RobotContainer {
                 new InstantCommand(() -> m_algaeSubsystem.resetPeriodicMode())
                 )
             );
+            */
         
         
         /* !!!!!! Button definitions for COMPETITION !!!!!!!!  */
@@ -417,7 +418,7 @@ public class RobotContainer {
         joystick.rightBumper().whileTrue(ManualCommands.runIntakeCommand(m_algaeSubsystem));
 
         // a -> Run tube intake
-        //joystick.a().whileTrue(ManualCommands.reverseIntakeCommandSlow(m_algaeSubsystem));
+        joystick.a().whileTrue(ManualCommands.reverseIntakeCommandSlow(m_algaeSubsystem));
 
         // povLeft -> Run tube intake in reverse
         joystick.leftBumper().whileTrue(ManualCommands.reverseIntakeCommand(m_algaeSubsystem));
@@ -552,7 +553,7 @@ public class RobotContainer {
                 menuItem = autonomousChooser.getSelected();
                 modeOption = dropDownChooser.getSelected();
                 chosenItem = "NO ACTION";
-                angle = 53.;
+                angle = 57.;
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
                         chosenItem = "Blue_1/Red-Barge-Side";

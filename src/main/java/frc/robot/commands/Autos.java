@@ -243,17 +243,16 @@ public class Autos extends Command {
                                     AlgaeSubsystem algae,
                                     ActuatorSubsystem actuator) {
     double timeout = 0.5; // seconds between commands
-    double motionTime = 0.6; // seconds to rotate for 90deg <---------
     Command tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 1.5),            //move forward 88"
-     // Commands.waitSeconds(timeout),
+      Commands.waitSeconds(timeout),
       //Commands.waitSeconds(timeout),
       
       moveCorralToLowerReefLevel(algae, actuator),                //drop corral
       actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
-      Commands.waitSeconds(1.),
+      Commands.waitSeconds(timeout),
       algae.runIntakeCommand().withTimeout(0.5), // to eject the corral
-      Commands.waitSeconds(1.),
+      Commands.waitSeconds(0.75),
 
       // get ready for TeleOp action
       algae.setSetpointCommand(Setpoint.kClearWires),
@@ -261,22 +260,22 @@ public class Autos extends Command {
       Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, 0.3),            //move closer for pickup
-      Commands.waitSeconds(timeout),
+      //Commands.waitSeconds(timeout),
       
       algae.runIntakeCommand().withTimeout(0.5), // to get algae
-      Commands.waitSeconds(timeout),
+      //Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, -0.6),            //move back to rotate
       /**/
       
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
-      Commands.waitSeconds(timeout),
+      //Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
-      Commands.waitSeconds(timeout),
+      //Commands.waitSeconds(timeout),
       
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg towards algaenet
-      Commands.waitSeconds(timeout),
+      //Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, 0.9),            //move closer to algae net/barge
       Commands.waitSeconds(timeout),

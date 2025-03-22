@@ -58,14 +58,14 @@ public class Pigeon2GyroSubsystem extends SubsystemBase {
   }
 
   public boolean isAngleDiffReached(CommandSwerveDrivetrain swerve, double maxAngle) {
-    System.out.println(getName() + ": " + String.valueOf(m_angleDiff));
+    //System.out.println(getName() + ": " + String.valueOf(m_angleDiff));
     //boolean condition = MathUtil.isNear(maxAngle, Math.abs(m_angleDiff), 1.);
     boolean condition = Math.abs(m_angleDiff) >= 0.935 * maxAngle;
     if ( condition ) {
       //swerve.stopAllMotors();
       swerve.applyRequest(() -> idleRequest);
       SmartDashboard.putBoolean("isAngleDiffReached", condition);
-      System.out.println(getName() + " ---- AngleDiffReached"); 
+      //System.out.println(getName() + " ---- AngleDiffReached"); 
     }
     return condition;
   }
