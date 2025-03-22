@@ -268,7 +268,6 @@ public class Autos extends Command {
       
       moveByDistance(swerve, -0.6),            //move back to rotate
       /**/
-
       
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       Commands.waitSeconds(timeout),
@@ -294,17 +293,21 @@ public class Autos extends Command {
     return tempCommand;
   }
 
+  /********** SIDE START */
   /* start in front of the Blue or Red barge */
-  public static Command algaenetSideStart(CommandSwerveDrivetrain swerve, 
+  public static Command algaenetSideStart_CorralOnly(CommandSwerveDrivetrain swerve, 
                                           Pigeon2GyroSubsystem gyro, 
                                           AlgaeSubsystem algae,
-                                          ActuatorSubsystem actuator) {
+                                          ActuatorSubsystem actuator,
+                                          int direction,
+                                          double angle) {
     double timeout = 2.; // seconds between commands
+    angle *= direction;
     Command tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 1.7),            //move closer for pickup 
       //Commands.waitSeconds(timeout),
 
-      rotateByAngleInDegrees(swerve, gyro, 55.), //rotate toward reef side by ANGLE 55 instead of 60
+      rotateByAngleInDegrees(swerve, gyro, angle), //rotate toward reef side by ANGLE 55 instead of 60
       moveByDistance(swerve, 1.2),            //move forward 
       Commands.waitSeconds(timeout),
       

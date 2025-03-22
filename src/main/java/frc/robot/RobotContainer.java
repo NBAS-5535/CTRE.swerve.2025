@@ -513,6 +513,7 @@ public class RobotContainer {
         String chosenItem = "";
         String modeOption = AutonomousModeOptions.kCorralOnly;
         int direction = 1;
+        double angle = 0.;
         switch (caseType) {
             case "pedantic":
                 autoCommand = Commands.sequence(
@@ -539,10 +540,18 @@ public class RobotContainer {
                 menuItem = autonomousChooser.getSelected();
                 modeOption = dropDownChooser.getSelected();
                 chosenItem = "NO ACTION";
+                angle = 50.;
                 switch (menuItem){
                     case AutonomousMenuConstants.kDownBlue:
                         chosenItem = "Blue_1/Red-Barge-Side";
-                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        direction = -1;
+                        switch (modeOption){
+                            case AutonomousModeOptions.kCorralOnly:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        }
                         break;
                     case AutonomousMenuConstants.kCenterBlue:
                         chosenItem = "Blue_2/Center";
@@ -561,16 +570,25 @@ public class RobotContainer {
                         break;
                     case AutonomousMenuConstants.kUpBlue:
                         chosenItem = "Blue_3/Blue-Barge-Side";
+                        direction = 1;
                         switch (modeOption){
                             case AutonomousModeOptions.kCorralOnly:
-                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);//, direction);
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
                                 //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         }
                         break;
                     case AutonomousMenuConstants.kDownRed:
                         chosenItem = "Red_4/Red-Barge-Side";
-                        //autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
-                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        direction = 1;
+                        switch (modeOption){
+                            case AutonomousModeOptions.kCorralOnly:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        }
                         break;
                     case AutonomousMenuConstants.kCenterRed:
                         chosenItem = "Red_5/Center";
@@ -590,7 +608,14 @@ public class RobotContainer {
                         break;
                     case AutonomousMenuConstants.kUpRed:
                         chosenItem = "Red_6/Blue-Barge-Side";
-                        autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        direction = -1;
+                        switch (modeOption){
+                            case AutonomousModeOptions.kCorralOnly:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                        }
                         break; 
                     default:
                         chosenItem = "Nothing"; 
