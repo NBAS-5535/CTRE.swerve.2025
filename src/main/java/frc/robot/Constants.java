@@ -284,7 +284,7 @@ public final class Constants {
       public static final double kMoveWithBall = -6.; //-10.0;
       public static final double kLowerReef = -4.78; //-1.5; //-8.57;
       public static final double kHigherReef = -46.91; //-83.00;
-      public static final double kAlgaeNet = -144.15; //-264; //-248.5;
+      public static final double kAlgaeNet = -145.15; //-264; //-248.5;
     }
 
     public static final class ArmSetpoints {
