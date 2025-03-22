@@ -393,12 +393,23 @@ public class RobotContainer {
             joystick.a().whileTrue(ManualCommands.runElevatorUpCommand(m_algaeSubsystem));
             // B -> Run elevator DOWN
             joystick.b().whileTrue(ManualCommands.runElevatorDownCommand(m_algaeSubsystem));
-
+            */
             // start -> Run arm UP
-            joystick.start().whileTrue(ManualCommands.runArmUpCommand(m_algaeSubsystem));
+            joystick.a().whileTrue(new SequentialCommandGroup(
+                new InstantCommand(() -> m_algaeSubsystem.setPeriodicToFalse()),
+                ManualCommands.runArmUpCommand(m_algaeSubsystem),
+                new InstantCommand(() -> m_algaeSubsystem.resetPeriodicMode())
+                )
+            );
             // back -> Run arm DOWN
-            joystick.back().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
-        */
+            //joystick.back().whileTrue(ManualCommands.runArmDownCommand(m_algaeSubsystem));
+            joystick.b().whileTrue(new SequentialCommandGroup(
+                new InstantCommand(() -> m_algaeSubsystem.setPeriodicToFalse()),
+                ManualCommands.runArmDownCommand(m_algaeSubsystem),
+                new InstantCommand(() -> m_algaeSubsystem.resetPeriodicMode())
+                )
+            );
+        
         
         /* !!!!!! Button definitions for COMPETITION !!!!!!!!  */
         /* run intake motor in suck-in and push-out modes */

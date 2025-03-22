@@ -290,6 +290,9 @@ public class AlgaeSubsystem extends SubsystemBase {
     runPeriodic = true;
   }
   
+  public void setPeriodicToFalse() {
+    runPeriodic = false;
+  }
 
   @Override
   public void simulationPeriodic() {
