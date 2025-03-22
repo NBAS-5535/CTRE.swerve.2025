@@ -143,6 +143,21 @@ public class Autos extends Command {
       );
   }
 
+  /* experimental
+  public static Command moveByDistanceInXY(CommandSwerveDrivetrain swerve, double encoderPosition, double joystickDirection) {
+    Direction direction = Direction.kForward;
+    if ( encoderPosition < 0. ) {
+      direction = Direction.kReverse;
+    }
+    return new SequentialCommandGroup(
+      //new InstantCommandMarkGyroPose(drivetrain),
+      new InstantCommand(() -> swerve.setCurrentPose()),
+      drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(joystickDirection * speed, joystickDirection * speed)).until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition)))
+      );
+  }
+      */
+
   /* rotate by angle using Pigeon info */
   public static Command rotateByAngleInDegrees(CommandSwerveDrivetrain swerve, 
                                                Pigeon2GyroSubsystem gyro,
@@ -289,7 +304,7 @@ public class Autos extends Command {
       moveByDistance(swerve, 1.7),            //move closer for pickup 
       //Commands.waitSeconds(timeout),
 
-      rotateByAngleInDegrees(swerve, gyro, 60.), //rotate toward reef side by ANGLE
+      rotateByAngleInDegrees(swerve, gyro, 55.), //rotate toward reef side by ANGLE 55 instead of 60
       moveByDistance(swerve, 1.2),            //move forward 
       Commands.waitSeconds(timeout),
       

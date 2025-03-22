@@ -11,27 +11,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Autos.moveCorralToLowerReefLevel"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 10.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Start_Center_Blue_AfterCorralDrop"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Autos.pickupAlgaeFromLowReef"
           }
         },
         {

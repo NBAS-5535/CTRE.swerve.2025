@@ -112,15 +112,20 @@ public class RobotContainer {
 
     /* autonomous dropdown menu */
     private SendableChooser<String> dropDownChooser;// = new SendableChooser<>();
-    private SendableChooser<String> autonomousChooser ;
+    private SendableChooser<String> autonomousChooser;
     
+    /* scenario tyep menu */
+    private SendableChooser<String> scenarioChooser;
+
+    /* submenu */
+    //private final SendableChooser<SendableChooser<String>> mainMenuChooser;
     int joystickDirection = 1;
 
     /************** Ctor */
     public RobotContainer() {
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
         autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("PP Mode", autoChooser);
+        SmartDashboard.putData("PathPlanner Scenario", autoChooser);
 
         /* dropdown autonomous menu */
         dropDownChooser = new SendableChooser<>();
@@ -131,7 +136,7 @@ public class RobotContainer {
 
         /* autonomous position chooser */
         autonomousChooser = new SendableChooser<>();
-        autonomousChooser.setDefaultOption("No Action", "none");
+        autonomousChooser.setDefaultOption("No Action", "None");
         autonomousChooser.addOption("Blue_1/Red-Barge-Side", AutonomousMenuConstants.kDownBlue);
         autonomousChooser.addOption("Blue_2/Center", AutonomousMenuConstants.kCenterBlue);
         autonomousChooser.addOption("Blue_3/Blue-Barge-Side", AutonomousMenuConstants.kUpBlue);
@@ -140,21 +145,40 @@ public class RobotContainer {
         autonomousChooser.addOption("Red_6/Blue-Barge-Side", AutonomousMenuConstants.kUpRed);
         SmartDashboard.putData("AutonomousMenu", autonomousChooser);
 
+        scenarioChooser = new SendableChooser<String>();
+        scenarioChooser.setDefaultOption("Must Choose One", "None");
+        scenarioChooser.addOption("Manually-Generated", "manual");
+        scenarioChooser.addOption("PathPlanner", "path");
+        SmartDashboard.putData("Scenario Type", scenarioChooser);
+
+        /*
+        mainMenuChooser = new SendableChooser<SendableChooser<String>>();
+        mainMenuChooser.setDefaultOption("Manual", autonomousChooser);
+        mainMenuChooser.addOption("PathPlanner", autoChooser);
+        */
         configureBindings();
     }
 
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+
+        /* alliance signal not available in simulation mode????? */
+        boolean isCompetitionMode = true;
+        joystickDirection = 1;
         
-        Optional<Alliance> ally = DriverStation.getAlliance();
-        if (ally.get() == Alliance.Blue ) {
-            joystickDirection = 1;
-        } else {
-            joystickDirection = -1;
+        if ( isCompetitionMode ) {
+            Optional<Alliance> ally = DriverStation.getAlliance();
+            if (ally.get() == Alliance.Blue ) {
+                joystickDirection = 1;
+            } else {
+                joystickDirection = -1;
+            }
         }
+         
+        
         SmartDashboard.putNumber("my direction", joystickDirection);
-        //joystickDirection = 1;
+        
 
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
@@ -483,13 +507,14 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // some autonomous sequences
-        String caseType = "menu"; //"manual";
+        String caseType = scenarioChooser.getSelected(); //"path"; //"manual";
         Command autoCommand = null;
         String menuItem = "";
         String chosenItem = "";
         String modeOption = AutonomousModeOptions.kCorralOnly;
+        int direction = 1;
         switch (caseType) {
-            case "manual":
+            case "pedantic":
                 autoCommand = Commands.sequence(
                     drivetrain.sysIdDynamic(Direction.kForward).withTimeout(0.5),
                     //drivetrain.applyRequest(() -> brake),
@@ -504,7 +529,7 @@ public class RobotContainer {
             case "auto":
                 autoCommand = Autos.moveRotateRestRepeat(drivetrain);
                 break;
-            case "menu":
+            case "manual":
                 //autoCommand = dropDownChooser.getSelected();
                 /* IMPORTANT: Designations are wrt PathPlanner layout: 
                 *             Blue on the left / Red on the right 
@@ -538,7 +563,7 @@ public class RobotContainer {
                         chosenItem = "Blue_3/Blue-Barge-Side";
                         switch (modeOption){
                             case AutonomousModeOptions.kCorralOnly:
-                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);//, direction);
                                 //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
                         }
                         break;
@@ -596,4 +621,93 @@ public class RobotContainer {
 
     }
 
+    /* a better menu system */
+    /*
+    public Command getAutonomousCommandTest() {
+        // some autonomous sequences
+        String caseType = scenarioChooser.getSelected(); //"path"; //"manual";
+        Command autoCommand = null;
+        String menuItem = autonomousChooser.getSelected();
+        String chosenItem = dropDownChooser.getSelected();
+        String modeOption = AutonomousModeOptions.kCorralOnly;
+        int direction = 1;
+        chosenItem = "NO ACTION";
+        switch (menuItem){
+            case AutonomousMenuConstants.kDownBlue:
+                chosenItem = "Blue_1/Red-Barge-Side";
+                if ( caseType == "path") {
+                    System.out.println(caseType + " for " + menuItem + " is NOT implemented");
+                } else {                 
+                    autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                }
+                break;
+
+            case AutonomousMenuConstants.kCenterBlue:
+                chosenItem = "Blue_2/Center";
+                if ( caseType == "path"){
+                    autoCommand = autoChooser.getSelected();
+                } else {
+                    switch (modeOption){
+                        case AutonomousModeOptions.kCorralOnly:
+                            autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                            break;
+                        case AutonomousModeOptions.kCorralPlusAlgae:
+                            autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                            //SmartDashboard.putString("WhatsUP?", modeOption);
+                            break;
+                        default:
+                            autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                            break;
+                    }
+                }
+                break;
+                
+            case AutonomousMenuConstants.kUpBlue:
+                chosenItem = "Blue_3/Blue-Barge-Side";
+                if ( caseType == "path") {
+                    System.out.println(caseType + " for " + menuItem + " is NOT implemented");
+                } else { 
+                    switch (modeOption){
+                        case AutonomousModeOptions.kCorralOnly:
+                            autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);//, direction);
+                            //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                    }
+                }
+                break;
+                
+            case AutonomousMenuConstants.kDownRed:
+                chosenItem = "Red_4/Red-Barge-Side";
+                //autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                break;
+            case AutonomousMenuConstants.kCenterRed:
+                chosenItem = "Red_5/Center";
+                switch (modeOption){
+                    case AutonomousModeOptions.kCorralOnly:
+                        autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        break;
+                    case AutonomousModeOptions.kCorralPlusAlgae:
+                        autoCommand = Autos.midlineStartCommand(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        //SmartDashboard.putString("CorralStuff", "With Algae Throw");
+                        break;
+                    default:
+                        autoCommand = Autos.midlineStart_scoreCorralOnly(drivetrain, pigeon2Subsystem, m_algaeSubsystem, m_actuator);
+                        //SmartDashboard.putString("CorralStuff", "Hit default");
+                        break;
+                }
+                break;
+            case AutonomousMenuConstants.kUpRed:
+                chosenItem = "Red_6/Blue-Barge-Side";
+                autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                break; 
+            default:
+                chosenItem = "Nothing"; 
+            }
+
+
+        
+        return autoCommand;
+
+    }
+    */
 }
