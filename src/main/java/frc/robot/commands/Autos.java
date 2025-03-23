@@ -189,6 +189,16 @@ public class Autos extends Command {
       );
   }
 
+  /* position for corral drop */
+  public static Command dropCorralToLowerReefLevel(AlgaeSubsystem algae,
+  ActuatorSubsystem actuator) {
+    return new SequentialCommandGroup(
+      actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
+      Commands.waitSeconds(0.5),
+      algae.runIntakeCommand().withTimeout(0.5) // to eject the corral
+    );
+  }
+
   /* activate intake and move to low algae pickup */
   public static Command pickupAlgaeFromLowReef(AlgaeSubsystem algae) {
     return new SequentialCommandGroup(
@@ -250,7 +260,7 @@ public class Autos extends Command {
       
       moveCorralToLowerReefLevel(algae, actuator),                //drop corral
       actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
-      Commands.waitSeconds(timeout),
+      Commands.waitSeconds(1.0),
       algae.runIntakeCommand().withTimeout(0.5), // to eject the corral
       Commands.waitSeconds(0.75),
 

@@ -19,7 +19,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 10.0
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Autos.dropCorralToLowerReefLevel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
