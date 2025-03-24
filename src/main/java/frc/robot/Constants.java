@@ -294,8 +294,8 @@ public final class Constants {
       public static final double kCorralDrop = 14.33;
       public static final double kShootAfterCorralDrop = 6.28;
       public static final double kMoveWithBall = -17.15;
-      public static final double kLowerReef = 18.67;
-      public static final double kHigherReef = 18.67;
+      public static final double kLowerReef = 15.0;//18.67;
+      public static final double kHigherReef = 15.0;//18.67;
       public static final double kAlgaeNet = 31.9;
     }
 
