@@ -321,7 +321,7 @@ public class RobotContainer {
                 testTagId = 0;
             }
             
-            joystick.start().onTrue(new SequentialCommandGroup(
+            joystick.back().onTrue(new SequentialCommandGroup(
                 new AlignCommand(drivetrain, m_vision, testTagId),
                 //drivetrain.applyRequest(() -> brake),
                 drivetrain.sysIdDynamic(Direction.kForward).until(() -> drivetrain.isDesiredPoseReached(1.))

@@ -168,14 +168,14 @@ public final class Constants {
     public static final String LIMELIGHT_NAME = "";
 
     // height of the center of the Limelight lens from the floor (inches)
-    public static final double limelightLensHeightInches = 8.0;
+    public static final double limelightLensHeightInches = 3.5;
     // height of the target from the floor (inches)
     public static final double targetHeightInches = 33.5;
 
     // calibration distance for correct mount angle
     public static final double knownDistance = 10.;
 
-    public static final int testTagId = 20;
+    public static final int testTagId = 3;
   }
 
   public static final class ElevatorConstants {
@@ -294,8 +294,8 @@ public final class Constants {
       public static final double kCorralDrop = 14.33;
       public static final double kShootAfterCorralDrop = 6.28;
       public static final double kMoveWithBall = -17.15;
-      public static final double kLowerReef = 15.0;//18.67;
-      public static final double kHigherReef = 15.0;//18.67;
+      public static final double kLowerReef = 12.0;//15.0;//18.67;
+      public static final double kHigherReef = 12.0;//15.0;//18.67;
       public static final double kAlgaeNet = 31.9;
     }
 

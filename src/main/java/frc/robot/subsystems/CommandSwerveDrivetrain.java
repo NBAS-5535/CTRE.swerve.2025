@@ -53,7 +53,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     //private static final Voltage dynamicTestVelocity = Volts.of(4.); // original was 4
 
     private static final Velocity<VoltageUnit> angularSpeedRampRate = Volts.of(0.).per(Second); // original: Volts.of(Math.PI / 6).per(Second)
-    private static final Voltage angularTestVelocity = Volts.of(Math.PI / 2.); // original: Volts.of(Math.PI)
+    private static final Voltage angularTestVelocity = Volts.of(Math.PI / 3.); // original: Volts.of(Math.PI)
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
