@@ -564,6 +564,16 @@ public class RobotContainer {
                                                                                  m_algaeSubsystem, m_actuator, 
                                                                                  direction, angle);
                                 //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                            case AutonomousModeOptions.kCorralPlusAlgae:
+                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
+                            default:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
                         }
                         break;
                     case AutonomousMenuConstants.kCenterBlue:
@@ -590,6 +600,16 @@ public class RobotContainer {
                                                                                  m_algaeSubsystem, m_actuator, 
                                                                                  direction, angle);
                                 //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                            case AutonomousModeOptions.kCorralPlusAlgae:
+                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
+                            default:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
                         }
                         break;
                     case AutonomousMenuConstants.kDownRed:
@@ -604,6 +624,11 @@ public class RobotContainer {
                                 break;
                             case AutonomousModeOptions.kCorralPlusAlgae:
                                 autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
+                            default:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
                                                                                  m_algaeSubsystem, m_actuator, 
                                                                                  direction, angle);
                                 break;
@@ -637,6 +662,11 @@ public class RobotContainer {
                                 break;
                             case AutonomousModeOptions.kCorralPlusAlgae:
                                 autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
+                            default:
+                                autoCommand = Autos.algaenetSideStart_CorralOnly(drivetrain, pigeon2Subsystem, 
                                                                                  m_algaeSubsystem, m_actuator, 
                                                                                  direction, angle);
                                 break;
