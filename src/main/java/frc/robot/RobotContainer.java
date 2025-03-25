@@ -601,6 +601,12 @@ public class RobotContainer {
                                                                                  m_algaeSubsystem, m_actuator, 
                                                                                  direction, angle);
                                 //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                                break;
+                            case AutonomousModeOptions.kCorralPlusAlgae:
+                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
                         }
                         break;
                     case AutonomousMenuConstants.kCenterRed:
@@ -628,6 +634,12 @@ public class RobotContainer {
                                                                                  m_algaeSubsystem, m_actuator, 
                                                                                  direction, angle);
                                 //autoCommand = Autos.moveOffTheLine(drivetrain, Direction.kForward);
+                                break;
+                            case AutonomousModeOptions.kCorralPlusAlgae:
+                                autoCommand = Autos.algaenetSideStart(drivetrain, pigeon2Subsystem, 
+                                                                                 m_algaeSubsystem, m_actuator, 
+                                                                                 direction, angle);
+                                break;
                         }
                         break; 
                     default:
