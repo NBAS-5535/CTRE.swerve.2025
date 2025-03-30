@@ -282,6 +282,7 @@ public final class Constants {
       public static final double kCorralDrop = 32.63; //73.43;
       public static final double kShootAfterCorralDrop = 39.7; //73.43;
       public static final double kMoveWithBall = -6.; //-10.0;
+      public static final double kClearReefLevels = -5.;
       public static final double kLowerReef = -4.78; //-1.5; //-8.57;
       public static final double kHigherReef = -46.91; //-83.00;
       public static final double kAlgaeNet = -145.15; //-264; //-248.5;
@@ -294,6 +295,7 @@ public final class Constants {
       public static final double kCorralDrop = 14.33;
       public static final double kShootAfterCorralDrop = 6.28;
       public static final double kMoveWithBall = -17.15;
+      public static final double kClearReefLevels = 22.;
       public static final double kLowerReef = 12.0;//15.0;//18.67;
       public static final double kHigherReef = 12.0;//15.0;//18.67;
       public static final double kAlgaeNet = 31.9;

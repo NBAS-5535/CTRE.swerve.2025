@@ -241,6 +241,8 @@ public class Autos extends Command {
 
         // get ready for TeleOp action
         algae.setSetpointCommand(Setpoint.kClearWires),
+        algae.setSetpointCommand(Setpoint.kClearReef),
+        Commands.waitSeconds(0.5),
         algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
     );
 
@@ -260,12 +262,14 @@ public class Autos extends Command {
       
       moveCorralToLowerReefLevel(algae, actuator),                //drop corral
       actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
-      Commands.waitSeconds(1.0),
+      Commands.waitSeconds(2.0),
       algae.runIntakeCommand().withTimeout(0.5), // to eject the corral
       Commands.waitSeconds(0.75),
 
       // get ready for TeleOp action
       algae.setSetpointCommand(Setpoint.kClearWires),
+      algae.setSetpointCommand(Setpoint.kClearReef),
+      Commands.waitSeconds(0.5),
       algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
       Commands.waitSeconds(timeout),
       
@@ -276,7 +280,7 @@ public class Autos extends Command {
       //Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, -0.6),            //move back to rotate
-      /**/
+      
       
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       //Commands.waitSeconds(timeout),
@@ -317,7 +321,7 @@ public class Autos extends Command {
       //Commands.waitSeconds(timeout),
 
       rotateByAngleInDegrees(swerve, gyro, angle), //rotate toward reef side by ANGLE 55 instead of 60
-      moveByDistance(swerve, 1.2),            //move forward 
+      moveByDistance(swerve, 1.1),            //move forward 
       Commands.waitSeconds(timeout),
       
       moveCorralToLowerReefLevel(algae, actuator),                //drop corral

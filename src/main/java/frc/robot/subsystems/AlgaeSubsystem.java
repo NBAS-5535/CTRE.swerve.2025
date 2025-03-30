@@ -29,6 +29,7 @@ public class AlgaeSubsystem extends SubsystemBase {
   public enum Setpoint {
     kGroundPickup,
     kClearWires,
+    kClearReef,
     kSideSlotShoot,
     kBase,
     kCorralDrop,
@@ -165,6 +166,10 @@ public class AlgaeSubsystem extends SubsystemBase {
               armCurrentTarget = ArmSetpoints.kGroundPick;
               elevatorCurrentTarget = ElevatorSetpoints.kMoveWithBall;
               break;
+            case kClearReef:
+              armCurrentTarget = ArmSetpoints.kClearReefLevels;
+              elevatorCurrentTarget = ElevatorSetpoints.kClearReefLevels;
+              break;
             case kSideSlotShoot:
               armCurrentTarget = ArmSetpoints.kSideShoot;
               elevatorCurrentTarget = ElevatorSetpoints.kSideShoot;
@@ -246,6 +251,11 @@ public class AlgaeSubsystem extends SubsystemBase {
   public Command runIntakeCommand() {
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kForward), () -> this.setIntakePower(0.0));
+  }
+
+  public Command runIntakeCommandSlow() {
+    return this.startEnd(
+        () -> this.setIntakePower(0.4), () -> this.setIntakePower(0.0));
   }
 
   /**
