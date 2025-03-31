@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Autos.moveCorralToLowerReefLevel"
+            "name": "MoveCorralToLowerReefLevel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StraightenActuatorEjectCorral"
           }
         },
         {
@@ -25,7 +37,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Autos.dropCorralToLowerReefLevel"
+            "name": "DropCorralToLowerReefLevel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReadyForAlgaePickup"
           }
         },
         {
@@ -43,13 +67,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Autos.pickupAlgaeFromLowReef"
+            "name": "PickupAlgaeFromLowReef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeAlgaeFromReef"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterBlueFollowup"
+            "pathName": "Start_Center_Blue_Followup"
           }
         }
       ]

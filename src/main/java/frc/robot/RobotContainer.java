@@ -7,11 +7,13 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+import java.util.jar.Attributes.Name;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -123,6 +125,8 @@ public class RobotContainer {
 
     /************** Ctor */
     public RobotContainer() {
+        // create some NamedCommands for PathPlanner
+        configureNamedCommands();
         //autoChooser = AutoBuilder.buildAutoChooser("TestPath");
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("PathPlanner Scenario", autoChooser);
@@ -164,7 +168,7 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
 
         /* alliance signal not available in simulation mode????? */
-        boolean isCompetitionMode = true;
+        boolean isCompetitionMode = false;
         joystickDirection = 1;
         
         if ( isCompetitionMode ) {
@@ -515,6 +519,24 @@ public class RobotContainer {
                 
     
         drivetrain.registerTelemetry(logger::telemeterize);
+    }
+
+    // associate PathPlanner NamedCommands with actual function calls
+    private void configureNamedCommands() {
+        NamedCommands.registerCommand("MoveCorralToLowerReefLevel", Autos.moveCorralToLowerReefLevel(m_algaeSubsystem, m_actuator));
+        NamedCommands.registerCommand("DropCorralToLowerReefLevel", Autos.dropCorralToLowerReefLevel(m_algaeSubsystem, m_actuator));
+        //NamedCommands.registerCommand("PickupAlgaeFromLowReef", Autos.pickupAlgaeFromLowReef(m_algaeSubsystem));
+        //NamedCommands.registerCommand("PickupAlgaeFromHighReef", Autos.pickupAlgaeFromHighReef(m_algaeSubsystem));
+        NamedCommands.registerCommand("StraightenActuatorEjectCorral", 
+                                      new SequentialCommandGroup(m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions),
+                                                                 Commands.waitSeconds(0.5),
+                                                                 m_algaeSubsystem.runIntakeCommand().withTimeout(0.5)));
+        NamedCommands.registerCommand("ReadyForAlgaePickup", 
+                                      new SequentialCommandGroup(m_algaeSubsystem.setSetpointCommand(Setpoint.kClearWires),
+                                                                 m_algaeSubsystem.setSetpointCommand(Setpoint.kClearReef),
+                                                                 Commands.waitSeconds(0.5),
+                                                                 m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)));
+        NamedCommands.registerCommand("IntakeAlgaeFromReef", m_algaeSubsystem.runIntakeCommand().withTimeout(0.5));
     }
 
     public Command getAutonomousCommand() {
