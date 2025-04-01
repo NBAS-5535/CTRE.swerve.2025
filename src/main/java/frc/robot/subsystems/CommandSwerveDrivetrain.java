@@ -48,7 +48,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final Time timeout = Seconds.of(2.); //default is set to null for 10s 
     // competition slow AUto settings
     private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(0).per(Second); // assume no acceleration original: Volts.of(1).per(Second);
-    private static final Voltage dynamicTestVelocity = Volts.of(1.); // original was 4
+    private static final Voltage dynamicTestVelocity = Volts.of(1.5); // original was 4
     // swerve pid test settings - default from generated code
     //private static final Velocity<VoltageUnit> velocityRampRate = Volts.of(1).per(Second); // assume no acceleration original: Volts.of(1).per(Second);
     //private static final Voltage dynamicTestVelocity = Volts.of(4.); // original was 4

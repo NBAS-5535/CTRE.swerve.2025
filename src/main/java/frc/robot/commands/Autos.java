@@ -149,14 +149,15 @@ public class Autos extends Command {
     /* go distance: in encoder value */
     public static Command moveByDistanceInXY(CommandSwerveDrivetrain swerve, double encoderPosition) {
 
-      final double speed = Math.signum(encoderPosition) * (1.); //m/s
-      final double angularSpeed = Math.PI / 3.;
+      final double speedX = Math.signum(encoderPosition) * (1.); //m/s
+      final double speedY = 0.;
+      final double angularSpeed = Math.PI / 4.1;
 
-      return new InstantCommand(() -> swerve.robotCentricMove.withVelocityX(speed)
-                                                             .withVelocityY(speed)
-                                                             .withRotationalRate(angularSpeed))
-                                 .until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition))
-        );
+      return swerve.applyRequest(() -> swerve.robotCentricMove.withVelocityX(speedX)
+                                                             .withVelocityY(speedY)
+                                                             .withRotationalRate(-angularSpeed))
+                                    .withTimeout(2.);
+                                 //.until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition)));
     }
 
   /* experimental
@@ -235,6 +236,7 @@ public class Autos extends Command {
   public static Command shootAlgaeIntoNet(AlgaeSubsystem algae) {
     return new SequentialCommandGroup(
       algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
+      Commands.waitSeconds(2.),
       algae.reverseIntakeCommand().withTimeout(1.)
     );
   }
@@ -272,10 +274,10 @@ public class Autos extends Command {
                                     ActuatorSubsystem actuator) {
     double timeout = 0.5; // seconds between commands
     Command tempCommand = new SequentialCommandGroup(
-      moveByDistance(swerve, 1.5),            //move forward 88"
+      moveByDistance(swerve, 1.5),            //move forward 88" or 0.95 if robot end on the line
       Commands.waitSeconds(timeout),
       //Commands.waitSeconds(timeout),
-      
+      /**/
       moveCorralToLowerReefLevel(algae, actuator),                //drop corral
       actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
       Commands.waitSeconds(2.0),
@@ -287,6 +289,7 @@ public class Autos extends Command {
       algae.setSetpointCommand(Setpoint.kClearReef),
       Commands.waitSeconds(0.5),
       algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
+      /**/
       Commands.waitSeconds(timeout),
       
       moveByDistance(swerve, 0.3),            //move closer for pickup
@@ -301,8 +304,8 @@ public class Autos extends Command {
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       //Commands.waitSeconds(timeout),
       
-      //moveByDistanceInXY(swerve, 1.),
-      /* */
+      moveByDistanceInXY(swerve, 1.5)
+      /* 
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
       //Commands.waitSeconds(timeout),
       
@@ -311,14 +314,14 @@ public class Autos extends Command {
       
       moveByDistance(swerve, 0.9),            //move closer to algae net/barge
       Commands.waitSeconds(timeout),
-      
+      */
       //shootAlgaeIntoNet(algae),                                //shoot algae into net
-      algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
-      Commands.waitSeconds(2.),
-      algae.reverseIntakeCommand().withTimeout(0.5),
+      //algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
+      //Commands.waitSeconds(2.),
+      //algae.reverseIntakeCommand().withTimeout(0.5),
 
-      Commands.waitSeconds(timeout),
-      algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
+      //Commands.waitSeconds(timeout),
+      //algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
       /**/
     );
     return tempCommand;

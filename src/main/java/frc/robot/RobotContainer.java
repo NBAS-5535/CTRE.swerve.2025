@@ -284,11 +284,14 @@ public class RobotContainer {
 
         boolean multiDimensionMove = true;
         if ( multiDimensionMove ) {
-            final double speed = 1.; //m/s
-            final double angularSpeed = Math.PI / 3.;
-            joystick.b().whileTrue(new InstantCommand(() -> drivetrain.robotCentricMove.withVelocityX(speed)
-                                                                                        .withVelocityY(speed)
-                                                                                        .withRotationalRate(angularSpeed)));
+            final double speed = 1.0; //m/s
+            final double angularSpeed = Math.PI / 4.5;
+            SmartDashboard.putNumber("Test Speed", speed);
+            joystick.b().onTrue(drivetrain.applyRequest(() -> drivetrain.robotCentricMove.withVelocityX(speed)
+                                                                                        .withVelocityY(-0.)
+                                                                                        .withRotationalRate(-angularSpeed)
+                                                        //).withTimeout(0.5));
+                                                        ).until(() -> drivetrain.isDesiredPoseReached(Math.abs(1.8))));
         }
         /* get robot Pose/location info */
         boolean poseTest = false;
