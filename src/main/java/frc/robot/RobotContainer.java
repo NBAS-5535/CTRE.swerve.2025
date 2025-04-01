@@ -168,7 +168,7 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
 
         /* alliance signal not available in simulation mode????? */
-        boolean isCompetitionMode = false;
+        boolean isCompetitionMode = true;
         joystickDirection = 1;
         
         if ( isCompetitionMode ) {
@@ -282,8 +282,17 @@ public class RobotContainer {
             
         } // end driveTest
 
+        boolean multiDimensionMove = true;
+        if ( multiDimensionMove ) {
+            final double speed = 1.; //m/s
+            final double angularSpeed = Math.PI / 3.;
+            joystick.b().whileTrue(new InstantCommand(() -> drivetrain.robotCentricMove.withVelocityX(speed)
+                                                                                        .withVelocityY(speed)
+                                                                                        .withRotationalRate(angularSpeed)));
+        }
         /* get robot Pose/location info */
-        if (true) {
+        boolean poseTest = false;
+        if ( poseTest ) {
             /* pedantic way */
             /*
             joystick.povRight().onTrue(new SequentialCommandGroup(

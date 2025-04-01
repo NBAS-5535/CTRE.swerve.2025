@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -142,6 +145,19 @@ public class Autos extends Command {
       swerve.sysIdDynamic(direction).until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition)))
       );
   }
+
+    /* go distance: in encoder value */
+    public static Command moveByDistanceInXY(CommandSwerveDrivetrain swerve, double encoderPosition) {
+
+      final double speed = Math.signum(encoderPosition) * (1.); //m/s
+      final double angularSpeed = Math.PI / 3.;
+
+      return new InstantCommand(() -> swerve.robotCentricMove.withVelocityX(speed)
+                                                             .withVelocityY(speed)
+                                                             .withRotationalRate(angularSpeed))
+                                 .until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition))
+        );
+    }
 
   /* experimental
   public static Command moveByDistanceInXY(CommandSwerveDrivetrain swerve, double encoderPosition, double joystickDirection) {
@@ -285,6 +301,8 @@ public class Autos extends Command {
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       //Commands.waitSeconds(timeout),
       
+      //moveByDistanceInXY(swerve, 1.),
+      /* */
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
       //Commands.waitSeconds(timeout),
       
