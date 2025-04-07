@@ -301,10 +301,10 @@ public class Autos extends Command {
       moveByDistance(swerve, -0.6),            //move back to rotate
       
       
-      rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
+      rotateByAngleInDegrees(swerve, gyro, -90.)        //rotate 90deg
       //Commands.waitSeconds(timeout),
       
-      moveByDistanceInXY(swerve, 1.5)
+      //moveByDistanceInXY(swerve, 1.5)
       /* 
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
       //Commands.waitSeconds(timeout),
