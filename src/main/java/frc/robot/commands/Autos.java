@@ -151,12 +151,12 @@ public class Autos extends Command {
 
       final double speedX = Math.signum(encoderPosition) * (1.); //m/s
       final double speedY = 0.;
-      final double angularSpeed = Math.PI / 4.1;
+      final double angularSpeed = Math.PI / 4.1; // need a bit faster?
 
       return swerve.applyRequest(() -> swerve.robotCentricMove.withVelocityX(speedX)
                                                              .withVelocityY(speedY)
                                                              .withRotationalRate(-angularSpeed))
-                                    .withTimeout(2.);
+                                    .withTimeout(0.25);
                                  //.until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition)));
     }
 
@@ -274,15 +274,15 @@ public class Autos extends Command {
                                     ActuatorSubsystem actuator) {
     double timeout = 0.5; // seconds between commands
     Command tempCommand = new SequentialCommandGroup(
-      moveByDistance(swerve, 1.5),            //move forward 88" or 0.95 if robot end on the line
+      moveByDistance(swerve, 1.05),            //move forward 88" or 0.95 if robot end on the line
       Commands.waitSeconds(timeout),
       //Commands.waitSeconds(timeout),
       /**/
       moveCorralToLowerReefLevel(algae, actuator),                //drop corral
       actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions), //straighten actuator
-      Commands.waitSeconds(2.0),
+      Commands.waitSeconds(1.0),
       algae.runIntakeCommand().withTimeout(0.5), // to eject the corral
-      Commands.waitSeconds(0.75),
+      Commands.waitSeconds(0.5),
 
       // get ready for TeleOp action
       algae.setSetpointCommand(Setpoint.kClearWires),
@@ -301,10 +301,16 @@ public class Autos extends Command {
       moveByDistance(swerve, -0.6),            //move back to rotate
       
       
-      rotateByAngleInDegrees(swerve, gyro, -90.)        //rotate 90deg
+      rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       //Commands.waitSeconds(timeout),
       
-      //moveByDistanceInXY(swerve, 1.5)
+      moveByDistanceInXY(swerve, 1.5),
+      Commands.waitSeconds(0.75),
+      algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
+      Commands.waitSeconds(0.75),
+      algae.reverseIntakeCommand().withTimeout(0.5),
+      Commands.waitSeconds(0.75),
+      algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
       /* 
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
       //Commands.waitSeconds(timeout),

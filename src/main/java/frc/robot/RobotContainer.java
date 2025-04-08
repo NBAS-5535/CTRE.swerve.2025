@@ -477,13 +477,13 @@ public class RobotContainer {
         txbox
             .x()
                 .onTrue(
-                    m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
-                    /*
+                    //m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)
+                    /**/
                     new ParallelCommandGroup(
-                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup)//,
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kGroundPickup),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )
-                        */
+                       /* */
         );
 
         txbox
@@ -503,6 +503,15 @@ public class RobotContainer {
                     new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
                         Commands.waitSeconds(0.5),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                    )    
+        );
+
+        txbox
+            .povUp()
+                .onTrue(
+                    new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )    
