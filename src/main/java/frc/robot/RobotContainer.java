@@ -498,10 +498,11 @@ public class RobotContainer {
 
         //
         txbox
-            .povUp()
+            .rightBumper()
                 .onTrue(
                     new SequentialCommandGroup(
-                        //m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
+                        m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
+                        Commands.waitSeconds(0.5),
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kSideSlotShoot),
                         m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
                     )    
@@ -520,15 +521,16 @@ public class RobotContainer {
 
         /* move with ball */
         txbox
-            .rightBumper()
+            .leftBumper()
                 .onTrue(
                 new SequentialCommandGroup(
                         m_algaeSubsystem.setSetpointCommand(Setpoint.kMoveWithBall),
-                        m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        //m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions)
+                        m_actuator.setSetpointCommand(ActuatorSetpoints.kBase)
                     )
         );
             
-                
+      
     
         drivetrain.registerTelemetry(logger::telemeterize);
     }
