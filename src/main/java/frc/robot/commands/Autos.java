@@ -7,6 +7,7 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,7 +25,9 @@ import frc.robot.subsystems.AlgaeSubsystem.Setpoint;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Autos extends Command {
   /** Creates a new Autos. */
+  static Timer timer;
   public Autos() {
+    timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -156,7 +159,7 @@ public class Autos extends Command {
       return swerve.applyRequest(() -> swerve.robotCentricMove.withVelocityX(speedX)
                                                              .withVelocityY(speedY)
                                                              .withRotationalRate(-angularSpeed))
-                                    .withTimeout(0.25);
+                                    .withTimeout(0.1);
                                  //.until(() -> swerve.isDesiredPoseReached(Math.abs(encoderPosition)));
     }
 
@@ -273,6 +276,8 @@ public class Autos extends Command {
                                     AlgaeSubsystem algae,
                                     ActuatorSubsystem actuator) {
     double timeout = 0.5; // seconds between commands
+    
+    System.out.println(Timer.getFPGATimestamp());
     Command tempCommand = new SequentialCommandGroup(
       moveByDistance(swerve, 1.05),            //move forward 88" or 0.95 if robot end on the line
       Commands.waitSeconds(timeout),
@@ -307,10 +312,11 @@ public class Autos extends Command {
       moveByDistanceInXY(swerve, 1.5),
       Commands.waitSeconds(0.75),
       algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
-      Commands.waitSeconds(0.75),
+      Commands.waitSeconds(2.),
       algae.reverseIntakeCommand().withTimeout(0.5),
-      Commands.waitSeconds(0.75),
-      algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
+      Commands.waitSeconds(1.),
+      algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
+      moveByDistance(swerve, -0.6)
       /* 
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
       //Commands.waitSeconds(timeout),
@@ -330,6 +336,7 @@ public class Autos extends Command {
       //algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)
       /**/
     );
+    System.out.println(timer.getFPGATimestamp());
     return tempCommand;
   }
 
