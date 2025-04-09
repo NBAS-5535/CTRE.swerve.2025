@@ -546,6 +546,7 @@ public class RobotContainer {
 
     // associate PathPlanner NamedCommands with actual function calls
     private void configureNamedCommands() {
+        NamedCommands.registerCommand("EjectAlgae", m_algaeSubsystem.reverseIntakeCommand().withTimeout(0.5));
         NamedCommands.registerCommand("MoveCorralToLowerReefLevel", Autos.moveCorralToLowerReefLevel(m_algaeSubsystem, m_actuator));
         NamedCommands.registerCommand("DropCorralToLowerReefLevel", Autos.dropCorralToLowerReefLevel(m_algaeSubsystem, m_actuator));
         //NamedCommands.registerCommand("PickupAlgaeFromLowReef", Autos.pickupAlgaeFromLowReef(m_algaeSubsystem));
@@ -553,19 +554,22 @@ public class RobotContainer {
         NamedCommands.registerCommand("StraightenActuatorEjectCorral", 
                                       new SequentialCommandGroup(m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions),
                                                                  Commands.waitSeconds(0.5),
-                                                                 m_algaeSubsystem.runIntakeCommand().withTimeout(0.5)));
+                                                                 m_algaeSubsystem.runIntakeCommand().withTimeout(0.25)));
+        NamedCommands.registerCommand("StraightenActuator", m_actuator.setSetpointCommand(ActuatorSetpoints.kSetPointInRevolutions));
         NamedCommands.registerCommand("ReadyForAlgaePickup", 
                                       new SequentialCommandGroup(m_algaeSubsystem.setSetpointCommand(Setpoint.kClearWires),
                                                                  m_algaeSubsystem.setSetpointCommand(Setpoint.kClearReef),
-                                                                 Commands.waitSeconds(0.5),
+                                                                 Commands.waitSeconds(0.25),
                                                                  m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)));
-        NamedCommands.registerCommand("IntakeAlgaeFromReef", m_algaeSubsystem.runIntakeCommand().withTimeout(0.5));
+        NamedCommands.registerCommand("IntakeAlgaeFromReef", m_algaeSubsystem.runIntakeCommand().withTimeout(0.25));
+        NamedCommands.registerCommand("GoToHighReefPickupPosition", m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef));
         NamedCommands.registerCommand("RaiseForAlgaeNetShooting", 
                                       new SequentialCommandGroup(
                                                     m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint),
                                                     Commands.waitSeconds(0.5),
                                                     m_algaeSubsystem.setSetpointCommand(Setpoint.kShootAlgaeNet)
                                                 ));
+        
     }
 
     public Command getAutonomousCommand() {
