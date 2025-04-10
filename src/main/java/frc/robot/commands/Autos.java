@@ -309,7 +309,8 @@ public class Autos extends Command {
       rotateByAngleInDegrees(swerve, gyro, -90.),        //rotate 90deg
       //Commands.waitSeconds(timeout),
       
-      moveByDistanceInXY(swerve, 1.5),
+      moveByDistanceInXY(swerve, 1.)
+      /*
       Commands.waitSeconds(0.75),
       algae.setSetpointCommand(Setpoint.kShootAlgaeNet),
       Commands.waitSeconds(2.),
@@ -317,7 +318,7 @@ public class Autos extends Command {
       Commands.waitSeconds(1.),
       algae.setSetpointCommand(Setpoint.kAlgaePickupLowerReef),
       moveByDistance(swerve, -0.6)
-      /* 
+       
       moveByDistance(swerve, 1.),            //move to algae net/barge ~100"
       //Commands.waitSeconds(timeout),
       
