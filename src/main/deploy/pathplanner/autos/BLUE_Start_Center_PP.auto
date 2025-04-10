@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start_Center_Blue"
+            "pathName": "BLUE_Start_Center"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.25
           }
         },
         {
@@ -55,13 +55,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.25
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start_Center_Blue_AfterCorralDrop"
+            "pathName": "BLUE_Start_Center_AfterCorralDrop"
           }
         },
         {
@@ -79,13 +79,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start_Center_Blue_Followup"
+            "pathName": "BLUE_Start_Center_Followup"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.25
+            "waitTime": 0.2
           }
         },
         {
@@ -121,7 +121,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeaveStartLine"
+            "pathName": "BLUE_RetreatFromStartLine"
           }
         }
       ]
