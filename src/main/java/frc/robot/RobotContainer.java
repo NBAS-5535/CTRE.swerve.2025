@@ -562,7 +562,7 @@ public class RobotContainer {
                                                                  Commands.waitSeconds(0.25),
                                                                  m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef)));
         NamedCommands.registerCommand("IntakeAlgaeFromReef", m_algaeSubsystem.runIntakeCommand().withTimeout(0.25));
-        NamedCommands.registerCommand("GoToHighReefPickupPosition", m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupLowerReef));
+        NamedCommands.registerCommand("GoToHighReefPickupPosition", m_algaeSubsystem.setSetpointCommand(Setpoint.kAlgaePickupHigherReef));
         NamedCommands.registerCommand("RaiseForAlgaeNetShooting", 
                                       new SequentialCommandGroup(
                                                     m_actuator.setSetpointCommand(ActuatorSetpoints.kAlgaeNetShootSetPoint),
