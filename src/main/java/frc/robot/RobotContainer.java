@@ -123,6 +123,9 @@ public class RobotContainer {
     //private final SendableChooser<SendableChooser<String>> mainMenuChooser;
     int joystickDirection = 1;
 
+    // flag to toggle PP
+    private boolean joystickWithPP = false;
+
     /************** Ctor */
     public RobotContainer() {
         // create some NamedCommands for PathPlanner
@@ -174,14 +177,25 @@ public class RobotContainer {
         if ( isCompetitionMode ) {
             Optional<Alliance> ally = DriverStation.getAlliance();
             if (ally.get() == Alliance.Blue ) {
-                joystickDirection = 1;
+                if ( joystickWithPP ) {
+                    joystickDirection = 1;
+                } else {
+                    joystickDirection = 1;
+                }
+            } else if (ally.get() == Alliance.Red ){
+                //joystickDirection = -1;
+                if ( joystickWithPP ) {
+                    joystickDirection = 1;
+                } else {
+                    joystickDirection = -1;
+                }
             } else {
-                joystickDirection = -1;
+                System.out.println(joystickDirection);
             }
         }
          
-        
-        SmartDashboard.putNumber("my direction", joystickDirection);
+        System.out.println(joystickDirection);
+        SmartDashboard.putBoolean("my direction", joystickWithPP);
         
 
         drivetrain.setDefaultCommand(
@@ -736,6 +750,8 @@ public class RobotContainer {
                 /* Run the path selected from the auto chooser */
                 //autoCommand = new PathPlannerAuto("FancyAutoPath"); //
                 autoCommand = autoChooser.getSelected();
+                joystickWithPP = true;
+
                 /*
                 try{
                     // Load the path you want to follow using its name in the GUI
