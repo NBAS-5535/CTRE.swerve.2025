@@ -173,12 +173,14 @@ public class RobotContainer {
         /* alliance signal not available in simulation mode????? */
         boolean isCompetitionMode = true;
         joystickDirection = 1;
+
+        joystickWithPP = true;
         
         if ( isCompetitionMode ) {
             Optional<Alliance> ally = DriverStation.getAlliance();
             if (ally.get() == Alliance.Blue ) {
                 if ( joystickWithPP ) {
-                    joystickDirection = 1;
+                    joystickDirection = -1;
                 } else {
                     joystickDirection = 1;
                 }
@@ -560,7 +562,7 @@ public class RobotContainer {
 
     // associate PathPlanner NamedCommands with actual function calls
     private void configureNamedCommands() {
-        NamedCommands.registerCommand("EjectAlgae", m_algaeSubsystem.reverseIntakeCommand().withTimeout(0.5));
+        NamedCommands.registerCommand("EjectAlgae", m_algaeSubsystem.reverseIntakeCommandSlow().withTimeout(0.5));
         NamedCommands.registerCommand("MoveCorralToLowerReefLevel", Autos.moveCorralToLowerReefLevel(m_algaeSubsystem, m_actuator));
         NamedCommands.registerCommand("DropCorralToLowerReefLevel", Autos.dropCorralToLowerReefLevel(m_algaeSubsystem, m_actuator));
         //NamedCommands.registerCommand("PickupAlgaeFromLowReef", Autos.pickupAlgaeFromLowReef(m_algaeSubsystem));
@@ -750,7 +752,7 @@ public class RobotContainer {
                 /* Run the path selected from the auto chooser */
                 //autoCommand = new PathPlannerAuto("FancyAutoPath"); //
                 autoCommand = autoChooser.getSelected();
-                joystickWithPP = true;
+                //joystickWithPP = true;
 
                 /*
                 try{
